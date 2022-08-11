@@ -45,5 +45,7 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+    <key>NSCameraUsageDescription</key>
+    <string>需要相機權限</string>
 </dict>
 </plist>

@@ -30,12 +30,13 @@ class HomeScreen extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          childAspectRatio: 3 / 4,
+          childAspectRatio: 4 / 5,
         ),
         itemCount: MainFunctions.values.length,
         itemBuilder: (context, index) => HomeScreenItem(
           title: MainFunctions.values.map((f) => f.toString()).toList()[index],
-          icon: MainFunctions.values.map((f) => f.getIcon()).toList()[index],
+          icon:
+              MainFunctions.values.map((f) => bloc.getIcon(f)).toList()[index],
           onItemPressed: MainFunctions.values
               .map((f) => bloc.onItemPressed(f))
               .toList()[index],
