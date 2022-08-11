@@ -26,7 +26,7 @@ class HomeScreenBloc {
             ));
       case MainFunctions.offlinePatrol:
         return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const OfflinePatrolScreen(),
+              builder: (context) => OfflinePatrolScreen.create(),
             ));
       case MainFunctions.uploadImage:
         return () => Navigator.of(context).push(MaterialPageRoute(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/start_patrol_screen_bloc.dart';
+import 'package:security_wanyu/widget/scan_frame.dart';
 
 class StartPatrolScreen extends StatelessWidget {
   final StartPatrolScreenBloc bloc;
@@ -20,10 +21,16 @@ class StartPatrolScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MobileScanner(
-        allowDuplicates: false,
-        controller: bloc.scannerController,
-        onDetect: bloc.onDetect,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          MobileScanner(
+            allowDuplicates: false,
+            controller: bloc.scannerController,
+            onDetect: bloc.onDetect,
+          ),
+          const Scanframe(),
+        ],
       ),
     );
   }
