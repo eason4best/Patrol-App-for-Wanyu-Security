@@ -1,44 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
-import 'package:security_wanyu/screen/confirm_patrol_screen.dart';
-import 'package:security_wanyu/screen/offline_patrol_screen.dart';
-import 'package:security_wanyu/screen/patrol_record_screen.dart';
+import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/screen/contact_us_screen.dart';
+import 'package:security_wanyu/screen/sos_screen.dart';
+import 'package:security_wanyu/screen/onboard_screen.dart';
+import 'package:security_wanyu/screen/shift_screen.dart';
 import 'package:security_wanyu/screen/start_patrol_screen.dart';
-import 'package:security_wanyu/screen/upload_image_screen.dart';
+import 'package:security_wanyu/screen/form_apply_screen.dart';
 
 class HomeScreenBloc {
   final BuildContext context;
   HomeScreenBloc({required this.context});
 
-  VoidCallback onItemPressed(MainFunctions mainFunction) {
+  String currentDateString() {
+    final year = DateTime.now().year;
+    final month = DateTime.now().month;
+    final day = DateTime.now().day;
+    return '$year年$month月$day日';
+  }
+
+  String currentTimeString() {
+    final hour = DateTime.now().hour < 10
+        ? '0${DateTime.now().hour}'
+        : DateTime.now().hour;
+    final minute = DateTime.now().minute < 10
+        ? '0${DateTime.now().minute}'
+        : DateTime.now().minute;
+    return '$hour:$minute';
+  }
+
+  VoidCallback onPunchCardsPressed(PunchCards punchCards) {
+    switch (punchCards) {
+      case PunchCards.work:
+        return () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Container(),
+            ));
+      case PunchCards.getOff:
+        return () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Container(),
+            ));
+      case PunchCards.makeUp:
+        return () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Container(),
+            ));
+    }
+  }
+
+  VoidCallback onMainFunctionsPressed(MainFunctions mainFunction) {
     switch (mainFunction) {
       case MainFunctions.startPatrol:
         return () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => StartPatrolScreen.create(),
             ));
-      case MainFunctions.patrolRecord:
+      case MainFunctions.shift:
         return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const PatrolRecordScreen(),
+              builder: (context) => const ShiftScreen(),
             ));
-      case MainFunctions.patrolComfirm:
+      case MainFunctions.sos:
         return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const ConfirmPatrolScreen(),
+              builder: (context) => const SOSScreen(),
             ));
-      case MainFunctions.offlinePatrol:
+      case MainFunctions.onboard:
         return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => OfflinePatrolScreen.create(),
+              builder: (context) => const OnBoardScreen(),
             ));
-      case MainFunctions.uploadImage:
+      case MainFunctions.formApply:
         return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const UploadImageScreen(),
+              builder: (context) => const FormApplyScreen(),
             ));
-      case MainFunctions.signOut:
-        return () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Container()));
+      case MainFunctions.contactUs:
+        return () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const ContactUsScreen(),
+            ));
     }
   }
 
-  Icon getIcon(MainFunctions mainFunction) {
+  Icon getMainFunctionsIcon(MainFunctions mainFunction) {
     switch (mainFunction) {
       case MainFunctions.startPatrol:
         return const Icon(
@@ -46,38 +83,40 @@ class HomeScreenBloc {
           size: 48,
           color: Colors.black87,
         );
-      case MainFunctions.patrolRecord:
+      case MainFunctions.shift:
         return const Icon(
-          Icons.history,
+          Icons.calendar_month_outlined,
           size: 48,
           color: Colors.black87,
         );
-      case MainFunctions.patrolComfirm:
+      case MainFunctions.sos:
         return const Icon(
-          Icons.check_circle_outline,
+          Icons.sos_outlined,
           size: 48,
           color: Colors.black87,
         );
-      case MainFunctions.offlinePatrol:
+      case MainFunctions.onboard:
         return const Icon(
-          Icons.wifi_off,
+          Icons.badge_outlined,
           size: 48,
           color: Colors.black87,
         );
-      case MainFunctions.uploadImage:
+      case MainFunctions.formApply:
         return const Icon(
-          Icons.upload,
+          Icons.description_outlined,
           size: 48,
           color: Colors.black87,
         );
-      case MainFunctions.signOut:
+      case MainFunctions.contactUs:
         return const Icon(
-          Icons.exit_to_app,
+          Icons.call_outlined,
           size: 48,
           color: Colors.black87,
         );
     }
   }
+
+  void signOut() {}
 
   void dispose() {}
 }

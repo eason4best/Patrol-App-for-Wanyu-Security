@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ConfirmPatrolScreen extends StatelessWidget {
-  const ConfirmPatrolScreen({Key? key}) : super(key: key);
+class SOSScreen extends StatelessWidget {
+  const SOSScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('巡邏確認'),
+        title: const Text('緊急聯絡'),
       ),
     );
   }

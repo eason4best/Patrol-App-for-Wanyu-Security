@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:security_wanyu/screen/home_screen.dart';
+import 'package:security_wanyu/screen/base_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,14 +12,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '萬宇保全[員]',
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.grey.shade800,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.black87,
           elevation: 0.0,
         ),
-        primaryColor: Colors.grey,
-        scaffoldBackgroundColor: const Color(0xfffafafa),
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.cyan.shade50,
       ),
-      home: HomeScreen.create(),
+      home: const BaseScreen(),
     );
   }
 }

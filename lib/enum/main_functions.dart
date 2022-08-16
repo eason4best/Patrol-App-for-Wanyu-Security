@@ -1,26 +1,26 @@
 enum MainFunctions {
   startPatrol,
-  patrolRecord,
-  patrolComfirm,
-  offlinePatrol,
-  uploadImage,
-  signOut;
+  shift,
+  sos,
+  onboard,
+  formApply,
+  contactUs;
 
   @override
   String toString() {
     switch (this) {
       case MainFunctions.startPatrol:
-        return '開始巡邏';
-      case MainFunctions.patrolRecord:
-        return '巡邏紀錄';
-      case MainFunctions.patrolComfirm:
-        return '巡邏確認';
-      case MainFunctions.offlinePatrol:
-        return '離線巡邏';
-      case MainFunctions.uploadImage:
-        return '上傳圖片資料';
-      case MainFunctions.signOut:
-        return '登出';
+        return '巡邏';
+      case MainFunctions.shift:
+        return '班表';
+      case MainFunctions.sos:
+        return '緊急連絡';
+      case MainFunctions.onboard:
+        return '辦理入職';
+      case MainFunctions.formApply:
+        return '表單申請';
+      case MainFunctions.contactUs:
+        return '聯絡我們';
     }
   }
 }

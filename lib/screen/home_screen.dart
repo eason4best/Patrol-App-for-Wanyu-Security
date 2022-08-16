@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
-import 'package:security_wanyu/widget/home_screen_item.dart';
+import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/widget/main_function_widget.dart';
+import 'package:security_wanyu/widget/punch_card_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   final HomeScreenBloc bloc;
@@ -22,24 +24,82 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('萬宇保全[員]'),
+        title: const Text('歡迎使用 員工A'),
+        actions: [
+          TextButton(
+            onPressed: bloc.signOut,
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all(Colors.black54),
+              overlayColor: MaterialStateProperty.all(Colors.transparent),
+            ),
+            child: const Text('登出'),
+          )
+        ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 4 / 5,
-        ),
-        itemCount: MainFunctions.values.length,
-        itemBuilder: (context, index) => HomeScreenItem(
-          title: MainFunctions.values.map((f) => f.toString()).toList()[index],
-          icon:
-              MainFunctions.values.map((f) => bloc.getIcon(f)).toList()[index],
-          onItemPressed: MainFunctions.values
-              .map((f) => bloc.onItemPressed(f))
-              .toList()[index],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 36),
+              child: Text(
+                bloc.currentDateString(),
+                style:
+                    Theme.of(context).textTheme.headline5!.copyWith(height: 1),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              child: Text(
+                bloc.currentTimeString(),
+                style:
+                    Theme.of(context).textTheme.headline5!.copyWith(height: 1),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  3,
+                  (index) => PunchCardWidget(
+                    title: PunchCards.values
+                        .map((pc) => pc.toString())
+                        .toList()[index],
+                    onPressed: PunchCards.values
+                        .map((pc) => bloc.onPunchCardsPressed(pc))
+                        .toList()[index],
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 40),
+              child: GridView.builder(
+                padding: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 24,
+                  crossAxisSpacing: 30,
+                  childAspectRatio: 2 / 3,
+                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: MainFunctions.values.length,
+                itemBuilder: (context, index) => MainFunctionWidget(
+                  title: MainFunctions.values
+                      .map((f) => f.toString())
+                      .toList()[index],
+                  icon: MainFunctions.values
+                      .map((f) => bloc.getMainFunctionsIcon(f))
+                      .toList()[index],
+                  onPressed: MainFunctions.values
+                      .map((f) => bloc.onMainFunctionsPressed(f))
+                      .toList()[index],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

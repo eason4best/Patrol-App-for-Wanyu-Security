@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
 
-class HomeScreenItem extends StatelessWidget {
+class MainFunctionWidget extends StatelessWidget {
   final String title;
   final Icon icon;
-  final VoidCallback onItemPressed;
-  const HomeScreenItem({
+  final VoidCallback onPressed;
+  const MainFunctionWidget({
     Key? key,
     required this.title,
     required this.icon,
-    required this.onItemPressed,
+    required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onItemPressed,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.black12),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
+      onTap: onPressed,
+      child: Card(
+        margin: const EdgeInsets.all(0),
+        elevation: 4.0,
         child: Column(
           children: [
             Expanded(
-              flex: 4,
+              flex: 2,
               child: icon,
             ),
             Expanded(
