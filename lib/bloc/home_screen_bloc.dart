@@ -13,19 +13,21 @@ class HomeScreenBloc {
   HomeScreenBloc({required this.context});
 
   String currentDateString() {
-    final year = DateTime.now().year;
-    final month = DateTime.now().month;
-    final day = DateTime.now().day;
-    return '$year年$month月$day日';
+    final currentDate = DateTime.now();
+    final year = currentDate.year;
+    final month = currentDate.month;
+    final day = currentDate.day;
+    final weekday = currentDate.weekday;
+    const weekdayInCH = ['ㄧ', '二', '三', '四', '五', '六', '日'];
+    return '$year年$month月$day日 星期${weekdayInCH[weekday - 1]}';
   }
 
   String currentTimeString() {
-    final hour = DateTime.now().hour < 10
-        ? '0${DateTime.now().hour}'
-        : DateTime.now().hour;
-    final minute = DateTime.now().minute < 10
-        ? '0${DateTime.now().minute}'
-        : DateTime.now().minute;
+    final currentDate = DateTime.now();
+    final hour =
+        currentDate.hour < 10 ? '0${currentDate.hour}' : currentDate.hour;
+    final minute =
+        currentDate.minute < 10 ? '0${currentDate.minute}' : currentDate.minute;
     return '$hour:$minute';
   }
 

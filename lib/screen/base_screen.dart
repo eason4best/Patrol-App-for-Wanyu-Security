@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:security_wanyu/screen/announcement_screen.dart';
 import 'package:security_wanyu/screen/home_screen.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -12,13 +13,16 @@ class _BaseScreenState extends State<BaseScreen> {
   int _currentIndex = 0;
   final pages = [
     HomeScreen.create(),
-    Container(),
+    const AnnouncementScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: pages[_currentIndex],
+        body: IndexedStack(
+          index: _currentIndex,
+          children: pages,
+        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,

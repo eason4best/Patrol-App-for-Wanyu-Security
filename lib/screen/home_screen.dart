@@ -30,7 +30,6 @@ class HomeScreen extends StatelessWidget {
             onPressed: bloc.signOut,
             style: ButtonStyle(
               foregroundColor: MaterialStateProperty.all(Colors.black54),
-              overlayColor: MaterialStateProperty.all(Colors.transparent),
             ),
             child: const Text('登出'),
           )
