@@ -8,19 +8,21 @@ class Scanframe extends StatelessWidget {
     return CustomPaint(
       size: Size(MediaQuery.of(context).size.width * 0.5,
           MediaQuery.of(context).size.width * 0.5),
-      painter: ScanFramePainter(),
+      painter: ScanFramePainter(context: context),
     );
   }
 }
 
 class ScanFramePainter extends CustomPainter {
+  final BuildContext context;
+  ScanFramePainter({required this.context});
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
-      ..color = Colors.white;
+      ..color = Theme.of(context).primaryColor;
     //左上框。
     canvas.drawLine(const Offset(0, 0), const Offset(48, 0), paint);
     canvas.drawLine(const Offset(0, 0), const Offset(0, 48), paint);
