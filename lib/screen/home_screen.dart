@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/utils.dart';
 import 'package:security_wanyu/widget/main_function_widget.dart';
 import 'package:security_wanyu/widget/punch_card_widget.dart';
 
@@ -41,7 +42,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 36),
               child: Text(
-                bloc.currentDateString(),
+                Utils.currentDateString(),
                 style:
                     Theme.of(context).textTheme.headline5!.copyWith(height: 1),
               ),
@@ -49,7 +50,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 12),
               child: Text(
-                bloc.currentTimeString(),
+                Utils.currentTimeString(),
                 style:
                     Theme.of(context).textTheme.headline5!.copyWith(height: 1),
               ),

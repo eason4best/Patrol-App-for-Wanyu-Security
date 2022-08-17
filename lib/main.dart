@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:security_wanyu/screen/base_screen.dart';
+import 'package:security_wanyu/screen/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.cyan.shade50,
       ),
       debugShowCheckedModeBanner: false,
-      home: const BaseScreen(),
+      home: const LoginScreen(),
     );
   }
 }

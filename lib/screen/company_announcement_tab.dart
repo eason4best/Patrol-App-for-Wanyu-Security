@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/widget/announcement_widget.dart';
 
@@ -14,12 +16,16 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
   Widget build(BuildContext context) {
     super.build(context);
     return ListView.builder(
-      itemBuilder: (context, index) => AnnouncementWidget(
-        title: '公告標題${index + 1}',
-        subtitle: '公告內文預覽${index + 1}',
-        read: false,
-        onPressed: () {},
-      ),
+      itemBuilder: (context, index) {
+        var tf = [true, false];
+        final random = Random();
+        return AnnouncementWidget(
+          title: '公告標題${index + 1}',
+          subtitle: '公告內文預覽${index + 1}',
+          read: tf[random.nextInt(tf.length)],
+          onPressed: () {},
+        );
+      },
     );
   }
 

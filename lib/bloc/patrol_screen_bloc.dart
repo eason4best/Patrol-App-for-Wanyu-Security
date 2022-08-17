@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class StartPatrolScreenBloc {
+class PatrolScreenBloc {
   final BuildContext context;
   late MobileScannerController _scannerController;
-  StartPatrolScreenBloc({required this.context}) {
+  PatrolScreenBloc({required this.context}) {
     _scannerController = MobileScannerController();
   }
 

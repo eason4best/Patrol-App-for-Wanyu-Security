@@ -12,7 +12,7 @@ enum PunchCards {
       case PunchCards.getOff:
         return '下班';
       case PunchCards.makeUp:
-        return '補班';
+        return '補卡';
     }
   }
 }
