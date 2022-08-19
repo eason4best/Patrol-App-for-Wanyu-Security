@@ -12,8 +12,11 @@ class PatrolScreenBloc {
 
   void onDetect(Barcode barcode, MobileScannerArguments? args) {
     if (barcode.rawValue != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('掃描成功：${barcode.rawValue}'),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          '巡邏成功',
+          style: TextStyle(fontSize: 16),
+        ),
         behavior: SnackBarBehavior.floating,
       ));
     }

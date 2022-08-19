@@ -21,7 +21,7 @@ class MainFunctionWidget extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              flex: 2,
+              flex: 3,
               child: icon,
             ),
             Expanded(

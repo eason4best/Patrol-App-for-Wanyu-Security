@@ -4,6 +4,7 @@ import 'package:security_wanyu/bloc/home_screen_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/utils.dart';
+import 'package:security_wanyu/widget/announcement_banner_widget.dart';
 import 'package:security_wanyu/widget/main_function_widget.dart';
 import 'package:security_wanyu/widget/punch_card_widget.dart';
 
@@ -39,6 +40,7 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const AnnouncementBannerWidget(content: '本日公告：今天天氣不佳，執勤時請注意安全。'),
             Container(
               margin: const EdgeInsets.only(top: 36),
               child: Text(
@@ -81,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisCount: 3,
                   mainAxisSpacing: 24,
                   crossAxisSpacing: 30,
-                  childAspectRatio: 2 / 3,
+                  childAspectRatio: 3 / 4,
                 ),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

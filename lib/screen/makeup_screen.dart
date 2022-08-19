@@ -25,15 +25,29 @@ class MakeUpScreen extends StatelessWidget {
             color: Theme.of(context).scaffoldBackgroundColor,
             height: 0,
           ),
-          ListTile(
+          const ListTile(
             tileColor: Colors.white,
-            leading: const Icon(Icons.location_on_outlined),
-            title: Text(
-              '請選擇地點',
-              style: Theme.of(context)
-                  .textTheme
-                  .subtitle1!
-                  .copyWith(color: Colors.black54),
+            leading: Icon(Icons.location_on_outlined),
+            title: SizedBox(
+              height: 48,
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: '請輸入地點',
+                  contentPadding: EdgeInsets.all(0),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+              ),
             ),
           ),
           Container(

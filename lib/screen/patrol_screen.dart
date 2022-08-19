@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/patrol_screen_bloc.dart';
+import 'package:security_wanyu/screen/patrol_record_screen.dart';
 import 'package:security_wanyu/widget/scan_frame.dart';
 
 class PatrolScreen extends StatelessWidget {
@@ -35,51 +36,12 @@ class PatrolScreen extends StatelessWidget {
             child: Row(
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => ListView(
-                        shrinkWrap: true,
-                        children: [
-                          ListTile(
-                            leading: Icon(
-                              Icons.check_circle_outline,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            title: const Text('巡邏點A'),
-                          ),
-                          ListTile(
-                            leading: Icon(
-                              Icons.check_circle_outline,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            title: const Text('巡邏點B'),
-                          ),
-                          const ListTile(
-                            leading: Icon(
-                              Icons.check_circle_outline,
-                              color: Colors.black54,
-                            ),
-                            title: Text('巡邏點C'),
-                          ),
-                          const ListTile(
-                            leading: Icon(
-                              Icons.check_circle_outline,
-                              color: Colors.black54,
-                            ),
-                            title: Text('巡邏點D'),
-                          ),
-                          const ListTile(
-                            leading: Icon(
-                              Icons.check_circle_outline,
-                              color: Colors.black54,
-                            ),
-                            title: Text('巡邏點E'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) => const PatrolRecordScreen(),
+                    ),
+                  ),
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all(6.0),
                     fixedSize: MaterialStateProperty.all(const Size(100, 48)),
