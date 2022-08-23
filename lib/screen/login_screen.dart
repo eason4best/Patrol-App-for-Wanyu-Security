@@ -26,69 +26,77 @@ class LoginScreen extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: StreamBuilder<LoginScreenModel>(
-                stream: bloc.stream,
-                initialData: bloc.model,
-                builder: (context, snapshot) {
-                  return Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 32),
-                        child: Text(
-                          'LOGO',
-                          style:
-                              Theme.of(context).textTheme.headline2!.copyWith(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1,
-                                  ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 64),
-                        child: LoginFormWidget(bloc: bloc, snapshot: snapshot),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: Row(
+            child: FutureBuilder(
+                future: bloc.initialize(),
+                builder: (context, fs) {
+                  return StreamBuilder<LoginScreenModel>(
+                      stream: bloc.stream,
+                      initialData: bloc.model,
+                      builder: (context, ss) {
+                        return Column(
                           children: [
-                            Checkbox(
-                              value: snapshot.data!.rememberMe,
-                              onChanged: bloc.rememberMe,
-                            ),
-                            Text(
-                              '記住我',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption!
-                                  .copyWith(color: Colors.black87),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 32),
-                        child: ElevatedButton(
-                          onPressed: snapshot.data!.canSubmit!
-                              ? () async => await bloc.signIn(context)
-                              : null,
-                          style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(0.0),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                            Container(
+                              margin: const EdgeInsets.only(top: 32),
+                              child: Text(
+                                'LOGO',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1,
+                                    ),
                               ),
                             ),
-                          ),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width - 32,
-                            height: 56,
-                            child: const Center(child: Text('登入')),
-                          ),
-                        ),
-                      )
-                    ],
-                  );
+                            Container(
+                              margin: const EdgeInsets.only(top: 64),
+                              child: LoginFormWidget(bloc: bloc, snapshot: ss),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    value: ss.data!.rememberMe,
+                                    onChanged: bloc.rememberMe,
+                                  ),
+                                  Text(
+                                    '記住我',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(color: Colors.black87),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 32),
+                              child: ElevatedButton(
+                                onPressed: (fs.connectionState ==
+                                            ConnectionState.done &&
+                                        ss.data!.canSubmit!)
+                                    ? () async => await bloc.signIn(context)
+                                    : null,
+                                style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(0.0),
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width - 32,
+                                  height: 56,
+                                  child: const Center(child: Text('登入')),
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      });
                 }),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:security_wanyu/enum/sos_number.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SOSScreen extends StatelessWidget {
@@ -11,30 +12,20 @@ class SOSScreen extends StatelessWidget {
         title: const Text('緊急聯絡'),
       ),
       body: ListView(
-        children: [
-          ListTile(
-            title: const Text('緊急電話1'),
-            subtitle: const Text('0912345678'),
+        children: List.generate(
+          SOSNumber.values.length,
+          (index) => ListTile(
+            title: Text(SOSNumber.values[index].toString()),
+            subtitle: Text(SOSNumber.values[index].getNumber()),
             onTap: () async {
               final Uri launchUri = Uri(
                 scheme: 'tel',
-                path: '0912345678',
+                path: SOSNumber.values[index].getNumber(),
               );
               await launchUrl(launchUri);
             },
           ),
-          ListTile(
-            title: const Text('緊急電話2'),
-            subtitle: const Text('0987654321'),
-            onTap: () async {
-              final Uri launchUri = Uri(
-                scheme: 'tel',
-                path: '0987654321',
-              );
-              await launchUrl(launchUri);
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

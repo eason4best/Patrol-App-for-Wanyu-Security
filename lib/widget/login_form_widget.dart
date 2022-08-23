@@ -16,6 +16,7 @@ class LoginFormWidget extends StatelessWidget {
     return Column(
       children: [
         TextField(
+          controller: bloc.accountController,
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
             hintText: '帳號',
@@ -44,6 +45,7 @@ class LoginFormWidget extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(top: 16),
           child: TextField(
+            controller: bloc.passwordController,
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
             decoration: InputDecoration(
