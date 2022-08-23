@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:security_wanyu/utils.dart';
+import 'package:security_wanyu/service/utils.dart';
 
 class MakeUpScreen extends StatelessWidget {
   const MakeUpScreen({Key? key}) : super(key: key);

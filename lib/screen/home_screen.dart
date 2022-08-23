@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
-import 'package:security_wanyu/utils.dart';
+import 'package:security_wanyu/service/utils.dart';
 import 'package:security_wanyu/widget/announcement_banner_widget.dart';
 import 'package:security_wanyu/widget/main_function_widget.dart';
 import 'package:security_wanyu/widget/punch_card_widget.dart';

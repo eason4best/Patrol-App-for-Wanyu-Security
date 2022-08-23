@@ -104,7 +104,7 @@ class HomeScreenBloc {
 
   void signOut() {
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()));
+        MaterialPageRoute(builder: (context) => LoginScreen.create()));
   }
 
   void dispose() {}
