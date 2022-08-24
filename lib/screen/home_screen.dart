@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/screen/makeup_screen.dart';
 import 'package:security_wanyu/service/utils.dart';
 import 'package:security_wanyu/widget/announcement_banner_widget.dart';
 import 'package:security_wanyu/widget/main_function_widget.dart';
@@ -69,7 +70,15 @@ class HomeScreen extends StatelessWidget {
                         .map((pc) => pc.toString())
                         .toList()[index],
                     onPressed: PunchCards.values
-                        .map((pc) => bloc.onPunchCardsPressed(pc))
+                        .map((pc) => pc == PunchCards.work
+                            ? () async => await bloc.workPunch()
+                            : pc == PunchCards.getOff
+                                ? () async => await bloc.getOffPunch()
+                                : () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const MakeUpScreen()),
+                                    ))
                         .toList()[index],
                   ),
                 ),

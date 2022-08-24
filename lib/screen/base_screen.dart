@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/announcement_screen.dart';
 import 'package:security_wanyu/screen/home_screen.dart';
 
@@ -7,6 +9,15 @@ class BaseScreen extends StatefulWidget {
 
   @override
   State<BaseScreen> createState() => _BaseScreenState();
+
+  static Widget create({required Member member}) {
+    return Provider<Member>(
+      create: (context) => member,
+      child: Consumer<Member>(
+        builder: (context, bloc, _) => const BaseScreen(),
+      ),
+    );
+  }
 }
 
 class _BaseScreenState extends State<BaseScreen> {

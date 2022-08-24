@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Utils {
   static String currentDateString() {
     final currentDate = DateTime.now();
@@ -16,5 +18,17 @@ class Utils {
     final minute =
         currentDate.minute < 10 ? '0${currentDate.minute}' : currentDate.minute;
     return '$hour:$minute';
+  }
+
+  static Future<bool> hasInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+      return false;
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 }

@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/contact_us_screen.dart';
 import 'package:security_wanyu/screen/login_screen.dart';
-import 'package:security_wanyu/screen/makeup_screen.dart';
 import 'package:security_wanyu/screen/sos_screen.dart';
 import 'package:security_wanyu/screen/onboard_screen.dart';
 import 'package:security_wanyu/screen/shift_screen.dart';
 import 'package:security_wanyu/screen/patrol_screen.dart';
 import 'package:security_wanyu/screen/form_apply_screen.dart';
+import 'package:security_wanyu/service/etun_api.dart';
 
 class HomeScreenBloc {
   final BuildContext context;
   HomeScreenBloc({required this.context});
 
-  VoidCallback onPunchCardsPressed(PunchCards punchCards) {
-    switch (punchCards) {
-      case PunchCards.work:
-        return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Container(),
-            ));
-      case PunchCards.getOff:
-        return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Container(),
-            ));
-      case PunchCards.makeUp:
-        return () => Navigator.of(context).push(MaterialPageRoute(
-              fullscreenDialog: true,
-              builder: (context) => const MakeUpScreen(),
-            ));
-    }
+  Future<void> workPunch() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    bool result = await EtunAPI.punchCard(
+      type: PunchCards.work,
+      member: Provider.of<Member>(context, listen: false),
+    );
+    scaffoldMessenger
+        .showSnackBar(SnackBar(content: Text(result ? '上班打卡成功！' : '打卡失敗')));
+  }
+
+  Future<void> getOffPunch() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    bool result = await EtunAPI.punchCard(
+      type: PunchCards.getOff,
+      member: Provider.of<Member>(context, listen: false),
+    );
+    scaffoldMessenger
+        .showSnackBar(SnackBar(content: Text(result ? '下班打卡成功！' : '打卡失敗')));
   }
 
   VoidCallback onMainFunctionsPressed(MainFunctions mainFunction) {

@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
 import 'package:security_wanyu/model/login_screen_model.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/base_screen.dart';
 import 'package:security_wanyu/service/etun_api.dart';
+import 'package:security_wanyu/service/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreenBloc {
@@ -50,19 +51,21 @@ class LoginScreenBloc {
   Future<void> signIn(BuildContext context) async {
     final navigator = Navigator.of(context);
     //確認有無連上網路。
-    if (await _hasInternetConnection()) {
-      SignInResults result = await EtunAPI.signIn(
+    if (await Utils.hasInternetConnection()) {
+      Map<String, dynamic> result = await EtunAPI.signIn(
           memberAccount: _model.account!, memberPassword: _model.password!);
-      switch (result) {
+      SignInResults signInResults = result['signInResult'];
+      switch (signInResults) {
         case SignInResults.success:
           if (_model.rememberMe!) {
             prefs.setString('account', _model.account!);
             prefs.setString('password', _model.password!);
           }
           if (navigator.mounted) {
+            Member member = result['member'];
             navigator.pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const BaseScreen(),
+                builder: (context) => BaseScreen.create(member: member),
               ),
             );
           }
@@ -123,18 +126,6 @@ class LoginScreenBloc {
           ),
         );
       }
-    }
-  }
-
-  Future<bool> _hasInternetConnection() async {
-    try {
-      final result = await InternetAddress.lookup('example.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true;
-      }
-      return false;
-    } on SocketException catch (_) {
-      return false;
     }
   }
 
