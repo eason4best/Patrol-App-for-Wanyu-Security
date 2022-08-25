@@ -40,8 +40,13 @@ class EtunAPI {
   }
 
   //打卡。
-  static Future<bool> punchCard(
-      {required PunchCards type, required Member member}) async {
+  static Future<bool> punchCard({
+    required PunchCards type,
+    required Member member,
+    String? place,
+    double? lat,
+    double? lng,
+  }) async {
     try {
       Uri url = Uri.parse('$baseUrl?op=punchCard');
       PunchCardRecord punchCardRecord = PunchCardRecord(
@@ -49,14 +54,17 @@ class EtunAPI {
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: type,
-        lat: 120.222333,
-        lng: 23.453212,
+        place: place,
+        lat: lat,
+        lng: lng,
       );
-      http.Response response = await http.post(url,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: punchCardRecord.toJSON());
+      http.Response response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: punchCardRecord.toJSON(),
+      );
       bool success = json.decode(response.body)['success'];
       return success;
     } catch (e) {

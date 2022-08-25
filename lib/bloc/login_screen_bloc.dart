@@ -150,6 +150,8 @@ class LoginScreenBloc {
   }
 
   void dispose() {
+    accountController.dispose();
+    passwordController.dispose();
     _streamController.close();
   }
 }

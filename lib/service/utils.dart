@@ -1,22 +1,19 @@
 import 'dart:io';
 
 class Utils {
-  static String currentDateString() {
-    final currentDate = DateTime.now();
-    final year = currentDate.year;
-    final month = currentDate.month;
-    final day = currentDate.day;
-    final weekday = currentDate.weekday;
+  static String dateString(DateTime dateTime) {
+    final year = dateTime.year;
+    final month = dateTime.month;
+    final day = dateTime.day;
+    final weekday = dateTime.weekday;
     const weekdayInCH = ['ㄧ', '二', '三', '四', '五', '六', '日'];
     return '$year年$month月$day日 星期${weekdayInCH[weekday - 1]}';
   }
 
-  static String currentTimeString() {
-    final currentDate = DateTime.now();
-    final hour =
-        currentDate.hour < 10 ? '0${currentDate.hour}' : currentDate.hour;
+  static String timeString(DateTime dateTime) {
+    final hour = dateTime.hour < 10 ? '0${dateTime.hour}' : dateTime.hour;
     final minute =
-        currentDate.minute < 10 ? '0${currentDate.minute}' : currentDate.minute;
+        dateTime.minute < 10 ? '0${dateTime.minute}' : dateTime.minute;
     return '$hour:$minute';
   }
 

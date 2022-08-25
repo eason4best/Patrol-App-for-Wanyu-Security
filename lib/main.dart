@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:security_wanyu/screen/login_screen.dart';
 
 void main() {
@@ -20,6 +21,11 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.cyan.shade50,
       ),
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [
+        Locale.fromSubtags(
+            languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW')
+      ],
       debugShowCheckedModeBanner: false,
       home: LoginScreen.create(),
     );

@@ -20,28 +20,32 @@ class PatrolRecordScreen extends StatelessWidget {
             ),
           ),
           const ListTile(
-            title: Text('巡邏點E'),
+            title: Text('二廠北側門一'),
           ),
           const ListTile(
-            title: Text('巡邏點F'),
+            title: Text('二廠北側門二'),
           ),
           const ListTile(
-            title: Text('巡邏點G'),
+            title: Text('一廠南側門一'),
           ),
           const ListTile(
-            title: Text('巡邏點H'),
+            title: Text('一廠南側門二'),
           ),
           const ListTile(
-            title: Text('巡邏點I'),
+            title: Text('一廠東側門'),
           ),
           const ListTile(
-            title: Text('巡邏點J'),
+            title: Text('一廠北側門'),
           ),
           const ListTile(
-            title: Text('巡邏點K'),
+            title: Text('一廠大廳'),
           ),
           const ListTile(
-            title: Text('巡邏點L'),
+            title: Text('一廠西側門'),
+          ),
+          const Divider(
+            height: 0,
+            thickness: 1,
           ),
           Container(
             margin: const EdgeInsets.only(top: 8),
@@ -52,29 +56,33 @@ class PatrolRecordScreen extends StatelessWidget {
               ),
             ),
           ),
-          const ListTile(
-            title: Text(
-              '巡邏點A',
-              style: TextStyle(color: Colors.black54),
+          ListTile(
+            leading: Icon(
+              Icons.check_circle_outline,
+              color: Theme.of(context).primaryColor,
             ),
+            title: const Text('二廠大廳'),
           ),
-          const ListTile(
-            title: Text(
-              '巡邏點B',
-              style: TextStyle(color: Colors.black54),
+          ListTile(
+            leading: Icon(
+              Icons.check_circle_outline,
+              color: Theme.of(context).primaryColor,
             ),
+            title: const Text('二廠西側門'),
           ),
-          const ListTile(
-            title: Text(
-              '巡邏點C',
-              style: TextStyle(color: Colors.black54),
+          ListTile(
+            leading: Icon(
+              Icons.check_circle_outline,
+              color: Theme.of(context).primaryColor,
             ),
+            title: const Text('二廠南側門'),
           ),
-          const ListTile(
-            title: Text(
-              '巡邏點D',
-              style: TextStyle(color: Colors.black54),
+          ListTile(
+            leading: Icon(
+              Icons.check_circle_outline,
+              color: Theme.of(context).primaryColor,
             ),
+            title: const Text('二廠東側門'),
           ),
         ],
       ),

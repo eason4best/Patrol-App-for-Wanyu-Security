@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/makeup_screen.dart';
 import 'package:security_wanyu/service/utils.dart';
 import 'package:security_wanyu/widget/announcement_banner_widget.dart';
@@ -15,7 +16,9 @@ class HomeScreen extends StatelessWidget {
 
   static Widget create() {
     return Provider<HomeScreenBloc>(
-      create: (context) => HomeScreenBloc(context: context),
+      create: (context) => HomeScreenBloc(
+          member: Provider.of<Member>(context, listen: false),
+          context: context),
       child: Consumer<HomeScreenBloc>(
         builder: (context, bloc, _) => HomeScreen(bloc: bloc),
       ),
@@ -27,7 +30,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('歡迎使用 員工A'),
+        title: Text('歡迎使用 ${bloc.member.memberName}'),
         actions: [
           TextButton(
             onPressed: bloc.signOut,
@@ -45,7 +48,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 36),
               child: Text(
-                Utils.currentDateString(),
+                Utils.dateString(DateTime.now()),
                 style:
                     Theme.of(context).textTheme.headline5!.copyWith(height: 1),
               ),
@@ -53,7 +56,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 12),
               child: Text(
-                Utils.currentTimeString(),
+                Utils.timeString(DateTime.now()),
                 style:
                     Theme.of(context).textTheme.headline5!.copyWith(height: 1),
               ),
@@ -76,8 +79,10 @@ class HomeScreen extends StatelessWidget {
                                 ? () async => await bloc.getOffPunch()
                                 : () => Navigator.of(context).push(
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const MakeUpScreen()),
+                                        builder: (context) =>
+                                            MakeUpScreen.create(
+                                                member: bloc.member),
+                                      ),
                                     ))
                         .toList()[index],
                   ),

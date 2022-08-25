@@ -25,9 +25,10 @@ class AnnouncementWidget extends StatelessWidget {
               : Container(
                   width: 8,
                   height: 8,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).primaryColor),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                  ),
                 ),
       onTap: onPressed,
     );

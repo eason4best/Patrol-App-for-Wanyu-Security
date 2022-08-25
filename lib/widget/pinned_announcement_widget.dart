@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class PinnedAnnouncementWidget extends StatelessWidget {
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final VoidCallback onPressed;
   const PinnedAnnouncementWidget({
     Key? key,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.onPressed,
   }) : super(key: key);
 
@@ -24,7 +24,7 @@ class PinnedAnnouncementWidget extends StatelessWidget {
         width: MediaQuery.of(context).size.width - 32 * 2,
         child: ListTile(
           title: Text(title),
-          subtitle: Text(subtitle),
+          subtitle: subtitle != null ? Text(subtitle!) : null,
           onTap: onPressed,
         ),
       ),

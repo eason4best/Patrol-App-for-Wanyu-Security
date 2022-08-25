@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/announcement_screen.dart';
 import 'package:security_wanyu/screen/home_screen.dart';
+import 'package:security_wanyu/widget/notification_dot.dart';
 
 class BaseScreen extends StatefulWidget {
   const BaseScreen({Key? key}) : super(key: key);
@@ -53,28 +54,12 @@ class _BaseScreenState extends State<BaseScreen> {
             BottomNavigationBarItem(
               icon: Stack(
                 clipBehavior: Clip.none,
-                children: [
-                  const Icon(Icons.campaign_outlined),
+                children: const [
+                  Icon(Icons.campaign_outlined),
                   Positioned(
                     top: -4,
                     right: -4,
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '5',
-                          style: Theme.of(context)
-                              .textTheme
-                              .caption!
-                              .copyWith(color: Colors.white),
-                        ),
-                      ),
-                    ),
+                    child: NotificationDot(unreadCount: 5),
                   ),
                 ],
               ),

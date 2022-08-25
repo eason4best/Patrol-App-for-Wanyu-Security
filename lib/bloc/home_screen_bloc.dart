@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/member.dart';
@@ -13,14 +12,18 @@ import 'package:security_wanyu/screen/form_apply_screen.dart';
 import 'package:security_wanyu/service/etun_api.dart';
 
 class HomeScreenBloc {
+  final Member member;
   final BuildContext context;
-  HomeScreenBloc({required this.context});
+  HomeScreenBloc({
+    required this.member,
+    required this.context,
+  });
 
   Future<void> workPunch() async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     bool result = await EtunAPI.punchCard(
       type: PunchCards.work,
-      member: Provider.of<Member>(context, listen: false),
+      member: member,
     );
     scaffoldMessenger
         .showSnackBar(SnackBar(content: Text(result ? '上班打卡成功！' : '打卡失敗')));
@@ -28,10 +31,8 @@ class HomeScreenBloc {
 
   Future<void> getOffPunch() async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    bool result = await EtunAPI.punchCard(
-      type: PunchCards.getOff,
-      member: Provider.of<Member>(context, listen: false),
-    );
+    bool result =
+        await EtunAPI.punchCard(type: PunchCards.getOff, member: member);
     scaffoldMessenger
         .showSnackBar(SnackBar(content: Text(result ? '下班打卡成功！' : '打卡失敗')));
   }
