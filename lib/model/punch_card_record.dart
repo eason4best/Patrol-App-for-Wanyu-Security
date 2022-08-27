@@ -8,7 +8,9 @@ class PunchCardRecord {
   final String? memberSN;
   final String? memberName;
   final DateTime? dateTime;
+  final DateTime? makeupDateTime;
   final PunchCards? punchCardType;
+  final PunchCards? makeupType;
   final String? place;
   final double? lat;
   final double? lng;
@@ -18,7 +20,9 @@ class PunchCardRecord {
     this.memberSN,
     this.memberName,
     this.dateTime,
+    this.makeupDateTime,
     this.punchCardType,
+    this.makeupType,
     this.place,
     this.lat,
     this.lng,
@@ -29,7 +33,10 @@ class PunchCardRecord {
       'patrol_member_id': memberId,
       'member_sn': memberSN,
       'member_name': memberName,
+      'date_time':
+          '${dateTime!.year}-${dateTime!.month}-${dateTime!.day} ${dateTime!.hour}:${dateTime!.minute}',
       'punch_card_type': punchCardType.toString(),
+      'makeup_type': makeupType.toString(),
       'place': place,
       'lat': lat,
       'lng': lng,

@@ -43,6 +43,8 @@ class EtunAPI {
   static Future<bool> punchCard({
     required PunchCards type,
     required Member member,
+    DateTime? dateTime,
+    PunchCards? makeupType,
     String? place,
     double? lat,
     double? lng,
@@ -53,7 +55,9 @@ class EtunAPI {
         memberId: member.memberId,
         memberSN: member.memberSN,
         memberName: member.memberName,
+        dateTime: dateTime,
         punchCardType: type,
+        makeupType: makeupType,
         place: place,
         lat: lat,
         lng: lng,

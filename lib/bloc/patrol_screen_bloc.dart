@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -13,12 +12,10 @@ class PatrolScreenBloc {
 
   void onDetect(Barcode barcode, MobileScannerArguments? args) {
     if (barcode.rawValue != null) {
-      Flushbar(
-        message: '巡邏成功',
-        duration: const Duration(seconds: 2),
-        messageSize: 16.0,
-        flushbarPosition: FlushbarPosition.TOP,
-      ).show(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('巡邏成功'),
+        behavior: SnackBarBehavior.floating,
+      ));
     }
   }
 

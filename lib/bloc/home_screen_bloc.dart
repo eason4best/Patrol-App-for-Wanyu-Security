@@ -20,27 +20,54 @@ class HomeScreenBloc {
   });
 
   Future<void> workPunch() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     bool result = await EtunAPI.punchCard(
       type: PunchCards.work,
       member: member,
     );
-    scaffoldMessenger
-        .showSnackBar(SnackBar(content: Text(result ? '上班打卡成功！' : '打卡失敗')));
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(result ? '打卡成功！' : '打卡失敗'),
+        content: Text(result ? '上班打卡成功！' : '上班打卡失敗，請再試一次。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              '確認',
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> getOffPunch() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     bool result =
         await EtunAPI.punchCard(type: PunchCards.getOff, member: member);
-    scaffoldMessenger
-        .showSnackBar(SnackBar(content: Text(result ? '下班打卡成功！' : '打卡失敗')));
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(result ? '打卡成功！' : '打卡失敗'),
+        content: Text(result ? '下班打卡成功！' : '下班打卡失敗，請再試一次。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              '確認',
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   VoidCallback onMainFunctionsPressed(MainFunctions mainFunction) {
     switch (mainFunction) {
       case MainFunctions.startPatrol:
         return () => Navigator.of(context).push(MaterialPageRoute(
+              fullscreenDialog: true,
               builder: (context) => PatrolScreen.create(),
             ));
       case MainFunctions.shift:

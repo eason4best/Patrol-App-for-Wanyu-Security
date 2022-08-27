@@ -72,11 +72,15 @@ class MakeUpScreenBloc {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     bool result = await EtunAPI.punchCard(
       type: PunchCards.makeUp,
+      makeupType: _model.type,
       member: member,
+      dateTime: _model.dateTime,
       place: _model.place,
     );
-    scaffoldMessenger
-        .showSnackBar(SnackBar(content: Text(result ? '補卡成功！' : '補卡失敗')));
+    scaffoldMessenger.showSnackBar(SnackBar(
+      content: Text(result ? '補卡成功！' : '補卡失敗'),
+      behavior: SnackBarBehavior.floating,
+    ));
   }
 
   void updateWith({

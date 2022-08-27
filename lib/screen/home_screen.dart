@@ -79,6 +79,7 @@ class HomeScreen extends StatelessWidget {
                                 ? () async => await bloc.getOffPunch()
                                 : () => Navigator.of(context).push(
                                       MaterialPageRoute(
+                                        fullscreenDialog: true,
                                         builder: (context) =>
                                             MakeUpScreen.create(
                                                 member: bloc.member),

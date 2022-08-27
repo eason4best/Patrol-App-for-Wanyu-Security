@@ -22,6 +22,64 @@ class PatrolScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(foregroundColor: Colors.white),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (context) => const PatrolRecordScreen(),
+                ),
+              ),
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.all(6.0),
+                fixedSize: MaterialStateProperty.all(const Size(100, 48)),
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                foregroundColor: MaterialStateProperty.all(Colors.black87),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              child: const Text('巡邏紀錄'),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              child: FloatingActionButton.large(
+                onPressed: () {},
+                backgroundColor: Colors.white,
+                child: const Icon(
+                  Icons.flashlight_on_outlined,
+                  size: 40,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.all(6.0),
+                fixedSize: MaterialStateProperty.all(const Size(100, 48)),
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                foregroundColor: MaterialStateProperty.all(Colors.black87),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              child: const Text('緊急狀況'),
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -31,60 +89,6 @@ class PatrolScreen extends StatelessWidget {
             onDetect: bloc.onDetect,
           ),
           const Scanframe(),
-          Positioned(
-            bottom: 16,
-            child: Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (context) => const PatrolRecordScreen(),
-                    ),
-                  ),
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(6.0),
-                    fixedSize: MaterialStateProperty.all(const Size(100, 48)),
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    foregroundColor: MaterialStateProperty.all(Colors.black87),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                  ),
-                  child: const Text('巡邏紀錄'),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  child: FloatingActionButton.large(
-                    onPressed: () {},
-                    backgroundColor: Colors.white,
-                    child: const Icon(
-                      Icons.flashlight_on_outlined,
-                      size: 40,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(6.0),
-                    fixedSize: MaterialStateProperty.all(const Size(100, 48)),
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    foregroundColor: MaterialStateProperty.all(Colors.black87),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                  ),
-                  child: const Text('緊急狀況'),
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );
