@@ -1,10 +1,11 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
+import 'package:security_wanyu/model/leave_form.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
+import 'package:http_parser/http_parser.dart';
 
 class EtunAPI {
   static String baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
@@ -71,6 +72,26 @@ class EtunAPI {
       );
       bool success = json.decode(response.body)['success'];
       return success;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> uploadLeaveForm({required LeaveForm leaveForm}) async {
+    try {
+      Uri url = Uri.parse('$baseUrl?op=uploadForm');
+      http.MultipartRequest request = http.MultipartRequest('POST', url)
+        ..fields.addAll(leaveForm.toMap())
+        ..files.add(
+          http.MultipartFile.fromBytes(
+            'signatureImage',
+            leaveForm.signatureImage!.toList(),
+            filename: 'signatureImage.png',
+            contentType: MediaType.parse('image/png'),
+          ),
+        );
+      http.StreamedResponse response = await request.send();
+      return response.statusCode == 200;
     } catch (e) {
       return false;
     }

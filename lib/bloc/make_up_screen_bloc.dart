@@ -69,7 +69,6 @@ class MakeUpScreenBloc {
   }
 
   Future<void> submit(BuildContext context) async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     bool result = await EtunAPI.punchCard(
       type: PunchCards.makeUp,
       makeupType: _model.type,
@@ -77,10 +76,22 @@ class MakeUpScreenBloc {
       dateTime: _model.dateTime,
       place: _model.place,
     );
-    scaffoldMessenger.showSnackBar(SnackBar(
-      content: Text(result ? '補卡成功！' : '補卡失敗'),
-      behavior: SnackBarBehavior.floating,
-    ));
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(result ? '補卡成功！' : '補卡失敗'),
+        content: Text(result ? '補卡成功！' : '補卡失敗，請再試一次。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              '確認',
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void updateWith({

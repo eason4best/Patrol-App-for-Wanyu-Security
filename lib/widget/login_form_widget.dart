@@ -19,6 +19,7 @@ class LoginFormWidget extends StatelessWidget {
           controller: bloc.accountController,
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.person_outline_outlined),
             hintText: '帳號',
             filled: true,
             fillColor: Colors.white,
@@ -49,6 +50,7 @@ class LoginFormWidget extends StatelessWidget {
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
             decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.password_outlined),
               hintText: '密碼',
               filled: true,
               fillColor: Colors.white,

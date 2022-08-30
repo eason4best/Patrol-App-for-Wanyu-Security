@@ -1,13 +1,15 @@
 import 'dart:io';
 
 class Utils {
-  static String dateString(DateTime dateTime) {
+  static String dateString(DateTime dateTime, {isMinguo = false}) {
     final year = dateTime.year;
     final month = dateTime.month;
     final day = dateTime.day;
     final weekday = dateTime.weekday;
     const weekdayInCH = ['ㄧ', '二', '三', '四', '五', '六', '日'];
-    return '$year年$month月$day日 星期${weekdayInCH[weekday - 1]}';
+    return isMinguo
+        ? '民國${year - 1911}年$month月$day日 星期${weekdayInCH[weekday - 1]}'
+        : '$year年$month月$day日 星期${weekdayInCH[weekday - 1]}';
   }
 
   static String timeString(DateTime dateTime) {

@@ -33,8 +33,9 @@ class PunchCardRecord {
       'patrol_member_id': memberId,
       'member_sn': memberSN,
       'member_name': memberName,
-      'date_time':
-          '${dateTime!.year}-${dateTime!.month}-${dateTime!.day} ${dateTime!.hour}:${dateTime!.minute}',
+      'date_time': dateTime != null
+          ? '${dateTime!.year}-${dateTime!.month}-${dateTime!.day} ${dateTime!.hour}:${dateTime!.minute}'
+          : null,
       'punch_card_type': punchCardType.toString(),
       'makeup_type': makeupType.toString(),
       'place': place,

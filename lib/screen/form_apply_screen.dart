@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/enum/forms_to_apply.dart';
+import 'package:security_wanyu/screen/leave_form_screen.dart';
 
 class FormApplyScreen extends StatelessWidget {
   const FormApplyScreen({Key? key}) : super(key: key);
@@ -14,7 +15,11 @@ class FormApplyScreen extends StatelessWidget {
         itemCount: FormsToApply.values.length,
         itemBuilder: (context, index) => ListTile(
           title: Text(FormsToApply.values[index].toString()),
-          onTap: () {},
+          onTap: () => FormsToApply.values[index] == FormsToApply.leave
+              ? Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => LeaveFormScreen.create()))
+              : Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Container())),
         ),
       ),
     );
