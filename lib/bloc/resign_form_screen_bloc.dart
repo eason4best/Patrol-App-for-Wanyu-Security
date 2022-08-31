@@ -115,25 +115,27 @@ class ResignFormScreenBloc {
 
   Future<List<int>?> _generateResignFormFromTemplate() async {
     try {
-      ByteData templateData = await rootBundle.load('assets/leaveForm.docx');
+      ByteData templateData = await rootBundle.load('assets/resignForm.docx');
       DocxTemplate template =
           await DocxTemplate.fromBytes(templateData.buffer.asUint8List());
       Content formContent = Content();
       formContent
         ..add(TextContent('name', _model.resignForm!.name))
+        ..add(TextContent('idNumber', _model.resignForm!.idNumber))
         ..add(TextContent('title', _model.resignForm!.title))
+        ..add(TextContent('resignReason', _model.resignForm!.resignReason))
         ..add(TextContent(
-          'startDateTime',
+          'resignDate',
           Utils.datetimeString(
             _model.resignForm!.resignDate!,
+            onlyDate: true,
             showWeekday: true,
             isMinguo: true,
           ),
         ))
         ..add(ImageContent('signatureImage',
             _model.resignForm!.signatureImage!.toList(growable: false)));
-      return await template.generate(formContent,
-          tagPolicy: TagPolicy.removeAll);
+      return await template.generate(formContent);
     } catch (_) {
       rethrow;
     }
@@ -145,7 +147,7 @@ class ResignFormScreenBloc {
     bool result = await EtunAPI.submitForm(
       formData: formData!,
       formRecord: SubmitFormRecord(
-        formType: Forms.leave,
+        formType: Forms.resign,
         memberSN: member.memberSN,
         memberName: member.memberName,
       ),

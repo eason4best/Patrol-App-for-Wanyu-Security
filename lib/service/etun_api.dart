@@ -77,6 +77,7 @@ class EtunAPI {
     }
   }
 
+  //提交表單。
   static Future<bool> submitForm({
     required List<int> formData,
     required SubmitFormRecord formRecord,
@@ -84,12 +85,12 @@ class EtunAPI {
     try {
       Uri url = Uri.parse('$baseUrl?op=uploadForm');
       http.MultipartRequest request = http.MultipartRequest('POST', url)
-        ..fields.addAll(formRecord.toMap())
+        ..fields['form_record'] = formRecord.toJSON()
         ..files.add(
           http.MultipartFile.fromBytes(
-            'leaveForm',
+            'form',
             formData,
-            filename: 'leaveForm.docx',
+            filename: 'form.docx',
             contentType: MediaType.parse(
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
           ),

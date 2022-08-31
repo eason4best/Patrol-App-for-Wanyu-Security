@@ -186,8 +186,7 @@ class LeaveFormScreenBloc {
         ))
         ..add(ImageContent('signatureImage',
             _model.leaveForm!.signatureImage!.toList(growable: false)));
-      return await template.generate(formContent,
-          tagPolicy: TagPolicy.removeAll);
+      return await template.generate(formContent);
     } catch (_) {
       rethrow;
     }

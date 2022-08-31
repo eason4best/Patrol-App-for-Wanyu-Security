@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:security_wanyu/enum/forms.dart';
 
 class SubmitFormRecord {
@@ -16,12 +18,12 @@ class SubmitFormRecord {
     this.formFilePath,
   });
 
-  Map<String, String> toMap() {
-    Map<String, String> data = {
+  String toJSON() {
+    Map<String, dynamic> data = {
       'form_type': formType.toString(),
       'member_sn': memberSN!,
       'member_name': memberName!,
     };
-    return data;
+    return jsonEncode(data);
   }
 }

@@ -5,6 +5,7 @@ class Utils {
     DateTime dateTime, {
     onlyDate = false,
     onlyTime = false,
+    onlyDigit = false,
     showWeekday = false,
     isMinguo = false,
   }) {
@@ -20,7 +21,11 @@ class Utils {
     final hour = dateTime.hour < 10 ? '0${dateTime.hour}' : dateTime.hour;
     final minute =
         dateTime.minute < 10 ? '0${dateTime.minute}' : dateTime.minute;
-    if (!onlyDate && !onlyTime) {
+    if (onlyDigit) {
+      String monthString = month < 10 ? '0$month' : month.toString();
+      String dayString = day < 10 ? '0$day' : day.toString();
+      return '$year$monthString$dayString$hour$minute';
+    } else if (!onlyDate && !onlyTime) {
       if (showWeekday) {
         return isMinguo
             ? '民國${year - 1911}年$month月$day日 星期${weekdayInCH[weekday - 1]} $hour:$minute'
