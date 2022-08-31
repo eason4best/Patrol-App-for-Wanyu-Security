@@ -4,7 +4,7 @@ import 'package:security_wanyu/bloc/make_up_screen_bloc.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/make_up_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
-import 'package:security_wanyu/service/utils.dart';
+import 'package:security_wanyu/other/utils.dart';
 
 class MakeUpScreen extends StatelessWidget {
   final MakeUpScreenBloc bloc;

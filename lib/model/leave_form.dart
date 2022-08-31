@@ -37,18 +37,4 @@ class LeaveForm {
       signatureImage: signatureImage ?? this.signatureImage,
     );
   }
-
-  Map<String, String> toMap() {
-    Map<String, String> data = {
-      'name': name!,
-      'title': title!,
-      'leave_type': leaveType!,
-      'leave_reason': leaveReason!,
-      'start_date_time':
-          '${startDateTime!.year}-${startDateTime!.month}-${startDateTime!.day} ${startDateTime!.hour}:${startDateTime!.minute}',
-      'end_date_time':
-          '${endDateTime!.year}-${endDateTime!.month}-${endDateTime!.day} ${endDateTime!.hour}:${endDateTime!.minute}',
-    };
-    return data;
-  }
 }

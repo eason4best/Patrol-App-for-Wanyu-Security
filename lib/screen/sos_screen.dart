@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:security_wanyu/service/sos_numbers.dart';
+import 'package:security_wanyu/other/sos_numbers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SOSScreen extends StatelessWidget {

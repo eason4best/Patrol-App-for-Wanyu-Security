@@ -5,7 +5,7 @@ import 'package:security_wanyu/model/login_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/base_screen.dart';
 import 'package:security_wanyu/service/etun_api.dart';
-import 'package:security_wanyu/service/utils.dart';
+import 'package:security_wanyu/other/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreenBloc {

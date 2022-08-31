@@ -6,13 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:security_wanyu/enum/forms.dart';
 import 'package:security_wanyu/model/leave_form.dart';
 import 'package:security_wanyu/model/leave_form_screen_model.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/submit_form_record.dart';
+import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/screen/signing_screen.dart';
 import 'package:security_wanyu/service/etun_api.dart';
-import 'package:security_wanyu/service/utils.dart';
 import 'package:signature/signature.dart';
 
 class LeaveFormScreenBloc {
+  final Member member;
+  LeaveFormScreenBloc({required this.member});
   final StreamController<LeaveFormScreenModel> _streamController =
       StreamController();
   Stream<LeaveFormScreenModel> get stream => _streamController.stream;
@@ -197,8 +200,8 @@ class LeaveFormScreenBloc {
       formData: formData!,
       formRecord: SubmitFormRecord(
         formType: Forms.leave,
-        memberSN: 'E1234',
-        memberName: 'Eason Chang',
+        memberSN: member.memberSN,
+        memberName: member.memberName,
       ),
     );
     await showDialog(

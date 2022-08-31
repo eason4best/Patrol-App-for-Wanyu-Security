@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/leave_form_screen_bloc.dart';
 import 'package:security_wanyu/model/leave_form_screen_model.dart';
-import 'package:security_wanyu/service/utils.dart';
+import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/widget/signature_widget.dart';
 
 class LeaveFormScreen extends StatelessWidget {
@@ -12,9 +13,9 @@ class LeaveFormScreen extends StatelessWidget {
     required this.bloc,
   }) : super(key: key);
 
-  static Widget create() {
+  static Widget create({required Member member}) {
     return Provider<LeaveFormScreenBloc>(
-      create: (context) => LeaveFormScreenBloc(),
+      create: (context) => LeaveFormScreenBloc(member: member),
       child: Consumer<LeaveFormScreenBloc>(
         builder: (context, bloc, _) => LeaveFormScreen(bloc: bloc),
       ),
@@ -187,7 +188,8 @@ class LeaveFormScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           GestureDetector(
-                            onTap: () => bloc.pickDate(context: context),
+                            onTap: () async =>
+                                await bloc.pickDate(context: context),
                             child: Container(
                               margin: const EdgeInsets.only(left: 12),
                               child: Text(
@@ -203,7 +205,8 @@ class LeaveFormScreen extends StatelessWidget {
                           ),
                           const Spacer(),
                           GestureDetector(
-                            onTap: () => bloc.pickTime(context: context),
+                            onTap: () async =>
+                                await bloc.pickTime(context: context),
                             child: Text(
                               Utils.datetimeString(
                                 snapshot.data!.leaveForm!.startDateTime!,
@@ -253,7 +256,7 @@ class LeaveFormScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           GestureDetector(
-                            onTap: () => bloc.pickDate(
+                            onTap: () async => await bloc.pickDate(
                                 context: context, isStartDateTime: false),
                             child: Container(
                               margin: const EdgeInsets.only(left: 12),
@@ -270,7 +273,7 @@ class LeaveFormScreen extends StatelessWidget {
                           ),
                           const Spacer(),
                           GestureDetector(
-                            onTap: () => bloc.pickTime(
+                            onTap: () async => await bloc.pickTime(
                                 context: context, isStartDateTime: false),
                             child: Text(
                               Utils.datetimeString(

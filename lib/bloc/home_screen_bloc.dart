@@ -84,7 +84,7 @@ class HomeScreenBloc {
             ));
       case MainFunctions.formApply:
         return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const FormApplyScreen(),
+              builder: (context) => FormApplyScreen(member: member),
             ));
       case MainFunctions.contactUs:
         return () => Navigator.of(context).push(MaterialPageRoute(
