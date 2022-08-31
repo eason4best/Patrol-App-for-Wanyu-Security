@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
-import 'package:security_wanyu/model/leave_form.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:security_wanyu/model/submit_form_record.dart';
 
 class EtunAPI {
   static String baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
@@ -77,21 +77,27 @@ class EtunAPI {
     }
   }
 
-  static Future<bool> uploadLeaveForm({required LeaveForm leaveForm}) async {
+  static Future<bool> submitForm({
+    required List<int> formData,
+    required SubmitFormRecord formRecord,
+  }) async {
     try {
       Uri url = Uri.parse('$baseUrl?op=uploadForm');
       http.MultipartRequest request = http.MultipartRequest('POST', url)
-        ..fields.addAll(leaveForm.toMap())
+        ..fields.addAll(formRecord.toMap())
         ..files.add(
           http.MultipartFile.fromBytes(
-            'signatureImage',
-            leaveForm.signatureImage!.toList(),
-            filename: 'signatureImage.png',
-            contentType: MediaType.parse('image/png'),
+            'leaveForm',
+            formData,
+            filename: 'leaveForm.docx',
+            contentType: MediaType.parse(
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
           ),
         );
-      http.StreamedResponse response = await request.send();
-      return response.statusCode == 200;
+      http.StreamedResponse streamedResponse = await request.send();
+      http.Response response = await http.Response.fromStream(streamedResponse);
+      bool success = json.decode(response.body)['success'];
+      return success;
     } catch (e) {
       return false;
     }

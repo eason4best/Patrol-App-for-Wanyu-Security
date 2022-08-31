@@ -191,9 +191,12 @@ class LeaveFormScreen extends StatelessWidget {
                             child: Container(
                               margin: const EdgeInsets.only(left: 12),
                               child: Text(
-                                Utils.dateString(
-                                    snapshot.data!.leaveForm!.startDateTime!,
-                                    isMinguo: true),
+                                Utils.datetimeString(
+                                  snapshot.data!.leaveForm!.startDateTime!,
+                                  onlyDate: true,
+                                  showWeekday: true,
+                                  isMinguo: true,
+                                ),
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
@@ -202,8 +205,10 @@ class LeaveFormScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () => bloc.pickTime(context: context),
                             child: Text(
-                              Utils.timeString(
-                                  snapshot.data!.leaveForm!.startDateTime!),
+                              Utils.datetimeString(
+                                snapshot.data!.leaveForm!.startDateTime!,
+                                onlyTime: true,
+                              ),
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
@@ -253,9 +258,12 @@ class LeaveFormScreen extends StatelessWidget {
                             child: Container(
                               margin: const EdgeInsets.only(left: 12),
                               child: Text(
-                                Utils.dateString(
-                                    snapshot.data!.leaveForm!.endDateTime!,
-                                    isMinguo: true),
+                                Utils.datetimeString(
+                                  snapshot.data!.leaveForm!.endDateTime!,
+                                  onlyDate: true,
+                                  showWeekday: true,
+                                  isMinguo: true,
+                                ),
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
@@ -265,8 +273,10 @@ class LeaveFormScreen extends StatelessWidget {
                             onTap: () => bloc.pickTime(
                                 context: context, isStartDateTime: false),
                             child: Text(
-                              Utils.timeString(
-                                  snapshot.data!.leaveForm!.endDateTime!),
+                              Utils.datetimeString(
+                                snapshot.data!.leaveForm!.endDateTime!,
+                                onlyTime: true,
+                              ),
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
@@ -275,10 +285,11 @@ class LeaveFormScreen extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 32),
-                      child: SignatureWidget(
-                        bloc: bloc,
-                        signatureImage:
-                            snapshot.data!.leaveForm!.signatureImage,
+                      child: GestureDetector(
+                        onTap: () => bloc.onSignaturePressed(context: context),
+                        child: SignatureWidget(
+                            signatureImage:
+                                snapshot.data!.leaveForm!.signatureImage),
                       ),
                     ),
                     Container(
@@ -287,7 +298,7 @@ class LeaveFormScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 32, bottom: 16),
                       child: ElevatedButton(
                         onPressed: snapshot.data!.canSubmit!
-                            ? () async => await bloc.submit()
+                            ? () async => await bloc.submit(context: context)
                             : null,
                         style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),
@@ -297,7 +308,7 @@ class LeaveFormScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        child: const Center(child: Text('確認')),
+                        child: const Center(child: Text('提交')),
                       ),
                     )
                   ],

@@ -35,11 +35,14 @@ class _SigningScreenState extends State<SigningScreen> {
         title: const Text('請於空白處簽名'),
         actions: [
           TextButton(
-            onPressed: () async => await widget.bloc.completeSigning(
-              width: MediaQuery.of(context).size.width.round(),
-              height: MediaQuery.of(context).size.height.round(),
-              context: context,
-            ),
+            onPressed: () => widget.bloc.signatureController.clear(),
+            style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Colors.black54)),
+            child: const Text('清除'),
+          ),
+          TextButton(
+            onPressed: () async =>
+                await widget.bloc.completeSigning(context: context),
             child: const Text('完成'),
           )
         ],

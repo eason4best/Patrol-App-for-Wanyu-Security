@@ -48,7 +48,8 @@ class HomeScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 36),
               child: Text(
-                Utils.dateString(DateTime.now()),
+                Utils.datetimeString(DateTime.now(),
+                    onlyDate: true, showWeekday: true),
                 style:
                     Theme.of(context).textTheme.headline5!.copyWith(height: 1),
               ),
@@ -56,7 +57,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 12),
               child: Text(
-                Utils.timeString(DateTime.now()),
+                Utils.datetimeString(DateTime.now(), onlyTime: true),
                 style:
                     Theme.of(context).textTheme.headline5!.copyWith(height: 1),
               ),

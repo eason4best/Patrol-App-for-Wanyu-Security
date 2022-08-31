@@ -1,4 +1,4 @@
-enum FormsToApply {
+enum Forms {
   leave,
   resign,
   ;
@@ -6,9 +6,9 @@ enum FormsToApply {
   @override
   String toString() {
     switch (this) {
-      case FormsToApply.leave:
+      case Forms.leave:
         return '請假單';
-      case FormsToApply.resign:
+      case Forms.resign:
         return '離職單';
     }
   }

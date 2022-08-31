@@ -1,22 +1,48 @@
 import 'dart:io';
 
 class Utils {
-  static String dateString(DateTime dateTime, {isMinguo = false}) {
+  static String datetimeString(
+    DateTime dateTime, {
+    onlyDate = false,
+    onlyTime = false,
+    showWeekday = false,
+    isMinguo = false,
+  }) {
+    if (onlyDate && onlyTime) {
+      throw ArgumentError(
+          onlyDate, '[onlyDate] and [onlyTime] cannot both be true.');
+    }
     final year = dateTime.year;
     final month = dateTime.month;
     final day = dateTime.day;
     final weekday = dateTime.weekday;
     const weekdayInCH = ['ㄧ', '二', '三', '四', '五', '六', '日'];
-    return isMinguo
-        ? '民國${year - 1911}年$month月$day日 星期${weekdayInCH[weekday - 1]}'
-        : '$year年$month月$day日 星期${weekdayInCH[weekday - 1]}';
-  }
-
-  static String timeString(DateTime dateTime) {
     final hour = dateTime.hour < 10 ? '0${dateTime.hour}' : dateTime.hour;
     final minute =
         dateTime.minute < 10 ? '0${dateTime.minute}' : dateTime.minute;
-    return '$hour:$minute';
+    if (!onlyDate && !onlyTime) {
+      if (showWeekday) {
+        return isMinguo
+            ? '民國${year - 1911}年$month月$day日 星期${weekdayInCH[weekday - 1]} $hour:$minute'
+            : '$year年$month月$day日 星期${weekdayInCH[weekday - 1]} $hour:$minute';
+      } else {
+        return isMinguo
+            ? '民國${year - 1911}年$month月$day日 $hour:$minute'
+            : '$year年$month月$day日 $hour:$minute';
+      }
+    } else if (onlyDate) {
+      if (showWeekday) {
+        return isMinguo
+            ? '民國${year - 1911}年$month月$day日 星期${weekdayInCH[weekday - 1]}'
+            : '$year年$month月$day日 星期${weekdayInCH[weekday - 1]}';
+      } else {
+        return isMinguo
+            ? '民國${year - 1911}年$month月$day日'
+            : '$year年$month月$day日';
+      }
+    } else {
+      return '$hour:$minute';
+    }
   }
 
   static Future<bool> hasInternetConnection() async {

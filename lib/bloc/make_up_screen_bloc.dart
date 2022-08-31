@@ -76,10 +76,10 @@ class MakeUpScreenBloc {
       dateTime: _model.dateTime,
       place: _model.place,
     );
-    showDialog(
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(result ? '補卡成功！' : '補卡失敗'),
+        title: Text(result ? '補卡成功' : '補卡失敗'),
         content: Text(result ? '補卡成功！' : '補卡失敗，請再試一次。'),
         actions: [
           TextButton(

@@ -1,10 +1,15 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
-
+import 'package:docx_template/docx_template.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:security_wanyu/enum/forms.dart';
 import 'package:security_wanyu/model/leave_form.dart';
 import 'package:security_wanyu/model/leave_form_screen_model.dart';
+import 'package:security_wanyu/model/submit_form_record.dart';
+import 'package:security_wanyu/screen/signing_screen.dart';
+import 'package:security_wanyu/service/etun_api.dart';
+import 'package:security_wanyu/service/utils.dart';
 import 'package:signature/signature.dart';
 
 class LeaveFormScreenBloc {
@@ -61,6 +66,7 @@ class LeaveFormScreenBloc {
 
   Future<void> pickDate(
       {required BuildContext context, bool isStartDateTime = true}) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -91,6 +97,7 @@ class LeaveFormScreenBloc {
 
   Future<void> pickTime(
       {required BuildContext context, bool isStartDateTime = true}) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -119,14 +126,16 @@ class LeaveFormScreenBloc {
     }
   }
 
-  Future<void> completeSigning({
-    required int width,
-    required int height,
-    required BuildContext context,
-  }) async {
+  void onSignaturePressed({required BuildContext context}) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => SigningScreen(bloc: this),
+    ));
+  }
+
+  Future<void> completeSigning({required BuildContext context}) async {
     NavigatorState navigator = Navigator.of(context);
-    ui.Image? signatureImage =
-        await signatureController.toImage(width: width, height: height);
+    ui.Image? signatureImage = await signatureController.toImage();
     final ByteData? bytes =
         await signatureImage!.toByteData(format: ui.ImageByteFormat.png);
     updateWith(
@@ -145,7 +154,71 @@ class LeaveFormScreenBloc {
         signatureController.isNotEmpty;
   }
 
-  Future<void> submit() async {}
+  Future<List<int>?> _generateLeaveFormFromTemplate() async {
+    try {
+      ByteData templateData = await rootBundle.load('assets/leaveForm.docx');
+      DocxTemplate template =
+          await DocxTemplate.fromBytes(templateData.buffer.asUint8List());
+      Content formContent = Content();
+      formContent
+        ..add(TextContent('name', _model.leaveForm!.name))
+        ..add(TextContent('title', _model.leaveForm!.title))
+        ..add(TextContent('leaveType', _model.leaveForm!.leaveType))
+        ..add(TextContent('leaveReason', _model.leaveForm!.leaveReason))
+        ..add(TextContent(
+          'startDateTime',
+          Utils.datetimeString(
+            _model.leaveForm!.startDateTime!,
+            showWeekday: true,
+            isMinguo: true,
+          ),
+        ))
+        ..add(TextContent(
+          'endDateTime',
+          Utils.datetimeString(
+            _model.leaveForm!.endDateTime!,
+            showWeekday: true,
+            isMinguo: true,
+          ),
+        ))
+        ..add(ImageContent('signatureImage',
+            _model.leaveForm!.signatureImage!.toList(growable: false)));
+      return await template.generate(formContent,
+          tagPolicy: TagPolicy.removeAll);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<void> submit({required BuildContext context}) async {
+    NavigatorState navigator = Navigator.of(context);
+    List<int>? formData = await _generateLeaveFormFromTemplate();
+    bool result = await EtunAPI.submitForm(
+      formData: formData!,
+      formRecord: SubmitFormRecord(
+        formType: Forms.leave,
+        memberSN: 'E1234',
+        memberName: 'Eason Chang',
+      ),
+    );
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(result ? '表單提交成功' : '表單提交失敗'),
+        content: Text(result ? '請假單提交成功！' : '請假單提交失敗，請再試一次。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              '確認',
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
+    navigator.pop();
+  }
 
   void updateWith({
     LeaveForm? leaveForm,

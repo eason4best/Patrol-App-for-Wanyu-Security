@@ -63,12 +63,19 @@ class MakeUpScreen extends StatelessWidget {
                   leading: const Icon(Icons.schedule_outlined),
                   title: GestureDetector(
                     onTap: () async => await bloc.pickDate(context),
-                    child: Text(Utils.dateString(snapshot.data!.dateTime!)),
+                    child: Text(Utils.datetimeString(
+                      snapshot.data!.dateTime!,
+                      onlyDate: true,
+                      showWeekday: true,
+                    )),
                   ),
                   trailing: GestureDetector(
                     onTap: () async => await bloc.pickTime(context),
                     child: Text(
-                      Utils.timeString(snapshot.data!.dateTime!),
+                      Utils.datetimeString(
+                        snapshot.data!.dateTime!,
+                        onlyTime: true,
+                      ),
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
