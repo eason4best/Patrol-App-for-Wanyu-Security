@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/user_location_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
@@ -39,54 +40,82 @@ class HomeScreenBloc {
     }
   }
 
-  Future<void> workPunch({required UserLocation userLocation}) async {
-    bool result = await EtunAPI.punchCard(
-      type: PunchCards.work,
-      member: member,
-      lat: userLocation.lat,
-      lng: userLocation.lng,
-    );
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(result ? '打卡成功！' : '打卡失敗'),
-        content: Text(result ? '上班打卡成功！' : '上班打卡失敗，請再試一次。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              '確認',
-              textAlign: TextAlign.end,
+  Future<void> workPunch() async {
+    UserLocation userLocation =
+        Provider.of<UserLocation>(context, listen: false);
+    if (!userLocation.locationServiceEnabled!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟手機定位功能'),
+        behavior: SnackBarBehavior.floating,
+      ));
+    } else if (!userLocation.hasLocationPermission!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟定位權限'),
+        behavior: SnackBarBehavior.floating,
+      ));
+    } else {
+      bool result = await EtunAPI.punchCard(
+        type: PunchCards.work,
+        member: member,
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+      );
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(result ? '打卡成功！' : '打卡失敗'),
+          content: Text(result ? '上班打卡成功！' : '上班打卡失敗，請再試一次。'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                '確認',
+                textAlign: TextAlign.end,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 
-  Future<void> getOffPunch({required UserLocation userLocation}) async {
-    bool result = await EtunAPI.punchCard(
-      type: PunchCards.getOff,
-      member: member,
-      lat: userLocation.lat,
-      lng: userLocation.lng,
-    );
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(result ? '打卡成功！' : '打卡失敗'),
-        content: Text(result ? '下班打卡成功！' : '下班打卡失敗，請再試一次。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              '確認',
-              textAlign: TextAlign.end,
+  Future<void> getOffPunch() async {
+    UserLocation userLocation =
+        Provider.of<UserLocation>(context, listen: false);
+    if (!userLocation.locationServiceEnabled!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟手機定位功能'),
+        behavior: SnackBarBehavior.floating,
+      ));
+    } else if (!userLocation.hasLocationPermission!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟定位權限'),
+        behavior: SnackBarBehavior.floating,
+      ));
+    } else {
+      bool result = await EtunAPI.punchCard(
+        type: PunchCards.getOff,
+        member: member,
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+      );
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(result ? '打卡成功！' : '打卡失敗'),
+          content: Text(result ? '下班打卡成功！' : '下班打卡失敗，請再試一次。'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                '確認',
+                textAlign: TextAlign.end,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 
   VoidCallback onMainFunctionsPressed(MainFunctions mainFunction) {
