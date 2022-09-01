@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
+import 'package:security_wanyu/model/company_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
@@ -12,9 +13,9 @@ class EtunAPI {
   //登入。
   static Future<Map<String, dynamic>> signIn(
       {required String memberAccount, required String memberPassword}) async {
-    Uri url = Uri.parse(
-        '$baseUrl?op=signIn&member_account=$memberAccount&member_password=$memberPassword');
     try {
+      Uri url = Uri.parse(
+          '$baseUrl?op=signIn&member_account=$memberAccount&member_password=$memberPassword');
       http.Response response = await http.get(url);
       bool success = json.decode(response.body)['success'];
       if (success) {
@@ -101,6 +102,22 @@ class EtunAPI {
       return success;
     } catch (e) {
       return false;
+    }
+  }
+
+  static Future<List<CompanyAnnouncement>> getCompanyAnnouncements() async {
+    Uri url = Uri.parse('$baseUrl?op=getCompanyAnnouncements');
+    http.Response response = await http.get(url);
+    bool success = json.decode(response.body)['success'];
+    if (success) {
+      List<CompanyAnnouncement> companyAnnouncements =
+          (json.decode(json.decode(response.body)['companyAnnouncements'])
+                  as List)
+              .map((data) => CompanyAnnouncement.fromData(data))
+              .toList();
+      return companyAnnouncements;
+    } else {
+      throw Exception('Something went wrong.');
     }
   }
 }

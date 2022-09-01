@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
-import 'package:security_wanyu/bloc/user_location_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/member.dart';
@@ -45,11 +44,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder<void>(
-            future: bloc.initialize(
-              userLocationBloc:
-                  Provider.of<UserLocationBloc>(context, listen: false),
-              context: context,
-            ),
+            future: bloc.initialize(context: context),
             builder: (context, snapshot) {
               return Column(
                 children: [

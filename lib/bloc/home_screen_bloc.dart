@@ -23,18 +23,19 @@ class HomeScreenBloc {
     required this.context,
   });
 
-  Future<void> initialize({
-    required UserLocationBloc userLocationBloc,
-    required BuildContext context,
-  }) async {
+  Future<void> initialize({required BuildContext context}) async {
+    UserLocationBloc userLocationBloc =
+        Provider.of<UserLocationBloc>(context, listen: false);
     LocationPermission locationPermission = await Geolocator.checkPermission();
-    if (locationPermission == LocationPermission.denied) {
+    if (locationPermission != LocationPermission.always &&
+        locationPermission != LocationPermission.whileInUse) {
       locationPermission = await Geolocator.requestPermission();
-      if (locationPermission == LocationPermission.denied) {
+      if (locationPermission != LocationPermission.always &&
+          locationPermission != LocationPermission.whileInUse) {
         userLocationBloc.updateLocationPermission(hasLocationPermission: false);
+      } else {
+        userLocationBloc.updateLocationPermission(hasLocationPermission: true);
       }
-    } else if (locationPermission == LocationPermission.deniedForever) {
-      userLocationBloc.updateLocationPermission(hasLocationPermission: false);
     } else {
       userLocationBloc.updateLocationPermission(hasLocationPermission: true);
     }
