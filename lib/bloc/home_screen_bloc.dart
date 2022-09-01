@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:security_wanyu/bloc/user_location_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/user_location.dart';
 import 'package:security_wanyu/screen/contact_us_screen.dart';
 import 'package:security_wanyu/screen/login_screen.dart';
 import 'package:security_wanyu/screen/sos_screen.dart';
@@ -19,10 +22,29 @@ class HomeScreenBloc {
     required this.context,
   });
 
-  Future<void> workPunch() async {
+  Future<void> initialize({
+    required UserLocationBloc userLocationBloc,
+    required BuildContext context,
+  }) async {
+    LocationPermission locationPermission = await Geolocator.checkPermission();
+    if (locationPermission == LocationPermission.denied) {
+      locationPermission = await Geolocator.requestPermission();
+      if (locationPermission == LocationPermission.denied) {
+        userLocationBloc.updateLocationPermission(hasLocationPermission: false);
+      }
+    } else if (locationPermission == LocationPermission.deniedForever) {
+      userLocationBloc.updateLocationPermission(hasLocationPermission: false);
+    } else {
+      userLocationBloc.updateLocationPermission(hasLocationPermission: true);
+    }
+  }
+
+  Future<void> workPunch({required UserLocation userLocation}) async {
     bool result = await EtunAPI.punchCard(
       type: PunchCards.work,
       member: member,
+      lat: userLocation.lat,
+      lng: userLocation.lng,
     );
     showDialog(
       context: context,
@@ -42,9 +64,13 @@ class HomeScreenBloc {
     );
   }
 
-  Future<void> getOffPunch() async {
-    bool result =
-        await EtunAPI.punchCard(type: PunchCards.getOff, member: member);
+  Future<void> getOffPunch({required UserLocation userLocation}) async {
+    bool result = await EtunAPI.punchCard(
+      type: PunchCards.getOff,
+      member: member,
+      lat: userLocation.lat,
+      lng: userLocation.lng,
+    );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
