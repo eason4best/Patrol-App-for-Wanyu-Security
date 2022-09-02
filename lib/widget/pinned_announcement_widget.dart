@@ -24,8 +24,29 @@ class PinnedAnnouncementWidget extends StatelessWidget {
         width: MediaQuery.of(context).size.width - 32 * 2,
         child: ListTile(
           title: Text(title),
-          subtitle: subtitle != null ? Text(subtitle!) : null,
-          onTap: onPressed,
+          subtitle: subtitle != null
+              ? Text(
+                  subtitle!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                )
+              : null,
+          onTap: subtitle != null
+              ? () => showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text(title),
+                        content: Text(subtitle!),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text(
+                                '確認',
+                                textAlign: TextAlign.end,
+                              )),
+                        ],
+                      ))
+              : () {},
         ),
       ),
     );

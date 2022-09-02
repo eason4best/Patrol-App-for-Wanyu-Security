@@ -1,5 +1,5 @@
 class CompanyAnnouncement {
-  final String? announcementId;
+  final int? announcementId;
   final String? title;
   final String? content;
   final DateTime? announceDateTime;
@@ -16,7 +16,7 @@ class CompanyAnnouncement {
     if (data == null) {
       return CompanyAnnouncement();
     }
-    final String? announcementId = data['announcement_id'];
+    final int? announcementId = int.tryParse(data['announcement_id']);
     final String? title = data['title'];
     final String? content = data['content'];
     final DateTime? announceDateTime =

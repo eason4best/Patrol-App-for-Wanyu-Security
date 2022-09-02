@@ -37,16 +37,9 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Container(
                               margin: const EdgeInsets.only(top: 32),
-                              child: Text(
-                                'LOGO',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w500,
-                                      height: 1,
-                                    ),
+                              child: Image.asset(
+                                'assets/logo.png',
+                                width: 200,
                               ),
                             ),
                             Container(

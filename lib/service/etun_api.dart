@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
 import 'package:security_wanyu/model/company_announcement.dart';
+import 'package:security_wanyu/model/individual_notification.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
@@ -116,6 +117,24 @@ class EtunAPI {
               .map((data) => CompanyAnnouncement.fromData(data))
               .toList();
       return companyAnnouncements;
+    } else {
+      throw Exception('Something went wrong.');
+    }
+  }
+
+  static Future<List<IndividualNotification>> getIndividualNotifications(
+      {required int memberId}) async {
+    Uri url = Uri.parse(
+        '$baseUrl?op=getIndividualNotifications&patrol_member_id=$memberId');
+    http.Response response = await http.get(url);
+    bool success = json.decode(response.body)['success'];
+    if (success) {
+      List<IndividualNotification> individualNotifications =
+          (json.decode(json.decode(response.body)['individualNotifications'])
+                  as List)
+              .map((data) => IndividualNotification.fromData(data))
+              .toList();
+      return individualNotifications;
     } else {
       throw Exception('Something went wrong.');
     }

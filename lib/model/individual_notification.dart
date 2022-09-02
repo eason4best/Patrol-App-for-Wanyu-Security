@@ -1,5 +1,5 @@
 class IndividualNotification {
-  final String? notificationId;
+  final int? notificationId;
   final int? memberId;
   final String? title;
   final String? content;
@@ -18,7 +18,7 @@ class IndividualNotification {
     if (data == null) {
       return IndividualNotification();
     }
-    final String? notificationId = data['announcement_id'];
+    final int? notificationId = data['notification_id'];
     final int? memberId = data['patrol_member_id'];
     final String? title = data['title'];
     final String? content = data['content'];
@@ -26,7 +26,7 @@ class IndividualNotification {
         DateTime.tryParse(data['notification_date_time']);
     final bool? pinned = data['pinned'] == null
         ? null
-        : data['pinned'] == '1'
+        : data['pinned'] == 1
             ? true
             : false;
     return IndividualNotification(

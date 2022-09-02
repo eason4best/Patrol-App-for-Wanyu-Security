@@ -20,14 +20,14 @@ class SOSScreen extends StatelessWidget {
             ),
           ),
           ...List.generate(
-            SOSNumber().tainanSOSNumber.length,
+            SOSNumber.tainanSOSNumber.length,
             (index) => ListTile(
-              title: Text(SOSNumber().tainanSOSNumber[index].keys.first),
-              subtitle: Text(SOSNumber().tainanSOSNumber[index].values.first),
+              title: Text(SOSNumber.tainanSOSNumber[index].keys.first),
+              subtitle: Text(SOSNumber.tainanSOSNumber[index].values.first),
               onTap: () async {
                 final Uri launchUri = Uri(
                   scheme: 'tel',
-                  path: SOSNumber().tainanSOSNumber[index].values.first,
+                  path: SOSNumber.tainanSOSNumber[index].values.first,
                 );
                 await launchUrl(launchUri);
               },
@@ -40,14 +40,34 @@ class SOSScreen extends StatelessWidget {
             ),
           ),
           ...List.generate(
-            SOSNumber().yunChiaSOSNumber.length,
+            SOSNumber.yunChiaSOSNumber.length,
             (index) => ListTile(
-              title: Text(SOSNumber().yunChiaSOSNumber[index].keys.first),
-              subtitle: Text(SOSNumber().yunChiaSOSNumber[index].values.first),
+              title: Text(SOSNumber.yunChiaSOSNumber[index].keys.first),
+              subtitle: Text(SOSNumber.yunChiaSOSNumber[index].values.first),
               onTap: () async {
                 final Uri launchUri = Uri(
                   scheme: 'tel',
-                  path: SOSNumber().yunChiaSOSNumber[index].values.first,
+                  path: SOSNumber.yunChiaSOSNumber[index].values.first,
+                );
+                await launchUrl(launchUri);
+              },
+            ),
+          ),
+          ListTile(
+            title: Text(
+              '公司電話',
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+          ),
+          ...List.generate(
+            SOSNumber.companySOSNumber.length,
+            (index) => ListTile(
+              title: Text(SOSNumber.companySOSNumber[index].keys.first),
+              subtitle: Text(SOSNumber.companySOSNumber[index].values.first),
+              onTap: () async {
+                final Uri launchUri = Uri(
+                  scheme: 'tel',
+                  path: SOSNumber.companySOSNumber[index].values.first,
                 );
                 await launchUrl(launchUri);
               },

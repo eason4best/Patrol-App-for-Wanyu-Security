@@ -41,7 +41,7 @@ class _SignDocTabState extends State<SignDocTab>
             itemCount: 10,
             itemBuilder: (context, index) => AnnouncementWidget(
               title: '待簽署文件${index + 1}.pdf',
-              onPressed: () {},
+              announceDateTime: DateTime.now(),
             ),
           ),
         ],
