@@ -122,10 +122,26 @@ class HomeScreenBloc {
   VoidCallback onMainFunctionsPressed(MainFunctions mainFunction) {
     switch (mainFunction) {
       case MainFunctions.startPatrol:
-        return () => Navigator.of(context).push(MaterialPageRoute(
+        return () {
+          UserLocation userLocation =
+              Provider.of<UserLocation>(context, listen: false);
+          if (!userLocation.locationServiceEnabled!) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('請開啟手機定位功能'),
+              behavior: SnackBarBehavior.floating,
+            ));
+          } else if (!userLocation.hasLocationPermission!) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('請開啟定位權限'),
+              behavior: SnackBarBehavior.floating,
+            ));
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(
               fullscreenDialog: true,
               builder: (context) => PatrolScreen.create(),
             ));
+          }
+        };
       case MainFunctions.shift:
         return () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const ShiftScreen(),

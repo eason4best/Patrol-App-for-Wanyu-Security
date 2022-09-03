@@ -33,6 +33,7 @@ class PunchCardRecord {
       'patrol_member_id': memberId,
       'member_sn': memberSN,
       'member_name': memberName,
+      //補卡時才會從APP端由使用者自行提供時間。
       'date_time': dateTime != null
           ? '${dateTime!.year}-${dateTime!.month}-${dateTime!.day} ${dateTime!.hour}:${dateTime!.minute}'
           : null,
