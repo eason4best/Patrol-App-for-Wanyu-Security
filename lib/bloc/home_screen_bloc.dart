@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/user_location_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/user_location.dart';
 import 'package:security_wanyu/screen/contact_us_screen.dart';
@@ -39,6 +40,12 @@ class HomeScreenBloc {
     } else {
       userLocationBloc.updateLocationPermission(hasLocationPermission: true);
     }
+  }
+
+  Future<String> getMarqueeContent() async {
+    MarqueeAnnouncement marqueeAnnouncement =
+        await EtunAPI.getMarqueeAnnouncement();
+    return marqueeAnnouncement.content!;
   }
 
   Future<void> workPunch() async {

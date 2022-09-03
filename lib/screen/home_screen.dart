@@ -6,7 +6,7 @@ import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/screen/makeup_screen.dart';
-import 'package:security_wanyu/widget/announcement_banner_widget.dart';
+import 'package:security_wanyu/widget/announcement_marquee_widget.dart';
 import 'package:security_wanyu/widget/location_request_banner.dart';
 import 'package:security_wanyu/widget/main_function_widget.dart';
 import 'package:security_wanyu/widget/punch_card_widget.dart';
@@ -49,8 +49,7 @@ class HomeScreen extends StatelessWidget {
               return Column(
                 children: [
                   const LocationRequestBanner(),
-                  const AnnouncementBannerWidget(
-                      content: '本日公告：今天天氣不佳，執勤時請注意安全。'),
+                  AnnouncementMarqueeWidget(bloc: bloc),
                   Container(
                     margin: const EdgeInsets.only(top: 36),
                     child: Text(

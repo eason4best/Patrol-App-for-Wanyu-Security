@@ -4,6 +4,7 @@ import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
 import 'package:security_wanyu/model/company_announcement.dart';
 import 'package:security_wanyu/model/individual_notification.dart';
+import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
@@ -106,14 +107,36 @@ class EtunAPI {
     }
   }
 
+  //獲得跑馬燈公告。
+  static Future<MarqueeAnnouncement> getMarqueeAnnouncement() async {
+    Uri url = Uri.parse('$baseUrl?op=getMarqueeAnnouncement');
+    http.Response response = await http.get(url);
+    var body = json.decode(response.body);
+    bool success = body['success'];
+    if (success) {
+      final data = body['marqueeAnnouncement'] != null
+          ? json.decode(body['marqueeAnnouncement'])
+          : null;
+      if (data != null) {
+        MarqueeAnnouncement marqueeAnnouncement =
+            MarqueeAnnouncement.fromData(data);
+        return marqueeAnnouncement;
+      }
+      return MarqueeAnnouncement(content: '目前尚無公告');
+    } else {
+      throw Exception('Something went wrong.');
+    }
+  }
+
+  //獲得公司公告。
   static Future<List<CompanyAnnouncement>> getCompanyAnnouncements() async {
     Uri url = Uri.parse('$baseUrl?op=getCompanyAnnouncements');
     http.Response response = await http.get(url);
-    bool success = json.decode(response.body)['success'];
+    var body = json.decode(response.body);
+    bool success = body['success'];
     if (success) {
       List<CompanyAnnouncement> companyAnnouncements =
-          (json.decode(json.decode(response.body)['companyAnnouncements'])
-                  as List)
+          (json.decode(body['companyAnnouncements']) as List)
               .map((data) => CompanyAnnouncement.fromData(data))
               .toList();
       return companyAnnouncements;
@@ -122,16 +145,17 @@ class EtunAPI {
     }
   }
 
+  //獲得個人通知。
   static Future<List<IndividualNotification>> getIndividualNotifications(
       {required int memberId}) async {
     Uri url = Uri.parse(
         '$baseUrl?op=getIndividualNotifications&patrol_member_id=$memberId');
     http.Response response = await http.get(url);
-    bool success = json.decode(response.body)['success'];
+    var body = json.decode(response.body);
+    bool success = body['success'];
     if (success) {
       List<IndividualNotification> individualNotifications =
-          (json.decode(json.decode(response.body)['individualNotifications'])
-                  as List)
+          (json.decode(body['individualNotifications']) as List)
               .map((data) => IndividualNotification.fromData(data))
               .toList();
       return individualNotifications;
