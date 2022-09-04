@@ -4,13 +4,13 @@ class AnnouncementWidget extends StatelessWidget {
   final String title;
   final String? subtitle;
   final DateTime announceDateTime;
-  final bool? read;
+  final bool? seen;
   const AnnouncementWidget({
     Key? key,
     required this.title,
     this.subtitle,
     required this.announceDateTime,
-    this.read,
+    this.seen,
   }) : super(key: key);
 
   @override
@@ -28,9 +28,9 @@ class AnnouncementWidget extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             )
           : null,
-      trailing: read == null
+      trailing: seen == null
           ? null
-          : read == true
+          : seen == true
               ? null
               : Container(
                   width: 8,

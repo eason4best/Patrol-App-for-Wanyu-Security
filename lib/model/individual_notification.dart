@@ -5,6 +5,7 @@ class IndividualNotification {
   final String? content;
   final DateTime? notificationDateTime;
   final bool? pinned;
+  final bool? seen;
   IndividualNotification({
     this.notificationId,
     this.memberId,
@@ -12,6 +13,7 @@ class IndividualNotification {
     this.content,
     this.notificationDateTime,
     this.pinned,
+    this.seen,
   });
 
   factory IndividualNotification.fromData(data) {
@@ -29,6 +31,11 @@ class IndividualNotification {
         : data['pinned'] == 1
             ? true
             : false;
+    final bool? seen = data['seen'] == null
+        ? null
+        : data['seen'] == 1
+            ? true
+            : false;
     return IndividualNotification(
       notificationId: notificationId,
       memberId: memberId,
@@ -36,6 +43,7 @@ class IndividualNotification {
       content: content,
       notificationDateTime: notificationDateTime,
       pinned: pinned,
+      seen: seen,
     );
   }
 }

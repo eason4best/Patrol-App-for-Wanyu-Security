@@ -69,7 +69,7 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
                             subtitle: snapshot.data![index].content,
                             announceDateTime:
                                 snapshot.data![index].announceDateTime!,
-                            read: tf[random.nextInt(tf.length)],
+                            seen: tf[random.nextInt(tf.length)],
                           );
                         },
                       ),

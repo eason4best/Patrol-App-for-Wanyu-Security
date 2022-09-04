@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/model/individual_notification.dart';
@@ -66,14 +64,12 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                         shrinkWrap: true,
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          var tf = [true, false];
-                          final random = Random();
                           return AnnouncementWidget(
                             title: snapshot.data![index].title!,
                             subtitle: snapshot.data![index].content,
                             announceDateTime:
                                 snapshot.data![index].notificationDateTime!,
-                            read: tf[random.nextInt(tf.length)],
+                            seen: snapshot.data![index].seen,
                           );
                         },
                       ),
