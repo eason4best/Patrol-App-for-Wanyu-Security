@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:security_wanyu/enum/announcements.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/company_announcement_tab.dart';
 import 'package:security_wanyu/screen/individual_notification_tab.dart';
 import 'package:security_wanyu/screen/sign_doc_tab.dart';
@@ -41,10 +43,11 @@ class AnnouncementScreen extends StatelessWidget {
             indicatorColor: Colors.black87,
           ),
         ),
-        body: const TabBarView(children: [
-          CompanyAnnouncementTab(),
-          IndividualNotificationTab(),
-          SignDocTab(),
+        body: TabBarView(children: [
+          const CompanyAnnouncementTab(),
+          IndividualNotificationTab.create(
+              member: Provider.of<Member>(context, listen: false)),
+          const SignDocTab(),
         ]),
       ),
     );

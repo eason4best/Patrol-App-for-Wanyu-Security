@@ -18,7 +18,7 @@ class Member {
     }
     final int? memberId = data['patrol_member_id'];
     final String? memberAccount = data['member_account'];
-    final String? memberPassword = data['member_password_text'];
+    final String? memberPassword = data['member_password'];
     final String? memberName = data['member_name'];
     final String? memberSN = data['member_sn'];
     return Member(
