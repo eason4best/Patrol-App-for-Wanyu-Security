@@ -163,4 +163,62 @@ class EtunAPI {
       throw Exception('Something went wrong.');
     }
   }
+
+  //標示個人通知為已讀。
+  static Future<void> markIndividualNotificationAsSeen(
+      {required int notificationId}) async {
+    Uri url = Uri.parse('$baseUrl?op=markIndividualNotificationAsSeen');
+    http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {'notification_id': notificationId.toString()},
+    );
+    bool success = json.decode(response.body)['success'];
+    if (!success) {
+      throw Exception('Something went wrong.');
+    }
+  }
+
+  //標示公司公告為已讀。
+  static Future<void> markCompanyAnnouncementAsSeen({
+    required int announcementId,
+    required int memberId,
+  }) async {
+    Uri url = Uri.parse('$baseUrl?op=markCompanyAnnouncementAsSeen');
+    http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        'announcement_id': announcementId.toString(),
+        'patrol_member_id': memberId.toString(),
+      },
+    );
+    bool success = json.decode(response.body)['success'];
+    if (!success) {
+      throw Exception('Something went wrong.');
+    }
+  }
+
+  //獲得最近50筆已讀的公司公告id。
+  static Future<List<int>> getRecentSeenCompanyAnnouncementIds(
+      {required int memberId}) async {
+    Uri url = Uri.parse(
+        '$baseUrl?op=getRecentSeenCompanyAnnouncementIds&patrol_member_id=$memberId');
+    http.Response response = await http.get(url);
+    var body = json.decode(response.body);
+    bool success = body['success'];
+    if (success) {
+      List<int> recentSeenCompanyAnnouncementIds =
+          (json.decode(body['recentSeenCompanyAnnouncementIds']) as List)
+              .map((rsca) => rsca as int)
+              .toList();
+      return recentSeenCompanyAnnouncementIds;
+    } else {
+      throw Exception('Something went wrong.');
+    }
+  }
 }

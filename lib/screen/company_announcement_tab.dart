@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/bloc/announcement_screen_bloc.dart';
 import 'package:security_wanyu/widget/announcement_widget.dart';
@@ -40,29 +38,34 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
                                 .pinnedCompanyAnnouncements[index].title!,
                             subtitle: widget.bloc.model
                                 .pinnedCompanyAnnouncements[index].content,
-                            onTap: () => showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                      title: Text(widget
-                                          .bloc
-                                          .model
-                                          .pinnedCompanyAnnouncements[index]
-                                          .title!),
-                                      content: Text(widget
-                                          .bloc
-                                          .model
-                                          .pinnedCompanyAnnouncements[index]
-                                          .content!),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text(
-                                              '確認',
-                                              textAlign: TextAlign.end,
-                                            )),
-                                      ],
-                                    )),
+                            onTap: () {
+                              widget.bloc.markCompanyAnnouncementAsSeen(
+                                  companyAnnouncement: widget.bloc.model
+                                      .pinnedCompanyAnnouncements[index]);
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text(widget
+                                            .bloc
+                                            .model
+                                            .pinnedCompanyAnnouncements[index]
+                                            .title!),
+                                        content: Text(widget
+                                            .bloc
+                                            .model
+                                            .pinnedCompanyAnnouncements[index]
+                                            .content!),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Text(
+                                                '確認',
+                                                textAlign: TextAlign.end,
+                                              )),
+                                        ],
+                                      ));
+                            },
                           ),
                         ),
                       ),
@@ -74,8 +77,6 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
                   shrinkWrap: true,
                   itemCount: widget.bloc.model.companyAnnouncements!.length,
                   itemBuilder: (context, index) {
-                    var tf = [true, false];
-                    final random = Random();
                     return AnnouncementWidget(
                       title:
                           widget.bloc.model.companyAnnouncements![index].title!,
@@ -83,24 +84,33 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
                           .bloc.model.companyAnnouncements![index].content,
                       announceDateTime: widget.bloc.model
                           .companyAnnouncements![index].announceDateTime!,
-                      seen: tf[random.nextInt(tf.length)],
-                      onTap: () => showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                title: Text(widget.bloc.model
-                                    .companyAnnouncements![index].title!),
-                                content: Text(widget.bloc.model
-                                    .companyAnnouncements![index].content!),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                      child: const Text(
-                                        '確認',
-                                        textAlign: TextAlign.end,
-                                      )),
-                                ],
-                              )),
+                      seen: widget.bloc.model.seenCompanyAnnouncements!.any(
+                          (sca) =>
+                              sca.announcementId ==
+                              widget.bloc.model.companyAnnouncements![index]
+                                  .announcementId),
+                      onTap: () {
+                        widget.bloc.markCompanyAnnouncementAsSeen(
+                            companyAnnouncement:
+                                widget.bloc.model.companyAnnouncements![index]);
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text(widget.bloc.model
+                                      .companyAnnouncements![index].title!),
+                                  content: Text(widget.bloc.model
+                                      .companyAnnouncements![index].content!),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Text(
+                                          '確認',
+                                          textAlign: TextAlign.end,
+                                        )),
+                                  ],
+                                ));
+                      },
                     );
                   },
                 ),

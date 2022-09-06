@@ -8,12 +8,15 @@ class AnnouncementScreenModel {
   final bool? isLoadingIndividualNotification;
   final bool? isIndividualNotificationUnlocked;
   final List<IndividualNotification>? seenIndividualNotifications;
+  final List<CompanyAnnouncement>? seenCompanyAnnouncements;
   List<CompanyAnnouncement> get pinnedCompanyAnnouncements =>
       companyAnnouncements!.where((ca) => ca.pinned!).toList();
   List<IndividualNotification> get pinnedIndividualNotifications =>
       individualNotifications!.where((ino) => ino.pinned!).toList();
   int get unseenIndividualNotificationsCount =>
       individualNotifications!.length - seenIndividualNotifications!.length;
+  int get unseenCompanyAnnouncementsCount =>
+      companyAnnouncements!.length - seenCompanyAnnouncements!.length;
 
   AnnouncementScreenModel({
     this.companyAnnouncements,
@@ -22,6 +25,7 @@ class AnnouncementScreenModel {
     this.isLoadingIndividualNotification,
     this.isIndividualNotificationUnlocked,
     this.seenIndividualNotifications,
+    this.seenCompanyAnnouncements,
   });
 
   AnnouncementScreenModel copyWith({
@@ -31,6 +35,7 @@ class AnnouncementScreenModel {
     bool? isLoadingIndividualNotification,
     bool? isIndividualNotificationUnlocked,
     List<IndividualNotification>? seenIndividualNotifications,
+    List<CompanyAnnouncement>? seenCompanyAnnouncements,
   }) {
     return AnnouncementScreenModel(
       companyAnnouncements: companyAnnouncements ?? this.companyAnnouncements,
@@ -44,6 +49,8 @@ class AnnouncementScreenModel {
           this.isIndividualNotificationUnlocked,
       seenIndividualNotifications:
           seenIndividualNotifications ?? this.seenIndividualNotifications,
+      seenCompanyAnnouncements:
+          seenCompanyAnnouncements ?? this.seenCompanyAnnouncements,
     );
   }
 }

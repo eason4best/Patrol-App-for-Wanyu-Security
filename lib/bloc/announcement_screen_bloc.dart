@@ -23,6 +23,7 @@ class AnnouncementScreenBloc {
     isLoadingIndividualNotification: true,
     isIndividualNotificationUnlocked: false,
     seenIndividualNotifications: [],
+    seenCompanyAnnouncements: [],
   );
   AnnouncementScreenModel get model => _model;
   TextEditingController individualNotificationPasswordController =
@@ -32,8 +33,15 @@ class AnnouncementScreenBloc {
     try {
       List<CompanyAnnouncement> companyAnnouncements =
           await EtunAPI.getCompanyAnnouncements();
+      List<int> recentSeenCompanyAnnouncementIds =
+          await EtunAPI.getRecentSeenCompanyAnnouncementIds(
+              memberId: member.memberId!);
       updateWith(
         companyAnnouncements: companyAnnouncements,
+        seenCompanyAnnouncements: companyAnnouncements
+            .where((ca) =>
+                recentSeenCompanyAnnouncementIds.contains(ca.announcementId))
+            .toList(),
         isLoadingCompanyAnnouncement: false,
       );
     } catch (e) {
@@ -47,6 +55,8 @@ class AnnouncementScreenBloc {
           await EtunAPI.getIndividualNotifications(memberId: memberId);
       updateWith(
         individualNotifications: individualNotifications,
+        seenIndividualNotifications:
+            individualNotifications.where((ino) => ino.seen!).toList(),
         isLoadingIndividualNotification: false,
       );
     } catch (e) {
@@ -64,10 +74,28 @@ class AnnouncementScreenBloc {
       {required IndividualNotification individualNotification}) async {
     List<IndividualNotification>? seenIndividualNotifications =
         _model.seenIndividualNotifications;
-    seenIndividualNotifications!.add(individualNotification);
-    seenIndividualNotifications =
-        Set<IndividualNotification>.from(seenIndividualNotifications).toList();
-    updateWith(seenIndividualNotifications: seenIndividualNotifications);
+    if (!seenIndividualNotifications!.any(
+        (sin) => sin.notificationId == individualNotification.notificationId)) {
+      seenIndividualNotifications.add(individualNotification);
+      updateWith(seenIndividualNotifications: seenIndividualNotifications);
+      EtunAPI.markIndividualNotificationAsSeen(
+          notificationId: individualNotification.notificationId!);
+    }
+  }
+
+  Future<void> markCompanyAnnouncementAsSeen(
+      {required CompanyAnnouncement companyAnnouncement}) async {
+    List<CompanyAnnouncement>? seenCompanyAnnouncements =
+        _model.seenCompanyAnnouncements;
+    if (!seenCompanyAnnouncements!.any(
+        (sca) => sca.announcementId == companyAnnouncement.announcementId)) {
+      seenCompanyAnnouncements.add(companyAnnouncement);
+      updateWith(seenCompanyAnnouncements: seenCompanyAnnouncements);
+      EtunAPI.markCompanyAnnouncementAsSeen(
+        announcementId: companyAnnouncement.announcementId!,
+        memberId: member.memberId!,
+      );
+    }
   }
 
   void updateWith({
@@ -77,6 +105,7 @@ class AnnouncementScreenBloc {
     bool? isLoadingIndividualNotification,
     bool? isIndividualNotificationUnlocked,
     List<IndividualNotification>? seenIndividualNotifications,
+    List<CompanyAnnouncement>? seenCompanyAnnouncements,
   }) {
     _model = _model.copyWith(
       companyAnnouncements: companyAnnouncements,
@@ -85,6 +114,7 @@ class AnnouncementScreenBloc {
       isLoadingIndividualNotification: isLoadingIndividualNotification,
       isIndividualNotificationUnlocked: isIndividualNotificationUnlocked,
       seenIndividualNotifications: seenIndividualNotifications,
+      seenCompanyAnnouncements: seenCompanyAnnouncements,
     );
     _streamController.add(_model);
   }

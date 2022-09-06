@@ -156,7 +156,10 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                           sigmaX: 4.0,
                           sigmaY: 4.0,
                         ),
-                        child: Container(color: Colors.transparent),
+                        child: Container(
+                            color: Theme.of(context)
+                                .scaffoldBackgroundColor
+                                .withOpacity(0.3)),
                       ),
                     )
                   : Container(),
@@ -169,16 +172,13 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                               .bloc.individualNotificationPasswordController,
                           textInputAction: TextInputAction.next,
                           obscureText: true,
-                          cursorColor: Colors.white,
                           keyboardType: TextInputType.visiblePassword,
-                          style: const TextStyle(color: Colors.white),
                           onChanged:
                               widget.bloc.onInputIndividualNotificationPassword,
                           decoration: InputDecoration(
                             hintText: '輸入登入密碼以查看',
-                            hintStyle: const TextStyle(color: Colors.white),
                             filled: true,
-                            fillColor: Colors.black26,
+                            fillColor: Colors.white,
                             enabledBorder: OutlineInputBorder(
                               borderSide:
                                   const BorderSide(color: Colors.transparent),

@@ -42,7 +42,7 @@ class AnnouncementScreen extends StatelessWidget {
                   tabs: Announcements.values.map(
                     (a) {
                       int unreadCount = a == Announcements.companyAnnouncement
-                          ? 1
+                          ? snapshot.data!.unseenCompanyAnnouncementsCount
                           : a == Announcements.individualNotification
                               ? snapshot
                                   .data!.unseenIndividualNotificationsCount
