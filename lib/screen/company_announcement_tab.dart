@@ -1,13 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:security_wanyu/model/company_announcement.dart';
-import 'package:security_wanyu/service/etun_api.dart';
+import 'package:security_wanyu/bloc/announcement_screen_bloc.dart';
 import 'package:security_wanyu/widget/announcement_widget.dart';
 import 'package:security_wanyu/widget/pinned_announcement_widget.dart';
 
 class CompanyAnnouncementTab extends StatefulWidget {
-  const CompanyAnnouncementTab({Key? key}) : super(key: key);
+  final AnnouncementScreenBloc bloc;
+  const CompanyAnnouncementTab({
+    Key? key,
+    required this.bloc,
+  }) : super(key: key);
 
   @override
   State<CompanyAnnouncementTab> createState() => _CompanyAnnouncementTabState();
@@ -18,68 +21,95 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return FutureBuilder<List<CompanyAnnouncement>>(
-        future: EtunAPI.getCompanyAnnouncements(),
-        builder: (context, snapshot) {
-          return snapshot.hasData
-              ? SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      snapshot.data!.any((ca) => ca.pinned!)
-                          ? SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: List.generate(
-                                    snapshot.data!
-                                        .where((ca) => ca.pinned!)
-                                        .toList()
-                                        .length,
-                                    (index) => Container(
-                                      margin: EdgeInsets.only(
-                                          left: index == 0 ? 0 : 16),
-                                      child: PinnedAnnouncementWidget(
-                                        title: snapshot.data!
-                                            .where((ca) => ca.pinned!)
-                                            .toList()[index]
-                                            .title!,
-                                        subtitle: snapshot.data!
-                                            .where((ca) => ca.pinned!)
-                                            .toList()[index]
-                                            .content,
-                                        onPressed: () {},
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          var tf = [true, false];
-                          final random = Random();
-                          return AnnouncementWidget(
-                            title: snapshot.data![index].title!,
-                            subtitle: snapshot.data![index].content,
-                            announceDateTime:
-                                snapshot.data![index].announceDateTime!,
-                            seen: tf[random.nextInt(tf.length)],
-                          );
-                        },
+    return !widget.bloc.model.isLoadingCompanyAnnouncement!
+        ? SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: List.generate(
+                        widget.bloc.model.pinnedCompanyAnnouncements.length,
+                        (index) => Container(
+                          margin: EdgeInsets.only(left: index == 0 ? 0 : 16),
+                          child: PinnedAnnouncementWidget(
+                            title: widget.bloc.model
+                                .pinnedCompanyAnnouncements[index].title!,
+                            subtitle: widget.bloc.model
+                                .pinnedCompanyAnnouncements[index].content,
+                            onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      title: Text(widget
+                                          .bloc
+                                          .model
+                                          .pinnedCompanyAnnouncements[index]
+                                          .title!),
+                                      content: Text(widget
+                                          .bloc
+                                          .model
+                                          .pinnedCompanyAnnouncements[index]
+                                          .content!),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
+                                            )),
+                                      ],
+                                    )),
+                          ),
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
-        });
+                ),
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: widget.bloc.model.companyAnnouncements!.length,
+                  itemBuilder: (context, index) {
+                    var tf = [true, false];
+                    final random = Random();
+                    return AnnouncementWidget(
+                      title:
+                          widget.bloc.model.companyAnnouncements![index].title!,
+                      subtitle: widget
+                          .bloc.model.companyAnnouncements![index].content,
+                      announceDateTime: widget.bloc.model
+                          .companyAnnouncements![index].announceDateTime!,
+                      seen: tf[random.nextInt(tf.length)],
+                      onTap: () => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Text(widget.bloc.model
+                                    .companyAnnouncements![index].title!),
+                                content: Text(widget.bloc.model
+                                    .companyAnnouncements![index].content!),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text(
+                                        '確認',
+                                        textAlign: TextAlign.end,
+                                      )),
+                                ],
+                              )),
+                    );
+                  },
+                ),
+              ],
+            ),
+          )
+        : const Center(
+            child: CircularProgressIndicator(),
+          );
   }
 
   @override

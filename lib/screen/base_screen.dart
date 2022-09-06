@@ -25,7 +25,7 @@ class _BaseScreenState extends State<BaseScreen> {
   int _currentIndex = 0;
   final pages = [
     HomeScreen.create(),
-    const AnnouncementScreen(),
+    AnnouncementScreen.create(),
   ];
 
   @override

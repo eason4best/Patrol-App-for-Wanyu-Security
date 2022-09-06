@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class PinnedAnnouncementWidget extends StatelessWidget {
   final String title;
   final String? subtitle;
-  final VoidCallback onPressed;
+  final VoidCallback onTap;
   const PinnedAnnouncementWidget({
     Key? key,
     required this.title,
     this.subtitle,
-    required this.onPressed,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -31,22 +31,7 @@ class PinnedAnnouncementWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 )
               : null,
-          onTap: subtitle != null
-              ? () => showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Text(title),
-                        content: Text(subtitle!),
-                        actions: [
-                          TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text(
-                                '確認',
-                                textAlign: TextAlign.end,
-                              )),
-                        ],
-                      ))
-              : () {},
+          onTap: onTap,
         ),
       ),
     );

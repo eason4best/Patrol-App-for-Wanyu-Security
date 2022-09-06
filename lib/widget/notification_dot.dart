@@ -6,22 +6,24 @@ class NotificationDot extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 16,
-      height: 16,
-      decoration: const BoxDecoration(
-        color: Colors.red,
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          unreadCount.toString(),
-          style: Theme.of(context)
-              .textTheme
-              .caption!
-              .copyWith(color: Colors.white),
-        ),
-      ),
-    );
+    return unreadCount != 0
+        ? Container(
+            width: 16,
+            height: 16,
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                unreadCount.toString(),
+                style: Theme.of(context)
+                    .textTheme
+                    .caption!
+                    .copyWith(color: Colors.white),
+              ),
+            ),
+          )
+        : Container();
   }
 }

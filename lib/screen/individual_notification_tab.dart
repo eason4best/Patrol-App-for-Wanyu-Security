@@ -1,29 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:security_wanyu/bloc/individual_notification_tab_bloc.dart';
-import 'package:security_wanyu/model/individual_notification_tab_model.dart';
-import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/bloc/announcement_screen_bloc.dart';
 import 'package:security_wanyu/widget/announcement_widget.dart';
 import 'package:security_wanyu/widget/pinned_announcement_widget.dart';
 
 class IndividualNotificationTab extends StatefulWidget {
-  final IndividualNotificationTabBloc bloc;
+  final AnnouncementScreenBloc bloc;
   const IndividualNotificationTab({
     Key? key,
     required this.bloc,
   }) : super(key: key);
-
-  static Widget create({required Member member}) {
-    return Provider<IndividualNotificationTabBloc>(
-      create: (context) => IndividualNotificationTabBloc(member: member),
-      child: Consumer<IndividualNotificationTabBloc>(
-        builder: (context, bloc, _) => IndividualNotificationTab(bloc: bloc),
-      ),
-      dispose: (context, bloc) => bloc.dispose(),
-    );
-  }
 
   @override
   State<IndividualNotificationTab> createState() =>
@@ -35,128 +22,193 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StreamBuilder<IndividualNotificationTabModel>(
-        stream: widget.bloc.stream,
-        initialData: widget.bloc.model,
-        builder: (context, snapshot) {
-          return !snapshot.data!.loading!
-              ? Stack(
+    return !widget.bloc.model.isLoadingIndividualNotification!
+        ? Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                children: List.generate(
-                                  snapshot.data!.pinnedIndividualNotifications!
-                                      .length,
-                                  (index) => Container(
-                                    margin: EdgeInsets.only(
-                                        left: index == 0 ? 0 : 16),
-                                    child: PinnedAnnouncementWidget(
-                                      title: snapshot
-                                          .data!
-                                          .pinnedIndividualNotifications![index]
-                                          .title!,
-                                      subtitle: snapshot
-                                          .data!
-                                          .pinnedIndividualNotifications![index]
-                                          .content,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                ),
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: List.generate(
+                            widget.bloc.model.pinnedIndividualNotifications
+                                .length,
+                            (index) => Container(
+                              margin:
+                                  EdgeInsets.only(left: index == 0 ? 0 : 16),
+                              child: PinnedAnnouncementWidget(
+                                title: widget
+                                    .bloc
+                                    .model
+                                    .pinnedIndividualNotifications[index]
+                                    .title!,
+                                subtitle: widget
+                                    .bloc
+                                    .model
+                                    .pinnedIndividualNotifications[index]
+                                    .content,
+                                onTap: () {
+                                  widget.bloc.markIndividualNotificationAsSeen(
+                                      individualNotification: widget.bloc.model
+                                              .pinnedIndividualNotifications[
+                                          index]);
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            title: Text(widget
+                                                .bloc
+                                                .model
+                                                .pinnedIndividualNotifications[
+                                                    index]
+                                                .title!),
+                                            content: Text(widget
+                                                .bloc
+                                                .model
+                                                .pinnedIndividualNotifications[
+                                                    index]
+                                                .content!),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(),
+                                                  child: const Text(
+                                                    '確認',
+                                                    textAlign: TextAlign.end,
+                                                  )),
+                                            ],
+                                          ));
+                                },
                               ),
                             ),
                           ),
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount:
-                                snapshot.data!.individualNotifications!.length,
-                            itemBuilder: (context, index) {
-                              return AnnouncementWidget(
-                                title: snapshot.data!
-                                    .individualNotifications![index].title!,
-                                subtitle: snapshot.data!
-                                    .individualNotifications![index].content!,
-                                announceDateTime: snapshot
-                                    .data!
-                                    .individualNotifications![index]
-                                    .notificationDateTime!,
-                                seen: snapshot
-                                    .data!.individualNotifications![index].seen,
-                              );
-                            },
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                    !snapshot.data!.unlocked!
-                        ? ClipRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: 4.0,
-                                sigmaY: 4.0,
-                              ),
-                              child: Container(color: Colors.transparent),
-                            ),
-                          )
-                        : Container(),
-                    !snapshot.data!.unlocked!
-                        ? Center(
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 32),
-                              child: TextField(
-                                controller: widget.bloc.passwordController,
-                                textInputAction: TextInputAction.next,
-                                obscureText: true,
-                                cursorColor: Colors.white,
-                                keyboardType: TextInputType.visiblePassword,
-                                style: const TextStyle(color: Colors.white),
-                                onChanged: widget.bloc.onInputPassword,
-                                decoration: InputDecoration(
-                                  hintText: '輸入登入密碼以查看',
-                                  hintStyle:
-                                      const TextStyle(color: Colors.white),
-                                  filled: true,
-                                  fillColor: Colors.black26,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Colors.transparent),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Colors.transparent),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Colors.transparent),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Colors.transparent),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(),
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount:
+                          widget.bloc.model.individualNotifications!.length,
+                      itemBuilder: (context, index) {
+                        return AnnouncementWidget(
+                          title: widget.bloc.model
+                              .individualNotifications![index].title!,
+                          subtitle: widget.bloc.model
+                              .individualNotifications![index].content!,
+                          announceDateTime: widget
+                              .bloc
+                              .model
+                              .individualNotifications![index]
+                              .notificationDateTime!,
+                          seen: widget.bloc.model
+                                  .individualNotifications![index].seen! ||
+                              widget.bloc.model.seenIndividualNotifications!
+                                  .any((sn) =>
+                                      sn.notificationId ==
+                                      widget
+                                          .bloc
+                                          .model
+                                          .individualNotifications![index]
+                                          .notificationId),
+                          onTap: () {
+                            widget.bloc.markIndividualNotificationAsSeen(
+                                individualNotification: widget.bloc.model
+                                    .individualNotifications![index]);
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      title: Text(widget
+                                          .bloc
+                                          .model
+                                          .individualNotifications![index]
+                                          .title!),
+                                      content: Text(widget
+                                          .bloc
+                                          .model
+                                          .individualNotifications![index]
+                                          .content!),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
+                                            )),
+                                      ],
+                                    ));
+                          },
+                        );
+                      },
+                    ),
                   ],
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
-        });
+                ),
+              ),
+              !widget.bloc.model.isIndividualNotificationUnlocked!
+                  ? ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: 4.0,
+                          sigmaY: 4.0,
+                        ),
+                        child: Container(color: Colors.transparent),
+                      ),
+                    )
+                  : Container(),
+              !widget.bloc.model.isIndividualNotificationUnlocked!
+                  ? Center(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 32),
+                        child: TextField(
+                          controller: widget
+                              .bloc.individualNotificationPasswordController,
+                          textInputAction: TextInputAction.next,
+                          obscureText: true,
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.visiblePassword,
+                          style: const TextStyle(color: Colors.white),
+                          onChanged:
+                              widget.bloc.onInputIndividualNotificationPassword,
+                          decoration: InputDecoration(
+                            hintText: '輸入登入密碼以查看',
+                            hintStyle: const TextStyle(color: Colors.white),
+                            filled: true,
+                            fillColor: Colors.black26,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            disabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
+            ],
+          )
+        : const Center(
+            child: CircularProgressIndicator(),
+          );
   }
 
   @override

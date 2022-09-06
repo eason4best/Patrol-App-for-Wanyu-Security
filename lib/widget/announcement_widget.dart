@@ -5,12 +5,14 @@ class AnnouncementWidget extends StatelessWidget {
   final String? subtitle;
   final DateTime announceDateTime;
   final bool? seen;
+  final VoidCallback onTap;
   const AnnouncementWidget({
     Key? key,
     required this.title,
     this.subtitle,
     required this.announceDateTime,
     this.seen,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -40,22 +42,7 @@ class AnnouncementWidget extends StatelessWidget {
                     color: Colors.red,
                   ),
                 ),
-      onTap: subtitle != null
-          ? () => showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: Text(title),
-                    content: Text(subtitle!),
-                    actions: [
-                      TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text(
-                            '確認',
-                            textAlign: TextAlign.end,
-                          )),
-                    ],
-                  ))
-          : () {},
+      onTap: onTap,
     );
   }
 }

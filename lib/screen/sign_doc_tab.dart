@@ -28,7 +28,7 @@ class _SignDocTabState extends State<SignDocTab>
                     margin: EdgeInsets.only(left: index == 0 ? 0 : 16),
                     child: PinnedAnnouncementWidget(
                       title: '置頂待簽署文件${index + 1}.pdf',
-                      onPressed: () {},
+                      onTap: () {},
                     ),
                   ),
                 ),
@@ -42,6 +42,7 @@ class _SignDocTabState extends State<SignDocTab>
             itemBuilder: (context, index) => AnnouncementWidget(
               title: '待簽署文件${index + 1}.pdf',
               announceDateTime: DateTime.now(),
+              onTap: () {},
             ),
           ),
         ],
