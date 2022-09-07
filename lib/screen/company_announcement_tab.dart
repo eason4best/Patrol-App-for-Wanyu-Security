@@ -19,7 +19,7 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return !widget.bloc.model.isLoadingCompanyAnnouncement!
+    return !widget.bloc.model.companyAnnouncementTab!.isLoading!
         ? SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,30 +30,36 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: List.generate(
-                        widget.bloc.model.pinnedCompanyAnnouncements.length,
+                        widget.bloc.model.companyAnnouncementTab!
+                            .pinnedAnnouncements.length,
                         (index) => Container(
                           margin: EdgeInsets.only(left: index == 0 ? 0 : 16),
                           child: PinnedAnnouncementWidget(
-                            title: widget.bloc.model
-                                .pinnedCompanyAnnouncements[index].title!,
-                            subtitle: widget.bloc.model
-                                .pinnedCompanyAnnouncements[index].content,
+                            title: widget.bloc.model.companyAnnouncementTab!
+                                .pinnedAnnouncements[index].title!,
+                            subtitle: widget.bloc.model.companyAnnouncementTab!
+                                .pinnedAnnouncements[index].content,
                             onTap: () {
                               widget.bloc.markCompanyAnnouncementAsSeen(
-                                  companyAnnouncement: widget.bloc.model
-                                      .pinnedCompanyAnnouncements[index]);
+                                  companyAnnouncement: widget
+                                      .bloc
+                                      .model
+                                      .companyAnnouncementTab!
+                                      .pinnedAnnouncements[index]);
                               showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
                                         title: Text(widget
                                             .bloc
                                             .model
-                                            .pinnedCompanyAnnouncements[index]
+                                            .companyAnnouncementTab!
+                                            .pinnedAnnouncements[index]
                                             .title!),
                                         content: Text(widget
                                             .bloc
                                             .model
-                                            .pinnedCompanyAnnouncements[index]
+                                            .companyAnnouncementTab!
+                                            .pinnedAnnouncements[index]
                                             .content!),
                                         actions: [
                                           TextButton(
@@ -75,31 +81,45 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
                 ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: widget.bloc.model.companyAnnouncements!.length,
+                  itemCount: widget
+                      .bloc.model.companyAnnouncementTab!.announcements!.length,
                   itemBuilder: (context, index) {
                     return AnnouncementWidget(
-                      title:
-                          widget.bloc.model.companyAnnouncements![index].title!,
-                      subtitle: widget
-                          .bloc.model.companyAnnouncements![index].content,
-                      announceDateTime: widget.bloc.model
-                          .companyAnnouncements![index].announceDateTime!,
-                      seen: widget.bloc.model.seenCompanyAnnouncements!.any(
-                          (sca) =>
+                      title: widget.bloc.model.companyAnnouncementTab!
+                          .announcements![index].title!,
+                      subtitle: widget.bloc.model.companyAnnouncementTab!
+                          .announcements![index].content,
+                      announceDateTime: widget
+                          .bloc
+                          .model
+                          .companyAnnouncementTab!
+                          .announcements![index]
+                          .announceDateTime!,
+                      seen: widget
+                          .bloc.model.companyAnnouncementTab!.seenAnnouncements!
+                          .any((sca) =>
                               sca.announcementId ==
-                              widget.bloc.model.companyAnnouncements![index]
-                                  .announcementId),
+                              widget.bloc.model.companyAnnouncementTab!
+                                  .announcements![index].announcementId),
                       onTap: () {
                         widget.bloc.markCompanyAnnouncementAsSeen(
-                            companyAnnouncement:
-                                widget.bloc.model.companyAnnouncements![index]);
+                            companyAnnouncement: widget.bloc.model
+                                .companyAnnouncementTab!.announcements![index]);
                         showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                                  title: Text(widget.bloc.model
-                                      .companyAnnouncements![index].title!),
-                                  content: Text(widget.bloc.model
-                                      .companyAnnouncements![index].content!),
+                                  title: Text(widget
+                                      .bloc
+                                      .model
+                                      .companyAnnouncementTab!
+                                      .announcements![index]
+                                      .title!),
+                                  content: Text(widget
+                                      .bloc
+                                      .model
+                                      .companyAnnouncementTab!
+                                      .announcements![index]
+                                      .content!),
                                   actions: [
                                     TextButton(
                                         onPressed: () =>

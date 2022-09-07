@@ -1,56 +1,23 @@
-import 'package:security_wanyu/model/company_announcement.dart';
-import 'package:security_wanyu/model/individual_notification.dart';
+import 'package:security_wanyu/model/company_announcement_tab_model.dart';
+import 'package:security_wanyu/model/individual_notification_tab_model.dart';
 
 class AnnouncementScreenModel {
-  final List<CompanyAnnouncement>? companyAnnouncements;
-  final List<IndividualNotification>? individualNotifications;
-  final bool? isLoadingCompanyAnnouncement;
-  final bool? isLoadingIndividualNotification;
-  final bool? isIndividualNotificationUnlocked;
-  final List<IndividualNotification>? seenIndividualNotifications;
-  final List<CompanyAnnouncement>? seenCompanyAnnouncements;
-  List<CompanyAnnouncement> get pinnedCompanyAnnouncements =>
-      companyAnnouncements!.where((ca) => ca.pinned!).toList();
-  List<IndividualNotification> get pinnedIndividualNotifications =>
-      individualNotifications!.where((ino) => ino.pinned!).toList();
-  int get unseenIndividualNotificationsCount =>
-      individualNotifications!.length - seenIndividualNotifications!.length;
-  int get unseenCompanyAnnouncementsCount =>
-      companyAnnouncements!.length - seenCompanyAnnouncements!.length;
-
+  final CompanyAnnouncementTabModel? companyAnnouncementTab;
+  final IndividualNotificationTabModel? individualNotificationTab;
   AnnouncementScreenModel({
-    this.companyAnnouncements,
-    this.individualNotifications,
-    this.isLoadingCompanyAnnouncement,
-    this.isLoadingIndividualNotification,
-    this.isIndividualNotificationUnlocked,
-    this.seenIndividualNotifications,
-    this.seenCompanyAnnouncements,
+    this.companyAnnouncementTab,
+    this.individualNotificationTab,
   });
 
   AnnouncementScreenModel copyWith({
-    List<CompanyAnnouncement>? companyAnnouncements,
-    List<IndividualNotification>? individualNotifications,
-    bool? isLoadingCompanyAnnouncement,
-    bool? isLoadingIndividualNotification,
-    bool? isIndividualNotificationUnlocked,
-    List<IndividualNotification>? seenIndividualNotifications,
-    List<CompanyAnnouncement>? seenCompanyAnnouncements,
+    CompanyAnnouncementTabModel? companyAnnouncementTab,
+    IndividualNotificationTabModel? individualNotificationTab,
   }) {
     return AnnouncementScreenModel(
-      companyAnnouncements: companyAnnouncements ?? this.companyAnnouncements,
-      individualNotifications:
-          individualNotifications ?? this.individualNotifications,
-      isLoadingCompanyAnnouncement:
-          isLoadingCompanyAnnouncement ?? this.isLoadingCompanyAnnouncement,
-      isLoadingIndividualNotification: isLoadingIndividualNotification ??
-          this.isLoadingIndividualNotification,
-      isIndividualNotificationUnlocked: isIndividualNotificationUnlocked ??
-          this.isIndividualNotificationUnlocked,
-      seenIndividualNotifications:
-          seenIndividualNotifications ?? this.seenIndividualNotifications,
-      seenCompanyAnnouncements:
-          seenCompanyAnnouncements ?? this.seenCompanyAnnouncements,
+      companyAnnouncementTab:
+          companyAnnouncementTab ?? this.companyAnnouncementTab,
+      individualNotificationTab:
+          individualNotificationTab ?? this.individualNotificationTab,
     );
   }
 }

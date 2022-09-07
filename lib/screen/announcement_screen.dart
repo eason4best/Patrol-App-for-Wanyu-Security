@@ -39,27 +39,35 @@ class AnnouncementScreen extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('公告'),
                 bottom: TabBar(
-                  tabs: Announcements.values.map(
-                    (a) {
-                      int unreadCount = a == Announcements.companyAnnouncement
-                          ? snapshot.data!.unseenCompanyAnnouncementsCount
-                          : a == Announcements.individualNotification
-                              ? snapshot
-                                  .data!.unseenIndividualNotificationsCount
-                              : 1;
-                      return Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Tab(text: a.toString()),
-                          Positioned(
-                            top: 4,
-                            right: -8,
-                            child: NotificationDot(unreadCount: unreadCount),
-                          ),
-                        ],
-                      );
-                    },
-                  ).toList(),
+                  tabs: Announcements.values
+                      .map(
+                        (a) => Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Tab(text: a.toString()),
+                            Positioned(
+                              top: 4,
+                              right: -8,
+                              child: NotificationDot(
+                                  unreadCount:
+                                      a == Announcements.companyAnnouncement
+                                          ? snapshot
+                                              .data!
+                                              .companyAnnouncementTab!
+                                              .unseenAnnouncementsCount
+                                          : a ==
+                                                  Announcements
+                                                      .individualNotification
+                                              ? snapshot
+                                                  .data!
+                                                  .individualNotificationTab!
+                                                  .unseenNotificationsCount
+                                              : 1),
+                            ),
+                          ],
+                        ),
+                      )
+                      .toList(),
                   labelColor: Colors.black87,
                   unselectedLabelColor: Colors.black54,
                   indicatorColor: Colors.black87,

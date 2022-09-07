@@ -22,7 +22,7 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return !widget.bloc.model.isLoadingIndividualNotification!
+    return !widget.bloc.model.individualNotificationTab!.isLoading!
         ? Stack(
             children: [
               SingleChildScrollView(
@@ -35,8 +35,8 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           children: List.generate(
-                            widget.bloc.model.pinnedIndividualNotifications
-                                .length,
+                            widget.bloc.model.individualNotificationTab!
+                                .pinnedNotifications.length,
                             (index) => Container(
                               margin:
                                   EdgeInsets.only(left: index == 0 ? 0 : 16),
@@ -44,32 +44,36 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                                 title: widget
                                     .bloc
                                     .model
-                                    .pinnedIndividualNotifications[index]
+                                    .individualNotificationTab!
+                                    .pinnedNotifications[index]
                                     .title!,
                                 subtitle: widget
                                     .bloc
                                     .model
-                                    .pinnedIndividualNotifications[index]
+                                    .individualNotificationTab!
+                                    .pinnedNotifications[index]
                                     .content,
                                 onTap: () {
                                   widget.bloc.markIndividualNotificationAsSeen(
-                                      individualNotification: widget.bloc.model
-                                              .pinnedIndividualNotifications[
-                                          index]);
+                                      individualNotification: widget
+                                          .bloc
+                                          .model
+                                          .individualNotificationTab!
+                                          .pinnedNotifications[index]);
                                   showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
                                             title: Text(widget
                                                 .bloc
                                                 .model
-                                                .pinnedIndividualNotifications[
-                                                    index]
+                                                .individualNotificationTab!
+                                                .pinnedNotifications[index]
                                                 .title!),
                                             content: Text(widget
                                                 .bloc
                                                 .model
-                                                .pinnedIndividualNotifications[
-                                                    index]
+                                                .individualNotificationTab!
+                                                .pinnedNotifications[index]
                                                 .content!),
                                             actions: [
                                               TextButton(
@@ -92,45 +96,53 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount:
-                          widget.bloc.model.individualNotifications!.length,
+                      itemCount: widget.bloc.model.individualNotificationTab!
+                          .notifications!.length,
                       itemBuilder: (context, index) {
                         return AnnouncementWidget(
-                          title: widget.bloc.model
-                              .individualNotifications![index].title!,
-                          subtitle: widget.bloc.model
-                              .individualNotifications![index].content!,
+                          title: widget.bloc.model.individualNotificationTab!
+                              .notifications![index].title!,
+                          subtitle: widget.bloc.model.individualNotificationTab!
+                              .notifications![index].content!,
                           announceDateTime: widget
                               .bloc
                               .model
-                              .individualNotifications![index]
+                              .individualNotificationTab!
+                              .notifications![index]
                               .notificationDateTime!,
-                          seen: widget.bloc.model
-                                  .individualNotifications![index].seen! ||
-                              widget.bloc.model.seenIndividualNotifications!
+                          seen: widget.bloc.model.individualNotificationTab!
+                                  .notifications![index].seen! ||
+                              widget.bloc.model.individualNotificationTab!
+                                  .seenNotifications!
                                   .any((sn) =>
                                       sn.notificationId ==
                                       widget
                                           .bloc
                                           .model
-                                          .individualNotifications![index]
+                                          .individualNotificationTab!
+                                          .notifications![index]
                                           .notificationId),
                           onTap: () {
                             widget.bloc.markIndividualNotificationAsSeen(
-                                individualNotification: widget.bloc.model
-                                    .individualNotifications![index]);
+                                individualNotification: widget
+                                    .bloc
+                                    .model
+                                    .individualNotificationTab!
+                                    .notifications![index]);
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
                                       title: Text(widget
                                           .bloc
                                           .model
-                                          .individualNotifications![index]
+                                          .individualNotificationTab!
+                                          .notifications![index]
                                           .title!),
                                       content: Text(widget
                                           .bloc
                                           .model
-                                          .individualNotifications![index]
+                                          .individualNotificationTab!
+                                          .notifications![index]
                                           .content!),
                                       actions: [
                                         TextButton(
@@ -149,7 +161,7 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                   ],
                 ),
               ),
-              !widget.bloc.model.isIndividualNotificationUnlocked!
+              !widget.bloc.model.individualNotificationTab!.isUnlocked!
                   ? ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
@@ -163,7 +175,7 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                       ),
                     )
                   : Container(),
-              !widget.bloc.model.isIndividualNotificationUnlocked!
+              !widget.bloc.model.individualNotificationTab!.isUnlocked!
                   ? Center(
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 32),

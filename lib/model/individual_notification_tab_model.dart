@@ -1,27 +1,32 @@
 import 'package:security_wanyu/model/individual_notification.dart';
 
 class IndividualNotificationTabModel {
-  final bool? loading;
-  final bool? unlocked;
-  final List<IndividualNotification>? individualNotifications;
-  List<IndividualNotification>? get pinnedIndividualNotifications =>
-      individualNotifications!.where((ino) => ino.pinned!).toList();
+  final List<IndividualNotification>? notifications;
+  final List<IndividualNotification>? seenNotifications;
+  final bool? isLoading;
+  final bool? isUnlocked;
   IndividualNotificationTabModel({
-    this.loading,
-    this.unlocked,
-    this.individualNotifications,
+    this.notifications,
+    this.seenNotifications,
+    this.isLoading,
+    this.isUnlocked,
   });
+  List<IndividualNotification> get pinnedNotifications =>
+      notifications!.where((n) => n.pinned!).toList();
+  int get unseenNotificationsCount =>
+      notifications!.length - seenNotifications!.length;
 
   IndividualNotificationTabModel copyWith({
-    bool? loading,
-    bool? unlocked,
-    List<IndividualNotification>? individualNotifications,
+    List<IndividualNotification>? notifications,
+    List<IndividualNotification>? seenNotifications,
+    bool? isLoading,
+    bool? isUnlocked,
   }) {
     return IndividualNotificationTabModel(
-      loading: loading ?? this.loading,
-      unlocked: unlocked ?? this.unlocked,
-      individualNotifications:
-          individualNotifications ?? this.individualNotifications,
+      notifications: notifications ?? this.notifications,
+      seenNotifications: seenNotifications ?? this.seenNotifications,
+      isLoading: isLoading ?? this.isLoading,
+      isUnlocked: isUnlocked ?? this.isUnlocked,
     );
   }
 }
