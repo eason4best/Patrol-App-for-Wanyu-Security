@@ -45,8 +45,20 @@ class UserLocationBloc {
     updateWith(locationServiceEnabled: serviceStatus == ServiceStatus.enabled);
   }
 
-  void updateLocationPermission({required bool hasLocationPermission}) {
-    updateWith(hasLocationPermission: hasLocationPermission);
+  Future<void> handleLocationPermission() async {
+    LocationPermission locationPermission = await Geolocator.checkPermission();
+    if (locationPermission != LocationPermission.always &&
+        locationPermission != LocationPermission.whileInUse) {
+      locationPermission = await Geolocator.requestPermission();
+      if (locationPermission != LocationPermission.always &&
+          locationPermission != LocationPermission.whileInUse) {
+        updateWith(hasLocationPermission: false);
+      } else {
+        updateWith(hasLocationPermission: true);
+      }
+    } else {
+      updateWith(hasLocationPermission: true);
+    }
   }
 
   void updateWith({

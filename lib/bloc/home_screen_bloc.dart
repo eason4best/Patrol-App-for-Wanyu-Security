@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/user_location_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
@@ -25,21 +24,8 @@ class HomeScreenBloc {
   });
 
   Future<void> initialize({required BuildContext context}) async {
-    UserLocationBloc userLocationBloc =
-        Provider.of<UserLocationBloc>(context, listen: false);
-    LocationPermission locationPermission = await Geolocator.checkPermission();
-    if (locationPermission != LocationPermission.always &&
-        locationPermission != LocationPermission.whileInUse) {
-      locationPermission = await Geolocator.requestPermission();
-      if (locationPermission != LocationPermission.always &&
-          locationPermission != LocationPermission.whileInUse) {
-        userLocationBloc.updateLocationPermission(hasLocationPermission: false);
-      } else {
-        userLocationBloc.updateLocationPermission(hasLocationPermission: true);
-      }
-    } else {
-      userLocationBloc.updateLocationPermission(hasLocationPermission: true);
-    }
+    await Provider.of<UserLocationBloc>(context, listen: false)
+        .handleLocationPermission();
   }
 
   Future<String> getMarqueeContent() async {
@@ -51,14 +37,14 @@ class HomeScreenBloc {
   Future<void> workPunch() async {
     UserLocation userLocation =
         Provider.of<UserLocation>(context, listen: false);
-    if (!userLocation.locationServiceEnabled!) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('請開啟手機定位功能'),
-        behavior: SnackBarBehavior.floating,
-      ));
-    } else if (!userLocation.hasLocationPermission!) {
+    if (!userLocation.hasLocationPermission!) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('請開啟定位權限'),
+        behavior: SnackBarBehavior.floating,
+      ));
+    } else if (!userLocation.locationServiceEnabled!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟手機定位功能'),
         behavior: SnackBarBehavior.floating,
       ));
     } else {
@@ -90,14 +76,14 @@ class HomeScreenBloc {
   Future<void> getOffPunch() async {
     UserLocation userLocation =
         Provider.of<UserLocation>(context, listen: false);
-    if (!userLocation.locationServiceEnabled!) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('請開啟手機定位功能'),
-        behavior: SnackBarBehavior.floating,
-      ));
-    } else if (!userLocation.hasLocationPermission!) {
+    if (!userLocation.hasLocationPermission!) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('請開啟定位權限'),
+        behavior: SnackBarBehavior.floating,
+      ));
+    } else if (!userLocation.locationServiceEnabled!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟手機定位功能'),
         behavior: SnackBarBehavior.floating,
       ));
     } else {
@@ -132,14 +118,14 @@ class HomeScreenBloc {
         return () {
           UserLocation userLocation =
               Provider.of<UserLocation>(context, listen: false);
-          if (!userLocation.locationServiceEnabled!) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('請開啟手機定位功能'),
-              behavior: SnackBarBehavior.floating,
-            ));
-          } else if (!userLocation.hasLocationPermission!) {
+          if (!userLocation.hasLocationPermission!) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('請開啟定位權限'),
+              behavior: SnackBarBehavior.floating,
+            ));
+          } else if (!userLocation.locationServiceEnabled!) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('請開啟手機定位功能'),
               behavior: SnackBarBehavior.floating,
             ));
           } else {

@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.29"
+  app_settings:
+    dependency: "direct main"
+    description:
+      name: app_settings
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.8"
   archive:
     dependency: transitive
     description:
@@ -525,4 +532,4 @@ packages:
     version: "5.4.1"
 sdks:
   dart: ">=2.17.3 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.0.1"
