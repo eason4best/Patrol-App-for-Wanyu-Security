@@ -110,6 +110,8 @@ class LeaveFormScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 16),
                       child: TextField(
                         controller: bloc.leaveTypeController,
+                        readOnly: true,
+                        onTap: () => bloc.onSelectLeaveType(context: context),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.category_outlined),
                           hintText: '假別',
@@ -136,8 +138,6 @@ class LeaveFormScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
-                        textInputAction: TextInputAction.next,
-                        onChanged: bloc.onInputLeaveType,
                       ),
                     ),
                     Container(

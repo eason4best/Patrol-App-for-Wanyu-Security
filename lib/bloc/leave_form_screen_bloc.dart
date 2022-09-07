@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:docx_template/docx_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:security_wanyu/enum/forms.dart';
+import 'package:security_wanyu/enum/leave_types.dart';
 import 'package:security_wanyu/model/leave_form.dart';
 import 'package:security_wanyu/model/leave_form_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
@@ -23,7 +25,7 @@ class LeaveFormScreenBloc {
     leaveForm: LeaveForm(
       name: '',
       title: '',
-      leaveType: '',
+      leaveType: LeaveTypes.personal,
       leaveReason: '',
       startDateTime: DateTime.now(),
       endDateTime: DateTime.now().add(
@@ -35,7 +37,8 @@ class LeaveFormScreenBloc {
   LeaveFormScreenModel get model => _model;
   TextEditingController nameController = TextEditingController();
   TextEditingController titleController = TextEditingController();
-  TextEditingController leaveTypeController = TextEditingController();
+  TextEditingController leaveTypeController =
+      TextEditingController(text: LeaveTypes.personal.toString());
   TextEditingController leaveReasonController = TextEditingController();
   SignatureController signatureController = SignatureController();
 
@@ -53,10 +56,25 @@ class LeaveFormScreenBloc {
     );
   }
 
-  void onInputLeaveType(String leaveType) {
-    updateWith(
-      leaveForm: _model.leaveForm!.copyWith(leaveType: leaveType),
-      canSubmit: _canSubmit(),
+  Future<void> onSelectLeaveType({required BuildContext context}) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => ListView.builder(
+        shrinkWrap: true,
+        itemCount: LeaveTypes.values.length,
+        itemBuilder: (context, index) => ListTile(
+          title: Text(LeaveTypes.values[index].toString()),
+          onTap: () {
+            leaveTypeController.text = LeaveTypes.values[index].toString();
+            updateWith(
+              leaveForm: _model.leaveForm!
+                  .copyWith(leaveType: LeaveTypes.values[index]),
+              canSubmit: _canSubmit(),
+            );
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
     );
   }
 
@@ -138,15 +156,26 @@ class LeaveFormScreenBloc {
 
   Future<void> completeSigning({required BuildContext context}) async {
     NavigatorState navigator = Navigator.of(context);
-    ui.Image? signatureImage = await signatureController.toImage();
-    final ByteData? bytes =
-        await signatureImage!.toByteData(format: ui.ImageByteFormat.png);
+    if (signatureController.isNotEmpty) {
+      ui.Image? signatureImage = await signatureController.toImage();
+      final ByteData? bytes =
+          await signatureImage!.toByteData(format: ui.ImageByteFormat.png);
+      updateWith(
+        leaveForm: _model.leaveForm!
+            .copyWith(signatureImage: bytes?.buffer.asUint8List()),
+        canSubmit: _canSubmit(),
+      );
+    }
+    navigator.pop();
+  }
+
+  void clearSigning() {
+    signatureController.clear();
     updateWith(
-      leaveForm: _model.leaveForm!
-          .copyWith(signatureImage: bytes?.buffer.asUint8List()),
+      leaveForm:
+          _model.leaveForm!.copyWith(signatureImage: Uint8List.fromList([])),
       canSubmit: _canSubmit(),
     );
-    navigator.pop();
   }
 
   bool _canSubmit() {
@@ -166,7 +195,7 @@ class LeaveFormScreenBloc {
       formContent
         ..add(TextContent('name', _model.leaveForm!.name))
         ..add(TextContent('title', _model.leaveForm!.title))
-        ..add(TextContent('leaveType', _model.leaveForm!.leaveType))
+        ..add(TextContent('leaveType', _model.leaveForm!.leaveType.toString()))
         ..add(TextContent('leaveReason', _model.leaveForm!.leaveReason))
         ..add(TextContent(
           'startDateTime',

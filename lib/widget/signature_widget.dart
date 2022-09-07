@@ -19,7 +19,7 @@ class SignatureWidget extends StatelessWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         margin: const EdgeInsets.all(0),
         child: Center(
-          child: signatureImage != null
+          child: signatureImage != null && signatureImage!.isNotEmpty
               ? Image.memory(signatureImage!)
               : Text(
                   '請點此簽名',

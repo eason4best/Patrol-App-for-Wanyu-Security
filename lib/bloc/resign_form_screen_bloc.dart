@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:docx_template/docx_template.dart';
 import 'package:flutter/material.dart';
@@ -94,15 +95,26 @@ class ResignFormScreenBloc {
 
   Future<void> completeSigning({required BuildContext context}) async {
     NavigatorState navigator = Navigator.of(context);
-    ui.Image? signatureImage = await signatureController.toImage();
-    final ByteData? bytes =
-        await signatureImage!.toByteData(format: ui.ImageByteFormat.png);
+    if (signatureController.isNotEmpty) {
+      ui.Image? signatureImage = await signatureController.toImage();
+      final ByteData? bytes =
+          await signatureImage!.toByteData(format: ui.ImageByteFormat.png);
+      updateWith(
+        resignForm: _model.resignForm!
+            .copyWith(signatureImage: bytes?.buffer.asUint8List()),
+        canSubmit: _canSubmit(),
+      );
+    }
+    navigator.pop();
+  }
+
+  void clearSigning() {
+    signatureController.clear();
     updateWith(
-      resignForm: _model.resignForm!
-          .copyWith(signatureImage: bytes?.buffer.asUint8List()),
+      resignForm:
+          _model.resignForm!.copyWith(signatureImage: Uint8List.fromList([])),
       canSubmit: _canSubmit(),
     );
-    navigator.pop();
   }
 
   bool _canSubmit() {

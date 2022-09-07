@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:security_wanyu/enum/leave_types.dart';
+
 class LeaveForm {
   final String? name;
   final String? title;
-  final String? leaveType;
+  final LeaveTypes? leaveType;
   final String? leaveReason;
   final DateTime? startDateTime;
   final DateTime? endDateTime;
@@ -21,7 +23,7 @@ class LeaveForm {
   LeaveForm copyWith({
     String? name,
     String? title,
-    String? leaveType,
+    LeaveTypes? leaveType,
     String? leaveReason,
     DateTime? startDateTime,
     DateTime? endDateTime,

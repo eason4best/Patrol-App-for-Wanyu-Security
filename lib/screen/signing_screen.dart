@@ -32,10 +32,26 @@ class _SigningScreenState extends State<SigningScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('請於空白處簽名'),
+        title: RichText(
+            text: TextSpan(
+          text: '請於簽名處用',
+          style: Theme.of(context).textTheme.headline6,
+          children: [
+            TextSpan(
+                text: '正楷',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.bold)),
+            TextSpan(
+              text: '簽名',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ],
+        )),
         actions: [
           TextButton(
-            onPressed: () => widget.bloc.signatureController.clear(),
+            onPressed: () => widget.bloc.clearSigning(),
             style: ButtonStyle(
                 foregroundColor: MaterialStateProperty.all(Colors.black54)),
             child: const Text('清除'),
