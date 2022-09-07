@@ -230,7 +230,6 @@ class ResignFormScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width - 16,
                       height: 56,
                       margin: const EdgeInsets.only(top: 32, bottom: 16),
                       child: ElevatedButton(
