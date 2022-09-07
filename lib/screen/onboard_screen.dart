@@ -25,7 +25,7 @@ class OnBoardScreen extends StatelessWidget {
                     OnboardDocuments.idCard
                 ? UploadIdCardScreen.create()
                 : OnboardDocuments.values[index] == OnboardDocuments.bankbook
-                    ? const UploadBankbookScreen()
+                    ? UploadBankbookScreen.create()
                     : OnboardDocuments.values[index] ==
                             OnboardDocuments.headshot
                         ? const UploadHeadshotScreen()

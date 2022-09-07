@@ -71,7 +71,9 @@ class UploadIdCardScreen extends StatelessWidget {
                       height: 56,
                       margin: const EdgeInsets.only(top: 32, bottom: 16),
                       child: ElevatedButton(
-                        onPressed: snapshot.data!.canSubmit! ? () {} : null,
+                        onPressed: snapshot.data!.canSubmit!
+                            ? () async => await bloc.submit()
+                            : null,
                         style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),
                           shape: MaterialStateProperty.all(
