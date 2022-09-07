@@ -28,7 +28,14 @@ class UploadOnboardDocumentWidget extends StatelessWidget {
           margin: const EdgeInsets.all(0),
           child: Center(
             child: image != null && image!.isNotEmpty
-                ? Image.memory(image!)
+                ? Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: MemoryImage(image!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
                 : Text(
                     content,
                     style: Theme.of(context).textTheme.subtitle1,

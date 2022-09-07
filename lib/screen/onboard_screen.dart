@@ -23,7 +23,7 @@ class OnBoardScreen extends StatelessWidget {
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => OnboardDocuments.values[index] ==
                     OnboardDocuments.idCard
-                ? const UploadIdCardScreen()
+                ? UploadIdCardScreen.create()
                 : OnboardDocuments.values[index] == OnboardDocuments.bankbook
                     ? const UploadBankbookScreen()
                     : OnboardDocuments.values[index] ==
