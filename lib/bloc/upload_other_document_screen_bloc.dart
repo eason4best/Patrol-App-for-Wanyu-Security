@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:security_wanyu/model/upload_document_screen_model.dart';
 
-class UploadIdCardScreenBloc {
+class UploadOtherDocumentScreenBloc {
   final StreamController<UploadDocumentScreenModel> _streamController =
       StreamController();
   Stream<UploadDocumentScreenModel> get stream => _streamController.stream;
@@ -12,29 +12,18 @@ class UploadIdCardScreenBloc {
       UploadDocumentScreenModel(canSubmit: false);
   UploadDocumentScreenModel get model => _model;
 
-  Future<void> takeFrontImage(
-      {required CameraController cameraController}) async {
+  Future<void> takeImage({required CameraController cameraController}) async {
     XFile xFile = await cameraController.takePicture();
-    Uint8List frontImage = await xFile.readAsBytes();
+    Uint8List image = await xFile.readAsBytes();
     updateWith(
-      image1: frontImage,
-      canSubmit: _model.image2 != null,
-    );
-  }
-
-  Future<void> takeBackImage(
-      {required CameraController cameraController}) async {
-    XFile xFile = await cameraController.takePicture();
-    Uint8List backImage = await xFile.readAsBytes();
-    updateWith(
-      image2: backImage,
+      image1: image,
       canSubmit: _model.image1 != null,
     );
   }
 
   Future<void> submit() async {}
 
-  bool get canSubmit => _model.image1 != null && _model.image2 != null;
+  bool get canSubmit => _model.image1 != null;
 
   void updateWith({
     Uint8List? image1,

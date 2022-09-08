@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:security_wanyu/widget/take_document_image_frame.dart';
 
 class TakeDocumentImageScreen extends StatefulWidget {
-  final double documentAspectRatio;
+  final CameraLensDirection cameraLensDirection;
   final Future<void> Function({required CameraController cameraController})
       onShutterPressed;
+  final double? documentAspectRatio;
   const TakeDocumentImageScreen({
     Key? key,
-    required this.documentAspectRatio,
+    required this.cameraLensDirection,
     required this.onShutterPressed,
+    this.documentAspectRatio,
   }) : super(key: key);
 
   @override
@@ -25,13 +27,17 @@ class _TakeDocumentImageScreenState extends State<TakeDocumentImageScreen> {
     availableCameras().then(
       (cameras) {
         _cameraController = CameraController(
-          cameras[0],
+          cameras
+              .firstWhere((c) => c.lensDirection == widget.cameraLensDirection),
           ResolutionPreset.max,
           enableAudio: false,
           imageFormatGroup: ImageFormatGroup.jpeg,
         );
         _cameraController!.initialize().then((_) {
           if (!mounted) return;
+          _cameraController!.addListener(
+            () => setState(() {}),
+          );
           setState(() {});
         });
       },
@@ -56,20 +62,25 @@ class _TakeDocumentImageScreenState extends State<TakeDocumentImageScreen> {
                   alignment: Alignment.center,
                   children: [
                     CameraPreview(_cameraController!),
-                    TakeDocumentImageFrame(
-                        documentAspectRatio: widget.documentAspectRatio),
+                    widget.documentAspectRatio != null
+                        ? TakeDocumentImageFrame(
+                            documentAspectRatio: widget.documentAspectRatio!)
+                        : Container(),
                   ],
                 ),
                 Expanded(
                   child: FloatingActionButton.large(
-                    onPressed: () => widget
-                        .onShutterPressed(cameraController: _cameraController!)
-                        .then(
-                          (_) => Navigator.of(context).pop(),
-                        ),
+                    onPressed: !_cameraController!.value.isTakingPicture
+                        ? () => widget
+                            .onShutterPressed(
+                                cameraController: _cameraController!)
+                            .then(
+                              (_) => Navigator.of(context).pop(),
+                            )
+                        : null,
                     backgroundColor: Colors.white,
                     child: const Icon(
-                      Icons.flashlight_on_outlined,
+                      Icons.camera_alt_outlined,
                       size: 40,
                       color: Colors.black87,
                     ),

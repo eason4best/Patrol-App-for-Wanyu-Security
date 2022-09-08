@@ -2,35 +2,37 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
-import 'package:security_wanyu/model/upload_bankbook_screen_model.dart';
+import 'package:security_wanyu/model/upload_document_screen_model.dart';
 
 class UploadBankbookScreenBloc {
-  final StreamController<UploadBankbookScreenModel> _streamController =
+  final StreamController<UploadDocumentScreenModel> _streamController =
       StreamController();
-  Stream<UploadBankbookScreenModel> get stream => _streamController.stream;
-  UploadBankbookScreenModel _model =
-      UploadBankbookScreenModel(canSubmit: false);
-  UploadBankbookScreenModel get model => _model;
+  Stream<UploadDocumentScreenModel> get stream => _streamController.stream;
+  UploadDocumentScreenModel _model =
+      UploadDocumentScreenModel(canSubmit: false);
+  UploadDocumentScreenModel get model => _model;
 
   Future<void> takeImage({required CameraController cameraController}) async {
     XFile xFile = await cameraController.takePicture();
     Uint8List image = await xFile.readAsBytes();
     updateWith(
-      image: image,
-      canSubmit: _model.image != null,
+      image1: image,
+      canSubmit: _model.image1 != null,
     );
   }
 
   Future<void> submit() async {}
 
-  bool get canSubmit => _model.image != null;
+  bool get canSubmit => _model.image1 != null;
 
   void updateWith({
-    Uint8List? image,
+    Uint8List? image1,
+    Uint8List? image2,
     bool? canSubmit,
   }) {
     _model = _model.copyWith(
-      image: image,
+      image1: image1,
+      image2: image2,
       canSubmit: canSubmit,
     );
     _streamController.add(_model);

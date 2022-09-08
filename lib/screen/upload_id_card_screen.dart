@@ -1,7 +1,8 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/upload_id_card_screen_bloc.dart';
-import 'package:security_wanyu/model/upload_id_card_screen_model.dart';
+import 'package:security_wanyu/model/upload_document_screen_model.dart';
 import 'package:security_wanyu/screen/take_document_image_screen.dart';
 import 'package:security_wanyu/widget/upload_onboard_document_widget.dart';
 
@@ -31,7 +32,7 @@ class UploadIdCardScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: StreamBuilder<UploadIdCardScreenModel>(
+          child: StreamBuilder<UploadDocumentScreenModel>(
               stream: bloc.stream,
               initialData: bloc.model,
               builder: (context, snapshot) {
@@ -40,11 +41,12 @@ class UploadIdCardScreen extends StatelessWidget {
                     UploadOnboardDocumentWidget(
                       content: '拍攝身分證正面',
                       aspectRatio: 85.7 / 54,
-                      image: snapshot.data!.frontImage,
+                      image: snapshot.data!.image1,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => TakeDocumentImageScreen(
                             documentAspectRatio: 85.7 / 54,
+                            cameraLensDirection: CameraLensDirection.back,
                             onShutterPressed: bloc.takeFrontImage,
                           ),
                         ),
@@ -55,11 +57,12 @@ class UploadIdCardScreen extends StatelessWidget {
                       child: UploadOnboardDocumentWidget(
                         content: '拍攝身分證反面',
                         aspectRatio: 85.7 / 54,
-                        image: snapshot.data!.backImage,
+                        image: snapshot.data!.image2,
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => TakeDocumentImageScreen(
                               documentAspectRatio: 85.7 / 54,
+                              cameraLensDirection: CameraLensDirection.back,
                               onShutterPressed: bloc.takeBackImage,
                             ),
                           ),

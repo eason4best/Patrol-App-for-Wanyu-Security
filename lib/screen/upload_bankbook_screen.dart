@@ -1,7 +1,8 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/upload_bankbook_screen_bloc.dart';
-import 'package:security_wanyu/model/upload_bankbook_screen_model.dart';
+import 'package:security_wanyu/model/upload_document_screen_model.dart';
 import 'package:security_wanyu/screen/take_document_image_screen.dart';
 import 'package:security_wanyu/widget/upload_onboard_document_widget.dart';
 
@@ -31,7 +32,7 @@ class UploadBankbookScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: StreamBuilder<UploadBankbookScreenModel>(
+          child: StreamBuilder<UploadDocumentScreenModel>(
               stream: bloc.stream,
               initialData: bloc.model,
               builder: (context, snapshot) {
@@ -40,11 +41,12 @@ class UploadBankbookScreen extends StatelessWidget {
                     UploadOnboardDocumentWidget(
                       content: '拍攝存摺正面',
                       aspectRatio: 16 / 9,
-                      image: snapshot.data!.image,
+                      image: snapshot.data!.image1,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => TakeDocumentImageScreen(
                             documentAspectRatio: 16 / 9,
+                            cameraLensDirection: CameraLensDirection.back,
                             onShutterPressed: bloc.takeImage,
                           ),
                         ),

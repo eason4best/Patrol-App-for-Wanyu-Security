@@ -28,8 +28,8 @@ class OnBoardScreen extends StatelessWidget {
                     ? UploadBankbookScreen.create()
                     : OnboardDocuments.values[index] ==
                             OnboardDocuments.headshot
-                        ? const UploadHeadshotScreen()
-                        : const UploadOtherDocumentScreen(),
+                        ? UploadHeadshotScreen.create()
+                        : UploadOtherDocumentScreen.create(),
           )),
         ),
       ),
