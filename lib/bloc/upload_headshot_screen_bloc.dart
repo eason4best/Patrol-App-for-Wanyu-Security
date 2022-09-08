@@ -2,9 +2,15 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
+import 'package:security_wanyu/enum/onboard_documents.dart';
+import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/submit_onboard_document_record.dart';
 import 'package:security_wanyu/model/upload_document_screen_model.dart';
+import 'package:security_wanyu/service/etun_api.dart';
 
 class UploadHeadshotScreenBloc {
+  final Member member;
+  UploadHeadshotScreenBloc({required this.member});
   final StreamController<UploadDocumentScreenModel> _streamController =
       StreamController();
   Stream<UploadDocumentScreenModel> get stream => _streamController.stream;
@@ -21,7 +27,16 @@ class UploadHeadshotScreenBloc {
     );
   }
 
-  Future<void> submit() async {}
+  Future<bool> submit() async {
+    bool result = await EtunAPI.submitOnboardDocument(
+      documentImage: [_model.image1!.toList()],
+      onboardDocumentRecord: SubmitOnboardDocumentRecord(
+        memberId: member.memberId,
+        onboardDocumentType: OnboardDocuments.headshot,
+      ),
+    );
+    return result;
+  }
 
   void updateWith({
     Uint8List? image1,

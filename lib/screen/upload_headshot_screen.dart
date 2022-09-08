@@ -16,7 +16,7 @@ class UploadHeadshotScreen extends StatelessWidget {
 
   static Widget create({required Member member}) {
     return Provider<UploadHeadshotScreenBloc>(
-      create: (context) => UploadHeadshotScreenBloc(),
+      create: (context) => UploadHeadshotScreenBloc(member: member),
       child: Consumer<UploadHeadshotScreenBloc>(
         builder: (context, bloc, _) => UploadHeadshotScreen(bloc: bloc),
       ),
@@ -59,7 +59,30 @@ class UploadHeadshotScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 32, bottom: 16),
                       child: ElevatedButton(
                         onPressed: snapshot.data!.canSubmit!
-                            ? () async => await bloc.submit()
+                            ? () => bloc.submit().then(
+                                  (result) => showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title:
+                                          Text(result ? '大頭照上傳成功' : '大頭照上傳失敗'),
+                                      content: Text(result
+                                          ? '大頭照上傳成功！'
+                                          : '大頭照上傳失敗，請再試一次。'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text(
+                                            '確認',
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ).then(
+                                    (_) => Navigator.of(context).pop(),
+                                  ),
+                                )
                             : null,
                         style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),

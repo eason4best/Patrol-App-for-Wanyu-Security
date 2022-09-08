@@ -227,9 +227,8 @@ class LeaveFormScreenBloc {
     bool result = await EtunAPI.submitForm(
       formData: formData!,
       formRecord: SubmitFormRecord(
+        memberId: member.memberId,
         formType: Forms.leave,
-        memberSN: member.memberSN,
-        memberName: member.memberName,
       ),
     );
     await showDialog(

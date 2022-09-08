@@ -16,7 +16,7 @@ class UploadOtherDocumentScreen extends StatelessWidget {
 
   static Widget create({required Member member}) {
     return Provider<UploadOtherDocumentScreenBloc>(
-      create: (context) => UploadOtherDocumentScreenBloc(),
+      create: (context) => UploadOtherDocumentScreenBloc(member: member),
       child: Consumer<UploadOtherDocumentScreenBloc>(
         builder: (context, bloc, _) => UploadOtherDocumentScreen(bloc: bloc),
       ),
@@ -58,7 +58,28 @@ class UploadOtherDocumentScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 32, bottom: 16),
                       child: ElevatedButton(
                         onPressed: snapshot.data!.canSubmit!
-                            ? () async => await bloc.submit()
+                            ? () => bloc.submit().then(
+                                  (result) => showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text(result ? '文件上傳成功' : '文件上傳失敗'),
+                                      content: Text(
+                                          result ? '文件上傳成功！' : '文件上傳失敗，請再試一次。'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text(
+                                            '確認',
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ).then(
+                                    (_) => Navigator.of(context).pop(),
+                                  ),
+                                )
                             : null,
                         style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),
