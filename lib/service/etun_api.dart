@@ -8,6 +8,7 @@ import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:security_wanyu/model/signable_document.dart';
 import 'package:security_wanyu/model/submit_form_record.dart';
 import 'package:security_wanyu/model/submit_onboard_document_record.dart';
 
@@ -160,6 +161,23 @@ class EtunAPI {
               .map((data) => IndividualNotification.fromData(data))
               .toList();
       return individualNotifications;
+    } else {
+      throw Exception('Something went wrong.');
+    }
+  }
+
+  //獲得待簽署文件。
+  static Future<List<SignableDocument>> getSignableDocuments() async {
+    Uri url = Uri.parse('$baseUrl?op=getSignableDocuments');
+    http.Response response = await http.get(url);
+    var body = json.decode(response.body);
+    bool success = body['success'];
+    if (success) {
+      List<SignableDocument> signableDocuments =
+          (json.decode(body['signableDocuments']) as List)
+              .map((data) => SignableDocument.fromData(data))
+              .toList();
+      return signableDocuments;
     } else {
       throw Exception('Something went wrong.');
     }

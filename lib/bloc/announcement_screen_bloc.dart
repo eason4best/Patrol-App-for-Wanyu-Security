@@ -7,13 +7,21 @@ import 'package:security_wanyu/model/company_announcement_tab_model.dart';
 import 'package:security_wanyu/model/individual_notification.dart';
 import 'package:security_wanyu/model/individual_notification_tab_model.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/signable_document.dart';
+import 'package:security_wanyu/model/signable_document_tab_model.dart';
+import 'package:security_wanyu/model/total_unseen_announcement.dart';
 import 'package:security_wanyu/service/etun_api.dart';
 
 class AnnouncementScreenBloc {
   final Member member;
-  AnnouncementScreenBloc({required this.member}) {
+  final TotalUnseenAnnouncement totalUnseenAnnouncement;
+  AnnouncementScreenBloc({
+    required this.member,
+    required this.totalUnseenAnnouncement,
+  }) {
     _getCompanyAnnouncements();
     _getIndividualNotifications(memberId: member.memberId!);
+    _getSignableDocuments();
   }
   final StreamController<AnnouncementScreenModel> _streamController =
       StreamController();
@@ -29,6 +37,10 @@ class AnnouncementScreenBloc {
       seenNotifications: [],
       isLoading: true,
       isUnlocked: false,
+    ),
+    signableDocumentTab: SignableDocumentTabModel(
+      docs: [],
+      isLoading: true,
     ),
   );
   AnnouncementScreenModel get model => _model;
@@ -52,6 +64,8 @@ class AnnouncementScreenBloc {
           isLoading: false,
         ),
       );
+      totalUnseenAnnouncement
+          .increase(_model.companyAnnouncementTab!.unseenAnnouncementsCount);
     } catch (e) {
       emitError(error: e);
     }
@@ -69,6 +83,24 @@ class AnnouncementScreenBloc {
           isLoading: false,
         ),
       );
+      totalUnseenAnnouncement
+          .increase(_model.individualNotificationTab!.unseenNotificationsCount);
+    } catch (e) {
+      emitError(error: e);
+    }
+  }
+
+  Future<void> _getSignableDocuments() async {
+    try {
+      List<SignableDocument> signDocs = await EtunAPI.getSignableDocuments();
+      updateWith(
+        signableDocumentTab: _model.signableDocumentTab!.copyWith(
+          docs: signDocs,
+          isLoading: false,
+        ),
+      );
+      totalUnseenAnnouncement
+          .increase(_model.signableDocumentTab!.docs!.length);
     } catch (e) {
       emitError(error: e);
     }
@@ -82,21 +114,6 @@ class AnnouncementScreenBloc {
     }
   }
 
-  Future<void> markIndividualNotificationAsSeen(
-      {required IndividualNotification individualNotification}) async {
-    List<IndividualNotification>? seenIndividualNotifications =
-        _model.individualNotificationTab!.seenNotifications;
-    if (!seenIndividualNotifications!.any(
-        (sin) => sin.notificationId == individualNotification.notificationId)) {
-      seenIndividualNotifications.add(individualNotification);
-      updateWith(
-          individualNotificationTab: _model.individualNotificationTab!
-              .copyWith(seenNotifications: seenIndividualNotifications));
-      EtunAPI.markIndividualNotificationAsSeen(
-          notificationId: individualNotification.notificationId!);
-    }
-  }
-
   Future<void> markCompanyAnnouncementAsSeen(
       {required CompanyAnnouncement companyAnnouncement}) async {
     List<CompanyAnnouncement>? seenCompanyAnnouncements =
@@ -107,6 +124,7 @@ class AnnouncementScreenBloc {
       updateWith(
           companyAnnouncementTab: _model.companyAnnouncementTab!
               .copyWith(seenAnnouncements: seenCompanyAnnouncements));
+      totalUnseenAnnouncement.decrease(1);
       EtunAPI.markCompanyAnnouncementAsSeen(
         announcementId: companyAnnouncement.announcementId!,
         memberId: member.memberId!,
@@ -114,13 +132,31 @@ class AnnouncementScreenBloc {
     }
   }
 
+  Future<void> markIndividualNotificationAsSeen(
+      {required IndividualNotification individualNotification}) async {
+    List<IndividualNotification>? seenIndividualNotifications =
+        _model.individualNotificationTab!.seenNotifications;
+    if (!seenIndividualNotifications!.any(
+        (sin) => sin.notificationId == individualNotification.notificationId)) {
+      seenIndividualNotifications.add(individualNotification);
+      updateWith(
+          individualNotificationTab: _model.individualNotificationTab!
+              .copyWith(seenNotifications: seenIndividualNotifications));
+      totalUnseenAnnouncement.decrease(1);
+      EtunAPI.markIndividualNotificationAsSeen(
+          notificationId: individualNotification.notificationId!);
+    }
+  }
+
   void updateWith({
     CompanyAnnouncementTabModel? companyAnnouncementTab,
     IndividualNotificationTabModel? individualNotificationTab,
+    SignableDocumentTabModel? signableDocumentTab,
   }) {
     _model = _model.copyWith(
       companyAnnouncementTab: companyAnnouncementTab,
       individualNotificationTab: individualNotificationTab,
+      signableDocumentTab: signableDocumentTab,
     );
     _streamController.add(_model);
   }

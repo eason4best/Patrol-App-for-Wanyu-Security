@@ -27,7 +27,14 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(widget
+                            .bloc
+                            .model
+                            .companyAnnouncementTab!
+                            .pinnedAnnouncements
+                            .isNotEmpty
+                        ? 16
+                        : 0),
                     child: Row(
                       children: List.generate(
                         widget.bloc.model.companyAnnouncementTab!

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/total_unseen_announcement.dart';
 import 'package:security_wanyu/screen/announcement_screen.dart';
 import 'package:security_wanyu/screen/home_screen.dart';
 import 'package:security_wanyu/widget/notification_dot.dart';
@@ -12,8 +13,13 @@ class BaseScreen extends StatefulWidget {
   State<BaseScreen> createState() => _BaseScreenState();
 
   static Widget create({required Member member}) {
-    return Provider<Member>(
-      create: (context) => member,
+    return MultiProvider(
+      providers: [
+        Provider<Member>(create: (context) => member),
+        ChangeNotifierProvider<TotalUnseenAnnouncement>(
+          create: (context) => TotalUnseenAnnouncement(),
+        ),
+      ],
       child: Consumer<Member>(
         builder: (context, bloc, _) => const BaseScreen(),
       ),
@@ -59,7 +65,7 @@ class _BaseScreenState extends State<BaseScreen> {
                   Positioned(
                     top: -4,
                     right: -4,
-                    child: NotificationDot(unreadCount: 5),
+                    child: NotificationDot(),
                   ),
                 ],
               ),

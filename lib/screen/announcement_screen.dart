@@ -4,9 +4,10 @@ import 'package:security_wanyu/bloc/announcement_screen_bloc.dart';
 import 'package:security_wanyu/enum/announcements.dart';
 import 'package:security_wanyu/model/announcement_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/total_unseen_announcement.dart';
 import 'package:security_wanyu/screen/company_announcement_tab.dart';
 import 'package:security_wanyu/screen/individual_notification_tab.dart';
-import 'package:security_wanyu/screen/sign_doc_tab.dart';
+import 'package:security_wanyu/screen/signable_document_tab.dart';
 import 'package:security_wanyu/widget/notification_dot.dart';
 
 class AnnouncementScreen extends StatelessWidget {
@@ -19,7 +20,10 @@ class AnnouncementScreen extends StatelessWidget {
   static Widget create() {
     return Provider<AnnouncementScreenBloc>(
       create: (context) => AnnouncementScreenBloc(
-          member: Provider.of<Member>(context, listen: false)),
+        member: Provider.of<Member>(context, listen: false),
+        totalUnseenAnnouncement:
+            Provider.of<TotalUnseenAnnouncement>(context, listen: false),
+      ),
       child: Consumer<AnnouncementScreenBloc>(
         builder: (context, bloc, _) => AnnouncementScreen(bloc: bloc),
       ),
@@ -49,20 +53,18 @@ class AnnouncementScreen extends StatelessWidget {
                               top: 4,
                               right: -8,
                               child: NotificationDot(
-                                  unreadCount:
-                                      a == Announcements.companyAnnouncement
-                                          ? snapshot
-                                              .data!
-                                              .companyAnnouncementTab!
-                                              .unseenAnnouncementsCount
-                                          : a ==
-                                                  Announcements
-                                                      .individualNotification
-                                              ? snapshot
-                                                  .data!
-                                                  .individualNotificationTab!
-                                                  .unseenNotificationsCount
-                                              : 1),
+                                individualUnseenCount: a ==
+                                        Announcements.companyAnnouncement
+                                    ? snapshot.data!.companyAnnouncementTab!
+                                        .unseenAnnouncementsCount
+                                    : a == Announcements.individualNotification
+                                        ? snapshot
+                                            .data!
+                                            .individualNotificationTab!
+                                            .unseenNotificationsCount
+                                        : snapshot.data!.signableDocumentTab!
+                                            .docs!.length,
+                              ),
                             ),
                           ],
                         ),
@@ -76,7 +78,7 @@ class AnnouncementScreen extends StatelessWidget {
               body: TabBarView(children: [
                 CompanyAnnouncementTab(bloc: bloc),
                 IndividualNotificationTab(bloc: bloc),
-                const SignDocTab(),
+                SignableDocumentTab(bloc: bloc),
               ]),
             );
           }),

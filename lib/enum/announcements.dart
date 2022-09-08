@@ -1,7 +1,7 @@
 enum Announcements {
   companyAnnouncement,
   individualNotification,
-  signDoc,
+  signableDocument,
   ;
 
   @override
@@ -11,7 +11,7 @@ enum Announcements {
         return '公司公告';
       case Announcements.individualNotification:
         return '個人通知';
-      case Announcements.signDoc:
+      case Announcements.signableDocument:
         return '待簽署';
     }
   }
