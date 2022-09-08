@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/upload_id_card_screen_bloc.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/upload_document_screen_model.dart';
 import 'package:security_wanyu/screen/take_document_image_screen.dart';
 import 'package:security_wanyu/widget/upload_onboard_document_widget.dart';
@@ -13,9 +14,9 @@ class UploadIdCardScreen extends StatelessWidget {
     required this.bloc,
   }) : super(key: key);
 
-  static Widget create() {
+  static Widget create({required Member member}) {
     return Provider<UploadIdCardScreenBloc>(
-      create: (context) => UploadIdCardScreenBloc(),
+      create: (context) => UploadIdCardScreenBloc(member: member),
       child: Consumer<UploadIdCardScreenBloc>(
         builder: (context, bloc, _) => UploadIdCardScreen(bloc: bloc),
       ),
@@ -75,7 +76,30 @@ class UploadIdCardScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 32, bottom: 16),
                       child: ElevatedButton(
                         onPressed: snapshot.data!.canSubmit!
-                            ? () async => await bloc.submit()
+                            ? () => bloc.submit().then(
+                                  (result) => showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title:
+                                          Text(result ? '身分證上傳成功' : '身分證上傳失敗'),
+                                      content: Text(result
+                                          ? '身分證上傳成功！'
+                                          : '身分證上傳失敗，請再試一次。'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text(
+                                            '確認',
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ).then(
+                                    (_) => Navigator.of(context).pop(),
+                                  ),
+                                )
                             : null,
                         style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),

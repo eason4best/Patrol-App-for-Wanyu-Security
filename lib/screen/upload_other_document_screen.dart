@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/upload_other_document_screen_bloc.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/upload_document_screen_model.dart';
 import 'package:security_wanyu/screen/take_document_image_screen.dart';
 import 'package:security_wanyu/widget/upload_onboard_document_widget.dart';
@@ -13,7 +14,7 @@ class UploadOtherDocumentScreen extends StatelessWidget {
     required this.bloc,
   }) : super(key: key);
 
-  static Widget create() {
+  static Widget create({required Member member}) {
     return Provider<UploadOtherDocumentScreenBloc>(
       create: (context) => UploadOtherDocumentScreenBloc(),
       child: Consumer<UploadOtherDocumentScreenBloc>(

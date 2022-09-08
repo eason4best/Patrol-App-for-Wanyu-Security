@@ -9,6 +9,7 @@ import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:security_wanyu/model/submit_form_record.dart';
+import 'package:security_wanyu/model/submit_onboard_document_record.dart';
 
 class EtunAPI {
   static String baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
@@ -86,7 +87,7 @@ class EtunAPI {
     required SubmitFormRecord formRecord,
   }) async {
     try {
-      Uri url = Uri.parse('$baseUrl?op=uploadForm');
+      Uri url = Uri.parse('$baseUrl?op=submitForm');
       http.MultipartRequest request = http.MultipartRequest('POST', url)
         ..fields['form_record'] = formRecord.toJSON()
         ..files.add(
@@ -219,6 +220,34 @@ class EtunAPI {
       return recentSeenCompanyAnnouncementIds;
     } else {
       throw Exception('Something went wrong.');
+    }
+  }
+
+  //提交辦理入職的文件。
+  static Future<bool> submitOnboardDocument({
+    required List<List<int>> documentImage,
+    required SubmitOnboardDocumentRecord onboardDocumentRecord,
+  }) async {
+    try {
+      Uri url = Uri.parse('$baseUrl?op=submitOnboardDocument');
+      List<http.MultipartFile> files = [];
+      for (int i = 0; i < documentImage.length; i++) {
+        files.add(http.MultipartFile.fromBytes(
+          'onboardDocumentImages[]',
+          documentImage[i],
+          filename: 'onboardDocumentImage${i + 1}.jpeg',
+          contentType: MediaType.parse('image/jpeg'),
+        ));
+      }
+      http.MultipartRequest request = http.MultipartRequest('POST', url)
+        ..fields['onboard_document_record'] = onboardDocumentRecord.toJSON()
+        ..files.addAll(files);
+      http.StreamedResponse streamedResponse = await request.send();
+      http.Response response = await http.Response.fromStream(streamedResponse);
+      bool success = json.decode(response.body)['success'];
+      return success;
+    } catch (e) {
+      return false;
     }
   }
 }

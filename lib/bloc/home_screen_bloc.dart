@@ -145,7 +145,7 @@ class HomeScreenBloc {
             ));
       case MainFunctions.onboard:
         return () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const OnBoardScreen(),
+              builder: (context) => OnBoardScreen(member: member),
             ));
       case MainFunctions.formApply:
         return () => Navigator.of(context).push(MaterialPageRoute(
