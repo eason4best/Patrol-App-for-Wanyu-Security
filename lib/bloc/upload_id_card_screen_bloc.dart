@@ -34,8 +34,6 @@ class UploadIdCardScreenBloc {
 
   Future<void> submit() async {}
 
-  bool get canSubmit => _model.image1 != null && _model.image2 != null;
-
   void updateWith({
     Uint8List? image1,
     Uint8List? image2,

@@ -17,13 +17,11 @@ class UploadBankbookScreenBloc {
     Uint8List image = await xFile.readAsBytes();
     updateWith(
       image1: image,
-      canSubmit: _model.image1 != null,
+      canSubmit: true,
     );
   }
 
   Future<void> submit() async {}
-
-  bool get canSubmit => _model.image1 != null;
 
   void updateWith({
     Uint8List? image1,
