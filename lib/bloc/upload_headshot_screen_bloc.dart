@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
+import 'package:image/image.dart' as img;
 import 'package:security_wanyu/enum/onboard_documents.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/submit_onboard_document_record.dart';
@@ -20,9 +21,11 @@ class UploadHeadshotScreenBloc {
 
   Future<void> takeImage({required CameraController cameraController}) async {
     XFile xFile = await cameraController.takePicture();
-    Uint8List image = await xFile.readAsBytes();
+    Uint8List imageBytes = await xFile.readAsBytes();
+    img.Image? originalImage = img.decodeImage(imageBytes);
+    img.Image flippedImage = img.flipHorizontal(originalImage!);
     updateWith(
-      image1: image,
+      image1: Uint8List.fromList(img.encodeJpg(flippedImage)),
       canSubmit: true,
     );
   }

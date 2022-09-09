@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:docx_template/docx_template.dart';
 import 'package:flutter/material.dart';

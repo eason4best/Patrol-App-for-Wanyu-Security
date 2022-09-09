@@ -38,7 +38,7 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Container(
                               margin: const EdgeInsets.only(top: 32),
-                              child: EtunLogo(),
+                              child: const EtunLogo(),
                             ),
                             Container(
                               margin: const EdgeInsets.only(top: 64),
