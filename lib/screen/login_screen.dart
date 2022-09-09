@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/login_screen_bloc.dart';
 import 'package:security_wanyu/model/login_screen_model.dart';
+import 'package:security_wanyu/widget/etun_logo.dart';
 import 'package:security_wanyu/widget/login_form_widget.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -37,10 +38,7 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Container(
                               margin: const EdgeInsets.only(top: 32),
-                              child: Image.asset(
-                                'assets/logo.png',
-                                width: 200,
-                              ),
+                              child: EtunLogo(),
                             ),
                             Container(
                               margin: const EdgeInsets.only(top: 64),

@@ -165,13 +165,10 @@ class _IndividualNotificationTabState extends State<IndividualNotificationTab>
                   ? ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
-                          sigmaX: 4.0,
-                          sigmaY: 4.0,
+                          sigmaX: 5.0,
+                          sigmaY: 5.0,
                         ),
-                        child: Container(
-                            color: Theme.of(context)
-                                .scaffoldBackgroundColor
-                                .withOpacity(0.3)),
+                        child: Container(color: Colors.black12),
                       ),
                     )
                   : Container(),
