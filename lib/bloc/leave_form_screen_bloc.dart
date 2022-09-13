@@ -223,7 +223,7 @@ class LeaveFormScreenBloc {
   Future<void> submit({required BuildContext context}) async {
     NavigatorState navigator = Navigator.of(context);
     List<int>? formData = await _generateLeaveFormFromTemplate();
-    bool result = await EtunAPI.submitForm(
+    bool result = await EtunAPI.instance.submitForm(
       formData: formData!,
       formRecord: SubmitFormRecord(
         memberId: member.memberId,

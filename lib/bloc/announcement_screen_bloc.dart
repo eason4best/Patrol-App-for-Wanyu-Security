@@ -50,10 +50,9 @@ class AnnouncementScreenBloc {
   Future<void> _getCompanyAnnouncements() async {
     try {
       List<CompanyAnnouncement> companyAnnouncements =
-          await EtunAPI.getCompanyAnnouncements();
-      List<int> recentSeenCompanyAnnouncementIds =
-          await EtunAPI.getRecentSeenCompanyAnnouncementIds(
-              memberId: member.memberId!);
+          await EtunAPI.instance.getCompanyAnnouncements();
+      List<int> recentSeenCompanyAnnouncementIds = await EtunAPI.instance
+          .getRecentSeenCompanyAnnouncementIds(memberId: member.memberId!);
       updateWith(
         companyAnnouncementTab: _model.companyAnnouncementTab!.copyWith(
           announcements: companyAnnouncements,
@@ -74,7 +73,7 @@ class AnnouncementScreenBloc {
   Future<void> _getIndividualNotifications({required int memberId}) async {
     try {
       List<IndividualNotification> individualNotifications =
-          await EtunAPI.getIndividualNotifications(memberId: memberId);
+          await EtunAPI.instance.getIndividualNotifications(memberId: memberId);
       updateWith(
         individualNotificationTab: _model.individualNotificationTab!.copyWith(
           notifications: individualNotifications,
@@ -92,7 +91,8 @@ class AnnouncementScreenBloc {
 
   Future<void> _getSignableDocuments() async {
     try {
-      List<SignableDocument> signDocs = await EtunAPI.getSignableDocuments();
+      List<SignableDocument> signDocs =
+          await EtunAPI.instance.getSignableDocuments();
       updateWith(
         signableDocumentTab: _model.signableDocumentTab!.copyWith(
           docs: signDocs,
@@ -125,7 +125,7 @@ class AnnouncementScreenBloc {
           companyAnnouncementTab: _model.companyAnnouncementTab!
               .copyWith(seenAnnouncements: seenCompanyAnnouncements));
       totalUnseenAnnouncement.decrease(1);
-      EtunAPI.markCompanyAnnouncementAsSeen(
+      EtunAPI.instance.markCompanyAnnouncementAsSeen(
         announcementId: companyAnnouncement.announcementId!,
         memberId: member.memberId!,
       );
@@ -143,7 +143,7 @@ class AnnouncementScreenBloc {
           individualNotificationTab: _model.individualNotificationTab!
               .copyWith(seenNotifications: seenIndividualNotifications));
       totalUnseenAnnouncement.decrease(1);
-      EtunAPI.markIndividualNotificationAsSeen(
+      EtunAPI.instance.markIndividualNotificationAsSeen(
           notificationId: individualNotification.notificationId!);
     }
   }

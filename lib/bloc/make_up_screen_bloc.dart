@@ -69,7 +69,7 @@ class MakeUpScreenBloc {
   }
 
   Future<void> submit(BuildContext context) async {
-    bool result = await EtunAPI.punchCard(
+    bool result = await EtunAPI.instance.punchCard(
       type: PunchCards.makeUp,
       makeupType: _model.type,
       member: member,

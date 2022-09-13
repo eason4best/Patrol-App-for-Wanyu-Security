@@ -30,7 +30,7 @@ class HomeScreenBloc {
 
   Future<String> getMarqueeContent() async {
     MarqueeAnnouncement marqueeAnnouncement =
-        await EtunAPI.getMarqueeAnnouncement();
+        await EtunAPI.instance.getMarqueeAnnouncement();
     return marqueeAnnouncement.content!;
   }
 
@@ -48,7 +48,7 @@ class HomeScreenBloc {
         behavior: SnackBarBehavior.floating,
       ));
     } else {
-      bool result = await EtunAPI.punchCard(
+      bool result = await EtunAPI.instance.punchCard(
         type: PunchCards.work,
         member: member,
         lat: userLocation.lat,
@@ -87,7 +87,7 @@ class HomeScreenBloc {
         behavior: SnackBarBehavior.floating,
       ));
     } else {
-      bool result = await EtunAPI.punchCard(
+      bool result = await EtunAPI.instance.punchCard(
         type: PunchCards.getOff,
         member: member,
         lat: userLocation.lat,

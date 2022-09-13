@@ -39,7 +39,7 @@ class UploadIdCardScreenBloc {
   }
 
   Future<bool> submit() async {
-    bool result = await EtunAPI.submitOnboardDocument(
+    bool result = await EtunAPI.instance.submitOnboardDocument(
       documentImage: [
         _model.image1!.toList(),
         _model.image2!.toList(),

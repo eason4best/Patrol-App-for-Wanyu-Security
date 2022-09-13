@@ -52,7 +52,7 @@ class LoginScreenBloc {
     final navigator = Navigator.of(context);
     //確認有無連上網路。
     if (await Utils.hasInternetConnection()) {
-      Map<String, dynamic> result = await EtunAPI.signIn(
+      Map<String, dynamic> result = await EtunAPI.instance.signIn(
           memberAccount: _model.account!, memberPassword: _model.password!);
       SignInResults signInResults = result['signInResult'];
       switch (signInResults) {

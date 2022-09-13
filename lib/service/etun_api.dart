@@ -13,13 +13,16 @@ import 'package:security_wanyu/model/submit_form_record.dart';
 import 'package:security_wanyu/model/submit_onboard_document_record.dart';
 
 class EtunAPI {
-  static String baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
+  EtunAPI._constructor();
+  static final EtunAPI instance = EtunAPI._constructor();
+
+  final String _baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
   //登入。
-  static Future<Map<String, dynamic>> signIn(
+  Future<Map<String, dynamic>> signIn(
       {required String memberAccount, required String memberPassword}) async {
     try {
       Uri url = Uri.parse(
-          '$baseUrl?op=signIn&member_account=$memberAccount&member_password=$memberPassword');
+          '$_baseUrl?op=signIn&member_account=$memberAccount&member_password=$memberPassword');
       http.Response response = await http.get(url);
       bool success = json.decode(response.body)['success'];
       if (success) {
@@ -46,7 +49,7 @@ class EtunAPI {
   }
 
   //打卡。
-  static Future<bool> punchCard({
+  Future<bool> punchCard({
     required PunchCards type,
     required Member member,
     DateTime? dateTime,
@@ -56,7 +59,7 @@ class EtunAPI {
     double? lng,
   }) async {
     try {
-      Uri url = Uri.parse('$baseUrl?op=punchCard');
+      Uri url = Uri.parse('$_baseUrl?op=punchCard');
       PunchCardRecord punchCardRecord = PunchCardRecord(
         memberId: member.memberId,
         memberSN: member.memberSN,
@@ -83,12 +86,12 @@ class EtunAPI {
   }
 
   //提交表單。
-  static Future<bool> submitForm({
+  Future<bool> submitForm({
     required List<int> formData,
     required SubmitFormRecord formRecord,
   }) async {
     try {
-      Uri url = Uri.parse('$baseUrl?op=submitForm');
+      Uri url = Uri.parse('$_baseUrl?op=submitForm');
       http.MultipartRequest request = http.MultipartRequest('POST', url)
         ..fields['form_record'] = formRecord.toJSON()
         ..files.add(
@@ -110,8 +113,8 @@ class EtunAPI {
   }
 
   //獲得跑馬燈公告。
-  static Future<MarqueeAnnouncement> getMarqueeAnnouncement() async {
-    Uri url = Uri.parse('$baseUrl?op=getMarqueeAnnouncement');
+  Future<MarqueeAnnouncement> getMarqueeAnnouncement() async {
+    Uri url = Uri.parse('$_baseUrl?op=getMarqueeAnnouncement');
     http.Response response = await http.get(url);
     var body = json.decode(response.body);
     bool success = body['success'];
@@ -131,8 +134,8 @@ class EtunAPI {
   }
 
   //獲得公司公告。
-  static Future<List<CompanyAnnouncement>> getCompanyAnnouncements() async {
-    Uri url = Uri.parse('$baseUrl?op=getCompanyAnnouncements');
+  Future<List<CompanyAnnouncement>> getCompanyAnnouncements() async {
+    Uri url = Uri.parse('$_baseUrl?op=getCompanyAnnouncements');
     http.Response response = await http.get(url);
     var body = json.decode(response.body);
     bool success = body['success'];
@@ -148,10 +151,10 @@ class EtunAPI {
   }
 
   //獲得個人通知。
-  static Future<List<IndividualNotification>> getIndividualNotifications(
+  Future<List<IndividualNotification>> getIndividualNotifications(
       {required int memberId}) async {
     Uri url = Uri.parse(
-        '$baseUrl?op=getIndividualNotifications&patrol_member_id=$memberId');
+        '$_baseUrl?op=getIndividualNotifications&patrol_member_id=$memberId');
     http.Response response = await http.get(url);
     var body = json.decode(response.body);
     bool success = body['success'];
@@ -167,8 +170,8 @@ class EtunAPI {
   }
 
   //獲得待簽署文件。
-  static Future<List<SignableDocument>> getSignableDocuments() async {
-    Uri url = Uri.parse('$baseUrl?op=getSignableDocuments');
+  Future<List<SignableDocument>> getSignableDocuments() async {
+    Uri url = Uri.parse('$_baseUrl?op=getSignableDocuments');
     http.Response response = await http.get(url);
     var body = json.decode(response.body);
     bool success = body['success'];
@@ -184,9 +187,9 @@ class EtunAPI {
   }
 
   //標示個人通知為已讀。
-  static Future<void> markIndividualNotificationAsSeen(
+  Future<void> markIndividualNotificationAsSeen(
       {required int notificationId}) async {
-    Uri url = Uri.parse('$baseUrl?op=markIndividualNotificationAsSeen');
+    Uri url = Uri.parse('$_baseUrl?op=markIndividualNotificationAsSeen');
     http.Response response = await http.post(
       url,
       headers: <String, String>{
@@ -201,11 +204,11 @@ class EtunAPI {
   }
 
   //標示公司公告為已讀。
-  static Future<void> markCompanyAnnouncementAsSeen({
+  Future<void> markCompanyAnnouncementAsSeen({
     required int announcementId,
     required int memberId,
   }) async {
-    Uri url = Uri.parse('$baseUrl?op=markCompanyAnnouncementAsSeen');
+    Uri url = Uri.parse('$_baseUrl?op=markCompanyAnnouncementAsSeen');
     http.Response response = await http.post(
       url,
       headers: <String, String>{
@@ -223,10 +226,10 @@ class EtunAPI {
   }
 
   //獲得最近50筆已讀的公司公告id。
-  static Future<List<int>> getRecentSeenCompanyAnnouncementIds(
+  Future<List<int>> getRecentSeenCompanyAnnouncementIds(
       {required int memberId}) async {
     Uri url = Uri.parse(
-        '$baseUrl?op=getRecentSeenCompanyAnnouncementIds&patrol_member_id=$memberId');
+        '$_baseUrl?op=getRecentSeenCompanyAnnouncementIds&patrol_member_id=$memberId');
     http.Response response = await http.get(url);
     var body = json.decode(response.body);
     bool success = body['success'];
@@ -242,12 +245,12 @@ class EtunAPI {
   }
 
   //提交辦理入職的文件。
-  static Future<bool> submitOnboardDocument({
+  Future<bool> submitOnboardDocument({
     required List<List<int>> documentImage,
     required SubmitOnboardDocumentRecord onboardDocumentRecord,
   }) async {
     try {
-      Uri url = Uri.parse('$baseUrl?op=submitOnboardDocument');
+      Uri url = Uri.parse('$_baseUrl?op=submitOnboardDocument');
       List<http.MultipartFile> files = [];
       for (int i = 0; i < documentImage.length; i++) {
         files.add(http.MultipartFile.fromBytes(
