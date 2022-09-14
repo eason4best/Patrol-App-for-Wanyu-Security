@@ -72,10 +72,24 @@ class PatrolScreen extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 16),
                           child: FloatingActionButton.large(
-                            onPressed: () {},
+                            onPressed: () => bloc.toggleTorch().catchError((e) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  e.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(color: Colors.white),
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                              ));
+                            }),
                             backgroundColor: Colors.white,
-                            child: const Icon(
-                              Icons.flashlight_on_outlined,
+                            child: Icon(
+                              ss.data!.torchOn!
+                                  ? Icons.flashlight_off_outlined
+                                  : Icons.flashlight_on_outlined,
                               size: 40,
                               color: Colors.black87,
                             ),

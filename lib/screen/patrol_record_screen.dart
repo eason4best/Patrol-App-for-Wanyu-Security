@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
+import 'package:security_wanyu/widget/patrol_record_widget.dart';
 
 class PatrolRecordScreen extends StatelessWidget {
   final List<Place2Patrol> donePlaces2Patrol;
@@ -10,52 +11,49 @@ class PatrolRecordScreen extends StatelessWidget {
     required this.undonePlaces2Patrol,
   }) : super(key: key);
 
+  List<Map<String, List<Place2Patrol>>> get _places2PatrolGroupByCustomer {
+    List<String> customerNames = Set<String>.from(
+        List<Place2Patrol>.from([...donePlaces2Patrol, ...undonePlaces2Patrol])
+            .map((pp) => pp.customerName)).toList();
+    List<Map<String, List<Place2Patrol>>> result = [];
+    for (var customerName in customerNames) {
+      Map<String, List<Place2Patrol>> place2patrol = {
+        'donePlaces2Patrol': donePlaces2Patrol
+            .where((dpp) => dpp.customerName == customerName)
+            .toList(),
+        'undonePlaces2Patrol': undonePlaces2Patrol
+            .where((upp) => upp.customerName == customerName)
+            .toList(),
+      };
+      result.add(place2patrol);
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('巡邏紀錄'),
+        title: const Text('今日巡邏紀錄'),
       ),
       backgroundColor: Colors.white,
-      body: ListView(
+      body: ListView.builder(
+        itemCount: _places2PatrolGroupByCustomer.length,
         shrinkWrap: true,
-        children: [
-          ListTile(
-            title: Text(
-              '待巡邏',
-              style: TextStyle(color: Theme.of(context).primaryColor),
-            ),
+        itemBuilder: (context, index) => Container(
+          margin: EdgeInsets.only(
+            top: index == 0 ? 8 : 24,
+            left: 16,
+            right: 16,
+            bottom: index == _places2PatrolGroupByCustomer.length - 1 ? 24 : 0,
           ),
-          ...List.generate(
-            undonePlaces2Patrol.length,
-            (index) => ListTile(
-              title: Text(undonePlaces2Patrol[index].patrolPlaceTitle!),
-            ),
+          child: PatrolRecordWidget(
+            donePlaces2Patrol: _places2PatrolGroupByCustomer[index]
+                ['donePlaces2Patrol']!,
+            undonePlaces2Patrol: _places2PatrolGroupByCustomer[index]
+                ['undonePlaces2Patrol']!,
           ),
-          const Divider(
-            height: 0,
-            thickness: 1,
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            child: ListTile(
-              title: Text(
-                '已完成',
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),
-            ),
-          ),
-          ...List.generate(
-            donePlaces2Patrol.length,
-            (index) => ListTile(
-              leading: Icon(
-                Icons.check_circle_outline,
-                color: Theme.of(context).primaryColor,
-              ),
-              title: Text(donePlaces2Patrol[index].patrolPlaceTitle!),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

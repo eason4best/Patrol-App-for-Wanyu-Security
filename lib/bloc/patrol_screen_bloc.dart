@@ -35,20 +35,18 @@ class PatrolScreenBloc {
     try {
       if (barcode.rawValue != null) {
         String? patrolPlaceSN = barcode.rawValue;
-        int? customerId = _model.undonePlaces2Patrol!
-            .firstWhere((upp) => upp.patrolPlaceSN == patrolPlaceSN)
-            .customerId;
-        String? patrolPlaceTitle = _model.undonePlaces2Patrol!
-            .firstWhere((upp) => upp.patrolPlaceSN == patrolPlaceSN)
-            .patrolPlaceTitle;
-        if (customerId != null && patrolPlaceTitle != null) {
+        int index = _model.undonePlaces2Patrol!
+            .indexWhere((upp) => upp.patrolPlaceSN == patrolPlaceSN);
+        if (index != -1) {
           PatrolRecord patrolRecord = PatrolRecord(
-            customerId: customerId,
+            customerId: _model.undonePlaces2Patrol![index].customerId,
             memberSN: member.memberSN,
             memberName: member.memberName,
             patrolPlaceSN: patrolPlaceSN,
-            patrolPlaceTitle: patrolPlaceTitle,
+            patrolPlaceTitle:
+                _model.undonePlaces2Patrol![index].patrolPlaceTitle,
             day: DateTime.now().day,
+            uploaded: false,
           );
           await LocalDatabase.instance
               .insertPatrolRecord(patrolRecord: [patrolRecord]);
@@ -62,6 +60,15 @@ class PatrolScreenBloc {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> toggleTorch() async {
+    if (scannerController.hasTorch) {
+      await scannerController.toggleTorch();
+      updateWith(torchOn: scannerController.torchState.value == TorchState.on);
+    } else {
+      throw Exception('沒有手電筒可開啟');
     }
   }
 

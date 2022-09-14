@@ -5,6 +5,7 @@ class PatrolRecord {
   final String? patrolPlaceSN;
   final String? patrolPlaceTitle;
   final int? day;
+  final bool? uploaded;
   PatrolRecord({
     this.customerId,
     this.memberSN,
@@ -12,6 +13,7 @@ class PatrolRecord {
     this.patrolPlaceSN,
     this.patrolPlaceTitle,
     this.day,
+    this.uploaded,
   });
 
   Map<String, dynamic> toMap() => {
@@ -21,6 +23,7 @@ class PatrolRecord {
         'patrolPlaceSN': patrolPlaceSN,
         'patrolPlaceTitle': patrolPlaceTitle,
         'day': day,
+        'uploaded': uploaded! ? 1 : 0,
       };
 
   factory PatrolRecord.fromMap(Map<String, dynamic>? data) {
@@ -40,6 +43,7 @@ class PatrolRecord {
       patrolPlaceSN: patrolPlaceSN,
       patrolPlaceTitle: patrolPlaceTitle,
       day: day,
+      uploaded: data['uploaded'] == 1,
     );
   }
 }

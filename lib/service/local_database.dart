@@ -30,7 +30,8 @@ class LocalDatabase {
                   memberName TEXT NOT NULL,
                   patrolPlaceSN TEXT NOT NULL,
                   patrolPlaceTitle TEXT NOT NULL,
-                  day INTEGER NOT NULL
+                  day INTEGER NOT NULL,
+                  uploaded INTEGER NOT NULL
                 )
             ''',
           );
