@@ -5,6 +5,7 @@ import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/place2patrol.dart';
 import 'package:security_wanyu/model/user_location.dart';
 import 'package:security_wanyu/screen/contact_us_screen.dart';
 import 'package:security_wanyu/screen/login_screen.dart';
@@ -14,6 +15,7 @@ import 'package:security_wanyu/screen/shift_screen.dart';
 import 'package:security_wanyu/screen/patrol_screen.dart';
 import 'package:security_wanyu/screen/form_apply_screen.dart';
 import 'package:security_wanyu/service/etun_api.dart';
+import 'package:security_wanyu/service/local_database.dart';
 
 class HomeScreenBloc {
   final Member member;
@@ -26,6 +28,10 @@ class HomeScreenBloc {
   Future<void> initialize({required BuildContext context}) async {
     await Provider.of<UserLocationBloc>(context, listen: false)
         .handleLocationPermission();
+    List<Place2Patrol> places2Patrol = await EtunAPI.instance
+        .getMemberPlaces2Patrol(memberName: member.memberName!);
+    await LocalDatabase.instance
+        .insertPlaces2Patrol(places2Patrol: places2Patrol);
   }
 
   Future<String> getMarqueeContent() async {

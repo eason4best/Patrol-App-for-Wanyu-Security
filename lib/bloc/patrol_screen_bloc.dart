@@ -1,31 +1,45 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:security_wanyu/model/patrol_screen_model.dart';
+import 'package:security_wanyu/model/place2patrol.dart';
+import 'package:security_wanyu/other/utils.dart';
+import 'package:security_wanyu/service/local_database.dart';
 
 class PatrolScreenBloc {
-  final BuildContext context;
-  late MobileScannerController _scannerController;
-  PatrolScreenBloc({required this.context}) {
-    _scannerController = MobileScannerController();
+  final StreamController<PatrolScreenModel> _streamController =
+      StreamController();
+  Stream<PatrolScreenModel> get stream => _streamController.stream;
+  PatrolScreenModel _model = PatrolScreenModel(
+    places2patrol: [],
+    torchOn: false,
+    offline: false,
+  );
+  PatrolScreenModel get model => _model;
+  MobileScannerController scannerController = MobileScannerController();
+
+  Future<void> initialize() async {
+    List<Place2Patrol> places2Patrol =
+        await LocalDatabase.instance.getPlaces2Patrol();
+    bool offline = !await Utils.hasInternetConnection();
+    updateWith(places2patrol: places2Patrol, offline: offline);
   }
 
-  MobileScannerController get scannerController => _scannerController;
-
-  void onDetect(Barcode barcode, MobileScannerArguments? args) {
-    if (barcode.rawValue != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          '巡邏成功',
-          style: Theme.of(context)
-              .textTheme
-              .headline6!
-              .copyWith(color: Colors.white),
-        ),
-        behavior: SnackBarBehavior.floating,
-      ));
-    }
+  void updateWith({
+    List<Place2Patrol>? places2patrol,
+    bool? torchOn,
+    bool? offline,
+  }) {
+    _model = _model.copyWith(
+      places2patrol: places2patrol,
+      torchOn: torchOn,
+      offline: offline,
+    );
+    _streamController.add(_model);
   }
 
   void dispose() {
-    _scannerController.dispose();
+    scannerController.dispose();
+    _streamController.close();
   }
 }

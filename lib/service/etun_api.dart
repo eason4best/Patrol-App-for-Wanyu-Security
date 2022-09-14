@@ -6,6 +6,7 @@ import 'package:security_wanyu/model/company_announcement.dart';
 import 'package:security_wanyu/model/individual_notification.dart';
 import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/place2patrol.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:security_wanyu/model/signable_document.dart';
@@ -17,6 +18,24 @@ class EtunAPI {
   static final EtunAPI instance = EtunAPI._constructor();
 
   final String _baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
+
+  Future<List<Place2Patrol>> getMemberPlaces2Patrol(
+      {required String memberName}) async {
+    Uri url = Uri.parse(
+        '$_baseUrl?op=getMemberPlaces2Patrol&member_name=$memberName');
+    http.Response response = await http.get(url);
+    var body = json.decode(response.body);
+    bool success = body['success'];
+    if (success) {
+      final places2PatrolData = body['places2Patrol'] as List;
+      return places2PatrolData
+          .map((data) => Place2Patrol.fromData(data))
+          .toList();
+    } else {
+      throw Exception('Something went wrong.');
+    }
+  }
+
   //登入。
   Future<Map<String, dynamic>> signIn(
       {required String memberAccount, required String memberPassword}) async {
