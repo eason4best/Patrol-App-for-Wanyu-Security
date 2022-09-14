@@ -113,4 +113,11 @@ class LocalDatabase {
     }
     await batch.commit(noResult: true);
   }
+
+  Future<List<PatrolRecord>> getPatrolRecordsToUpload() async {
+    Database db = await _db;
+    List<Map<String, dynamic>> maps =
+        await db.query('PatrolRecord', where: 'uploaded = ?', whereArgs: [0]);
+    return maps.map((map) => PatrolRecord.fromMap(map)).toList();
+  }
 }

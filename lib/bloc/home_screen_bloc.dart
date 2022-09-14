@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/user_location_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/patrol_record.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
 import 'package:security_wanyu/model/user_location.dart';
 import 'package:security_wanyu/screen/contact_us_screen.dart';
@@ -25,6 +28,8 @@ class HomeScreenBloc {
     required this.context,
   });
 
+  late Timer uploadPatrolRecordTimer;
+
   Future<void> initialize({required BuildContext context}) async {
     await Provider.of<UserLocationBloc>(context, listen: false)
         .handleLocationPermission();
@@ -32,6 +37,8 @@ class HomeScreenBloc {
         .getMemberPlaces2Patrol(memberName: member.memberName!);
     await LocalDatabase.instance
         .replaceAllPlaces2Patrol(places2Patrol: places2Patrol);
+    uploadPatrolRecordTimer =
+        Timer.periodic(const Duration(seconds: 10), (_) async {});
   }
 
   Future<String> getMarqueeContent() async {
@@ -210,5 +217,7 @@ class HomeScreenBloc {
         MaterialPageRoute(builder: (context) => LoginScreen.create()));
   }
 
-  void dispose() {}
+  void dispose() {
+    uploadPatrolRecordTimer.cancel();
+  }
 }

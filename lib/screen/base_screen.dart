@@ -29,10 +29,16 @@ class BaseScreen extends StatefulWidget {
 
 class _BaseScreenState extends State<BaseScreen> {
   int _currentIndex = 0;
-  final pages = [
-    HomeScreen.create(),
-    AnnouncementScreen.create(),
-  ];
+  late List<Widget> pages;
+
+  @override
+  void initState() {
+    pages = [
+      HomeScreen.create(),
+      AnnouncementScreen.create(),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
