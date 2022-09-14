@@ -37,7 +37,6 @@ dependencies:
   http: ^0.13.5
   shared_preferences: ^2.0.15
   marquee: ^2.2.3
-  another_flushbar: ^1.10.29
   signature: ^5.1.0
   http_parser: ^4.0.1
   docx_template: ^0.3.2

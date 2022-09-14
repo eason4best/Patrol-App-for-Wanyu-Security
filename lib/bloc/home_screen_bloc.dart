@@ -31,7 +31,7 @@ class HomeScreenBloc {
     List<Place2Patrol> places2Patrol = await EtunAPI.instance
         .getMemberPlaces2Patrol(memberName: member.memberName!);
     await LocalDatabase.instance
-        .insertPlaces2Patrol(places2Patrol: places2Patrol);
+        .replaceAllPlaces2Patrol(places2Patrol: places2Patrol);
   }
 
   Future<String> getMarqueeContent() async {
@@ -137,7 +137,7 @@ class HomeScreenBloc {
           } else {
             Navigator.of(context).push(MaterialPageRoute(
               fullscreenDialog: true,
-              builder: (context) => PatrolScreen.create(),
+              builder: (context) => PatrolScreen.create(member: member),
             ));
           }
         };
