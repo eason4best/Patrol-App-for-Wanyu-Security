@@ -13,6 +13,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:security_wanyu/model/signable_document.dart';
 import 'package:security_wanyu/model/submit_form_record.dart';
 import 'package:security_wanyu/model/submit_onboard_document_record.dart';
+import 'package:security_wanyu/service/local_database.dart';
 
 class EtunAPI {
   EtunAPI._constructor();
@@ -106,15 +107,20 @@ class EtunAPI {
         punchCardType: type,
         makeupType: makeupType,
         customerName: customerName,
-        lat: lat,
-        lng: lng,
+        lat: lat, //22.998020,
+        lng: lng, //120.208535,
       );
       http.Response response = await http.post(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: punchCardRecord.toJSON(),
+        body: jsonEncode({
+          'customerIds': makeupType == PunchCards.makeUp
+              ? null
+              : await LocalDatabase.instance.getCustomers2Patrol(),
+          'punchCardRecord': punchCardRecord.toMap()
+        }),
       );
       final error = json.decode(response.body)['error'];
       if (error != null) {

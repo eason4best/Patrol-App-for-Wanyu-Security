@@ -104,6 +104,11 @@ class LocalDatabase {
     );
   }
 
+  Future<List<int>> getCustomers2Patrol() async {
+    List<Place2Patrol> places2Patrol = await getPlaces2Patrol();
+    return Set<int>.from(places2Patrol.map((pp) => pp.customerId)).toList();
+  }
+
   Future<void> insertPatrolRecord(
       {required List<PatrolRecord> patrolRecord}) async {
     Database db = await _db;

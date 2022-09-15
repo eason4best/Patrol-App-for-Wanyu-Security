@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:security_wanyu/enum/punch_cards.dart';
 
 class PunchCardRecord {
@@ -30,8 +28,8 @@ class PunchCardRecord {
     this.lng,
   });
 
-  String toJSON() {
-    Map<String, dynamic> data = {
+  Map<String, dynamic> toMap() {
+    return {
       'patrol_member_id': memberId,
       'member_sn': memberSN,
       'member_name': memberName,
@@ -40,12 +38,11 @@ class PunchCardRecord {
           ? '${dateTime!.year}-${dateTime!.month}-${dateTime!.day} ${dateTime!.hour}:${dateTime!.minute}'
           : null,
       'punch_card_type': punchCardType.toString(),
-      'makeup_type': makeupType.toString(),
+      'makeup_type': makeupType?.toString(),
       'customer_id': customerId,
       'customer_name': customerName,
       'lat': lat,
       'lng': lng,
     };
-    return jsonEncode(data);
   }
 }
