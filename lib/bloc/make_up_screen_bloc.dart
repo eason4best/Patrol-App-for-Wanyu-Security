@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
-import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/make_up_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/service/etun_api.dart';

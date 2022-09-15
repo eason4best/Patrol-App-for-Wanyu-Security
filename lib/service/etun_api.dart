@@ -20,6 +20,24 @@ class EtunAPI {
 
   final String _baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
 
+  Future<int> getUpcomingPatrolCustomer({required int memberId}) async {
+    try {
+      Uri url = Uri.parse(
+          '$_baseUrl?op=getUpcomingPatrolCustomer&patrol_member_id=$memberId');
+      http.Response response = await http.get(url);
+      final body = json.decode(response.body);
+      final data = body['data'];
+      if (data != null) {
+        return data['customerId'];
+      } else {
+        final error = body['error'];
+        throw APIException(code: error['code'], message: error['message']);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<Place2Patrol>> getMemberPlaces2Patrol(
       {required String memberName}) async {
     Uri url = Uri.parse(
