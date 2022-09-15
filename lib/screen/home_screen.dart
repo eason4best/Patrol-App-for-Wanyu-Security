@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
-import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/user_location.dart';
 import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/screen/contact_us_screen.dart';
 import 'package:security_wanyu/screen/form_apply_screen.dart';
+import 'package:security_wanyu/screen/login_screen.dart';
 import 'package:security_wanyu/screen/makeup_screen.dart';
 import 'package:security_wanyu/screen/onboard_screen.dart';
 import 'package:security_wanyu/screen/patrol_screen.dart';
@@ -24,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 
   static Widget create() {
     return Provider<HomeScreenBloc>(
-      create: (context) => HomeScreenBloc(context: context),
+      create: (context) => HomeScreenBloc(),
       child: Consumer<HomeScreenBloc>(
         builder: (context, bloc, _) => HomeScreen(bloc: bloc),
       ),
@@ -45,6 +45,26 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  bool _canGetLocation() {
+    UserLocation userLocation =
+        Provider.of<UserLocation>(context, listen: false);
+    if (!userLocation.hasLocationPermission!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟定位權限'),
+        behavior: SnackBarBehavior.floating,
+      ));
+      return false;
+    } else if (!userLocation.locationServiceEnabled!) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('請開啟手機定位功能'),
+        behavior: SnackBarBehavior.floating,
+      ));
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('歡迎使用 ${member.memberName}'),
         actions: [
           TextButton(
-            onPressed: widget.bloc.signOut,
+            onPressed: () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => LoginScreen.create(),
+              ),
+            ),
             style: ButtonStyle(
               foregroundColor: MaterialStateProperty.all(Colors.black54),
             ),
@@ -94,115 +118,132 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(
-                        3,
-                        (index) => PunchCardWidget(
-                          title: PunchCards.values
-                              .map((pc) => pc.toString())
-                              .toList()[index],
-                          onPressed: PunchCards.values
-                              .map((pc) => pc == PunchCards.work
-                                  ? () => widget.bloc
-                                      .workPunch(member: member)
-                                      .then(
-                                        (_) => showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text('打卡成功'),
-                                            content: const Text('上班打卡成功！'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
-                                                child: const Text(
-                                                  '確認',
-                                                  textAlign: TextAlign.end,
-                                                ),
-                                              ),
-                                            ],
+                      children: [
+                        PunchCardWidget(
+                          title: '上班',
+                          onPressed: () {
+                            if (_canGetLocation()) {
+                              widget.bloc
+                                  .workPunch(
+                                    member: member,
+                                    userLocation: Provider.of<UserLocation>(
+                                      context,
+                                      listen: false,
+                                    ),
+                                  )
+                                  .then(
+                                    (_) => showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('打卡成功'),
+                                        content: const Text('上班打卡成功！'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
+                                            ),
                                           ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .catchError(
+                                    (e) => showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('打卡失敗'),
+                                        content: Text(
+                                          e is APIException
+                                              ? e.message
+                                              : '上班打卡失敗',
                                         ),
-                                      )
-                                      .catchError(
-                                        (e) => showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text('打卡失敗'),
-                                            content: Text(
-                                              e is APIException
-                                                  ? e.message
-                                                  : '上班打卡失敗',
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
-                                                child: const Text(
-                                                  '確認',
-                                                  textAlign: TextAlign.end,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                  : pc == PunchCards.getOff
-                                      ? () => widget.bloc
-                                          .getOffPunch(member: member)
-                                        ..then(
-                                          (_) => showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: const Text('打卡成功'),
-                                              content: const Text('下班打卡成功！'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(),
-                                                  child: const Text(
-                                                    '確認',
-                                                    textAlign: TextAlign.end,
-                                                  ),
-                                                ),
-                                              ],
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
                                             ),
                                           ),
-                                        ).catchError(
-                                          (e) => showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: const Text('打卡失敗'),
-                                              content: Text(
-                                                e is APIException
-                                                    ? e.message
-                                                    : '下班打卡失敗',
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(),
-                                                  child: const Text(
-                                                    '確認',
-                                                    textAlign: TextAlign.end,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : () => Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              fullscreenDialog: true,
-                                              builder: (context) =>
-                                                  MakeUpScreen.create(
-                                                      member: member),
-                                            ),
-                                          ))
-                              .toList()[index],
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                            }
+                          },
                         ),
-                      ),
+                        PunchCardWidget(
+                          title: '下班',
+                          onPressed: () {
+                            if (_canGetLocation()) {
+                              widget.bloc
+                                  .getOffPunch(
+                                    member: member,
+                                    userLocation: Provider.of<UserLocation>(
+                                      context,
+                                      listen: false,
+                                    ),
+                                  )
+                                  .then(
+                                    (_) => showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('打卡成功'),
+                                        content: const Text('下班打卡成功！'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .catchError(
+                                    (e) => showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('打卡失敗'),
+                                        content: Text(
+                                          e is APIException
+                                              ? e.message
+                                              : '下班打卡失敗',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                            }
+                          },
+                        ),
+                        PunchCardWidget(
+                          title: '補卡',
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (context) =>
+                                  MakeUpScreen.create(member: member),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
@@ -228,54 +269,42 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.black87,
                           ),
                           onPressed: () {
-                            UserLocation userLocation =
-                                Provider.of<UserLocation>(context,
-                                    listen: false);
-                            if (!userLocation.hasLocationPermission!) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text('請開啟定位權限'),
-                                behavior: SnackBarBehavior.floating,
-                              ));
-                            } else if (!userLocation.locationServiceEnabled!) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text('請開啟手機定位功能'),
-                                behavior: SnackBarBehavior.floating,
-                              ));
-                            }
-                            widget.bloc
-                                .getUpcomingPatrolCustomer(
-                                    memberId: member.memberId!)
-                                .then(
-                                  (customerId) => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          PatrolScreen.create(member: member),
-                                    ),
-                                  ),
-                                )
-                                .catchError(
-                                  (e) => showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: const Text('無法開始巡邏'),
-                                      content: Text(
-                                        e is APIException ? e.message : '發生錯誤',
+                            if (_canGetLocation()) {
+                              widget.bloc
+                                  .getUpcomingPatrolCustomer(
+                                      memberId: member.memberId!)
+                                  .then(
+                                    (customerId) => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PatrolScreen.create(member: member),
                                       ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: const Text(
-                                            '確認',
-                                            textAlign: TextAlign.end,
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                                  ),
-                                );
+                                  )
+                                  .catchError(
+                                    (e) => showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('無法開始巡邏'),
+                                        content: Text(
+                                          e is APIException
+                                              ? e.message
+                                              : '發生錯誤',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                            }
                           },
                         ),
                         MainFunctionWidget(
