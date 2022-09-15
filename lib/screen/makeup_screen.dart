@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/make_up_screen_bloc.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/make_up_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/other/utils.dart';
@@ -113,7 +114,48 @@ class MakeUpScreen extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 32),
                   child: ElevatedButton(
                     onPressed: snapshot.data!.canSubmit!
-                        ? () async => await bloc.submit(context)
+                        ? () => bloc
+                            .submit(context)
+                            .then(
+                              (_) => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('補卡成功'),
+                                  content: const Text('補卡成功！'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text(
+                                        '確認',
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                            .catchError(
+                              (e) => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('補卡失敗'),
+                                  content: Text(
+                                    e is APIException ? e.message : '補卡打卡失敗',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text(
+                                        '確認',
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
                         : null,
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.all(0.0),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
+import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/company_announcement.dart';
 import 'package:security_wanyu/model/individual_notification.dart';
 import 'package:security_wanyu/model/marquee_announcement.dart';
@@ -68,12 +69,12 @@ class EtunAPI {
   }
 
   //打卡。
-  Future<bool> punchCard({
+  Future<void> punchCard({
     required PunchCards type,
     required Member member,
     DateTime? dateTime,
     PunchCards? makeupType,
-    String? place,
+    String? customerName,
     double? lat,
     double? lng,
   }) async {
@@ -86,7 +87,7 @@ class EtunAPI {
         dateTime: dateTime,
         punchCardType: type,
         makeupType: makeupType,
-        place: place,
+        customerName: customerName,
         lat: lat,
         lng: lng,
       );
@@ -97,10 +98,12 @@ class EtunAPI {
         },
         body: punchCardRecord.toJSON(),
       );
-      bool success = json.decode(response.body)['success'];
-      return success;
+      final error = json.decode(response.body)['error'];
+      if (error != null) {
+        throw APIException(code: error['code'], message: error['message']);
+      }
     } catch (e) {
-      return false;
+      rethrow;
     }
   }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/make_up_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/service/etun_api.dart';
@@ -69,29 +70,17 @@ class MakeUpScreenBloc {
   }
 
   Future<void> submit(BuildContext context) async {
-    bool result = await EtunAPI.instance.punchCard(
-      type: PunchCards.makeUp,
-      makeupType: _model.type,
-      member: member,
-      dateTime: _model.dateTime,
-      place: _model.place,
-    );
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(result ? '補卡成功' : '補卡失敗'),
-        content: Text(result ? '補卡成功！' : '補卡失敗，請再試一次。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              '確認',
-              textAlign: TextAlign.end,
-            ),
-          ),
-        ],
-      ),
-    );
+    try {
+      await EtunAPI.instance.punchCard(
+        type: PunchCards.makeUp,
+        makeupType: _model.type,
+        member: member,
+        dateTime: _model.dateTime,
+        customerName: _model.place,
+      );
+    } catch (_) {
+      rethrow;
+    }
   }
 
   void updateWith({

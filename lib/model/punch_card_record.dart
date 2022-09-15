@@ -11,7 +11,8 @@ class PunchCardRecord {
   final DateTime? makeupDateTime;
   final PunchCards? punchCardType;
   final PunchCards? makeupType;
-  final String? place;
+  final int? customerId;
+  final String? customerName;
   final double? lat;
   final double? lng;
   PunchCardRecord({
@@ -23,7 +24,8 @@ class PunchCardRecord {
     this.makeupDateTime,
     this.punchCardType,
     this.makeupType,
-    this.place,
+    this.customerId,
+    this.customerName,
     this.lat,
     this.lng,
   });
@@ -39,7 +41,8 @@ class PunchCardRecord {
           : null,
       'punch_card_type': punchCardType.toString(),
       'makeup_type': makeupType.toString(),
-      'place': place,
+      'customer_id': customerId,
+      'customer_name': customerName,
       'lat': lat,
       'lng': lng,
     };

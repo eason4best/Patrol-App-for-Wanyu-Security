@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
 import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
+import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/screen/makeup_screen.dart';
@@ -84,9 +85,95 @@ class HomeScreen extends StatelessWidget {
                               .toList()[index],
                           onPressed: PunchCards.values
                               .map((pc) => pc == PunchCards.work
-                                  ? () async => await bloc.workPunch()
+                                  ? () => bloc
+                                      .workPunch()
+                                      .then(
+                                        (_) => showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('打卡成功'),
+                                            content: const Text('上班打卡成功！'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                                child: const Text(
+                                                  '確認',
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                      .catchError(
+                                        (e) => showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('打卡失敗'),
+                                            content: Text(
+                                              e is APIException
+                                                  ? e.message
+                                                  : '上班打卡失敗',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                                child: const Text(
+                                                  '確認',
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                   : pc == PunchCards.getOff
-                                      ? () async => await bloc.getOffPunch()
+                                      ? () => bloc.getOffPunch()
+                                        ..then(
+                                          (_) => showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text('打卡成功'),
+                                              content: const Text('下班打卡成功！'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(),
+                                                  child: const Text(
+                                                    '確認',
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ).catchError(
+                                          (e) => showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text('打卡失敗'),
+                                              content: Text(
+                                                e is APIException
+                                                    ? e.message
+                                                    : '下班打卡失敗',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(),
+                                                  child: const Text(
+                                                    '確認',
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
                                       : () => Navigator.of(context).push(
                                             MaterialPageRoute(
                                               fullscreenDialog: true,

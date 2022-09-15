@@ -7,7 +7,6 @@ import 'package:security_wanyu/enum/main_functions.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
-import 'package:security_wanyu/model/patrol_record.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
 import 'package:security_wanyu/model/user_location.dart';
 import 'package:security_wanyu/screen/contact_us_screen.dart';
@@ -61,28 +60,16 @@ class HomeScreenBloc {
         behavior: SnackBarBehavior.floating,
       ));
     } else {
-      bool result = await EtunAPI.instance.punchCard(
-        type: PunchCards.work,
-        member: member,
-        lat: userLocation.lat,
-        lng: userLocation.lng,
-      );
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(result ? '打卡成功！' : '打卡失敗'),
-          content: Text(result ? '上班打卡成功！' : '上班打卡失敗，請再試一次。'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                '確認',
-                textAlign: TextAlign.end,
-              ),
-            ),
-          ],
-        ),
-      );
+      try {
+        await EtunAPI.instance.punchCard(
+          type: PunchCards.work,
+          member: member,
+          lat: userLocation.lat,
+          lng: userLocation.lng,
+        );
+      } catch (_) {
+        rethrow;
+      }
     }
   }
 
@@ -100,28 +87,16 @@ class HomeScreenBloc {
         behavior: SnackBarBehavior.floating,
       ));
     } else {
-      bool result = await EtunAPI.instance.punchCard(
-        type: PunchCards.getOff,
-        member: member,
-        lat: userLocation.lat,
-        lng: userLocation.lng,
-      );
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(result ? '打卡成功！' : '打卡失敗'),
-          content: Text(result ? '下班打卡成功！' : '下班打卡失敗，請再試一次。'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                '確認',
-                textAlign: TextAlign.end,
-              ),
-            ),
-          ],
-        ),
-      );
+      try {
+        await EtunAPI.instance.punchCard(
+          type: PunchCards.getOff,
+          member: member,
+          lat: userLocation.lat,
+          lng: userLocation.lng,
+        );
+      } catch (_) {
+        rethrow;
+      }
     }
   }
 
