@@ -107,8 +107,8 @@ class EtunAPI {
         punchCardType: type,
         makeupType: makeupType,
         customerName: customerName,
-        lat: lat, //22.998020,
-        lng: lng, //120.208535,
+        lat: lat,
+        lng: lng,
       );
       http.Response response = await http.post(
         url,

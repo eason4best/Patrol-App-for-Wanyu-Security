@@ -31,20 +31,24 @@ class PatrolScreenBloc {
     );
   }
 
-  Future<bool> patrol({required Barcode barcode}) async {
+  Future<bool> patrol(
+      {required Barcode barcode, required int customerId}) async {
     try {
       if (barcode.rawValue != null) {
+        List<Place2Patrol> onDutyUndonePlaces2Patrol = _model
+            .undonePlaces2Patrol!
+            .where((pp) => pp.customerId == customerId)
+            .toList();
         String? patrolPlaceSN = barcode.rawValue;
-        int index = _model.undonePlaces2Patrol!
+        int index = onDutyUndonePlaces2Patrol
             .indexWhere((upp) => upp.patrolPlaceSN == patrolPlaceSN);
         if (index != -1) {
           PatrolRecord patrolRecord = PatrolRecord(
-            customerId: _model.undonePlaces2Patrol![index].customerId,
+            customerId: customerId,
             memberSN: member.memberSN,
             memberName: member.memberName,
             patrolPlaceSN: patrolPlaceSN,
-            patrolPlaceTitle:
-                _model.undonePlaces2Patrol![index].patrolPlaceTitle,
+            patrolPlaceTitle: onDutyUndonePlaces2Patrol[index].patrolPlaceTitle,
             day: DateTime.now().day,
             uploaded: false,
           );

@@ -9,16 +9,21 @@ import 'package:security_wanyu/widget/scan_frame.dart';
 
 class PatrolScreen extends StatelessWidget {
   final PatrolScreenBloc bloc;
+  final int customerId;
   const PatrolScreen({
     Key? key,
     required this.bloc,
+    required this.customerId,
   }) : super(key: key);
 
-  static Widget create({required Member member}) {
+  static Widget create({required Member member, required int customerId}) {
     return Provider<PatrolScreenBloc>(
       create: (context) => PatrolScreenBloc(member: member),
       child: Consumer<PatrolScreenBloc>(
-        builder: (context, bloc, _) => PatrolScreen(bloc: bloc),
+        builder: (context, bloc, _) => PatrolScreen(
+          bloc: bloc,
+          customerId: customerId,
+        ),
       ),
       dispose: (context, bloc) => bloc.dispose(),
     );
@@ -50,6 +55,7 @@ class PatrolScreen extends StatelessWidget {
                                 donePlaces2Patrol: ss.data!.donePlaces2Patrol!,
                                 undonePlaces2Patrol:
                                     ss.data!.undonePlaces2Patrol!,
+                                customerId: customerId,
                               ),
                             ),
                           ),
@@ -123,7 +129,9 @@ class PatrolScreen extends StatelessWidget {
                         allowDuplicates: false,
                         controller: bloc.scannerController,
                         onDetect: (barcode, _) async {
-                          bloc.patrol(barcode: barcode).then(
+                          bloc
+                              .patrol(barcode: barcode, customerId: customerId)
+                              .then(
                             (patrolResult) {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(

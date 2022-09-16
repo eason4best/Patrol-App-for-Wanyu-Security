@@ -277,7 +277,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     (customerId) => Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            PatrolScreen.create(member: member),
+                                            PatrolScreen.create(
+                                          member: member,
+                                          customerId: customerId,
+                                        ),
                                       ),
                                     ),
                                   )
