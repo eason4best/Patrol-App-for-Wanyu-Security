@@ -60,7 +60,7 @@ class LocalDatabase {
       'Place2Patrol',
       columns: null,
       where: day != null ? 'day = ?' : null,
-      whereArgs: day != null ? [DateTime.now().day] : null,
+      whereArgs: day != null ? [day] : null,
     );
     return maps.map((map) => Place2Patrol.fromMap(map)).toList();
   }
