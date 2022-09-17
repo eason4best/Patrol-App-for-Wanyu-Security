@@ -4,16 +4,16 @@ class PatrolRecord {
   final String? memberName;
   final String? patrolPlaceSN;
   final String? patrolPlaceTitle;
+  final DateTime? patrolDateTime;
   final int? day;
-  final bool? uploaded;
   PatrolRecord({
     this.customerId,
     this.memberSN,
     this.memberName,
     this.patrolPlaceSN,
     this.patrolPlaceTitle,
+    this.patrolDateTime,
     this.day,
-    this.uploaded,
   });
 
   Map<String, dynamic> toMap() => {
@@ -22,8 +22,8 @@ class PatrolRecord {
         'memberName': memberName,
         'patrolPlaceSN': patrolPlaceSN,
         'patrolPlaceTitle': patrolPlaceTitle,
+        'patrolDateTime': patrolDateTime!.toString(),
         'day': day,
-        'uploaded': uploaded! ? 1 : 0,
       };
 
   factory PatrolRecord.fromMap(Map<String, dynamic>? data) {
@@ -35,6 +35,9 @@ class PatrolRecord {
     final String? memberName = data['memberName'];
     final String? patrolPlaceSN = data['patrolPlaceSN'];
     final String? patrolPlaceTitle = data['patrolPlaceTitle'];
+    final DateTime? patrolDateTime = data['patrolDateTime'] != null
+        ? DateTime.parse(data['patrolDateTime'])
+        : null;
     final int? day = data['day'];
     return PatrolRecord(
       customerId: customerId,
@@ -42,8 +45,8 @@ class PatrolRecord {
       memberName: memberName,
       patrolPlaceSN: patrolPlaceSN,
       patrolPlaceTitle: patrolPlaceTitle,
+      patrolDateTime: patrolDateTime,
       day: day,
-      uploaded: data['uploaded'] == 1,
     );
   }
 }

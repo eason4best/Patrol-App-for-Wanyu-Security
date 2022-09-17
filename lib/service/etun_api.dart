@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
 import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/company_announcement.dart';
+import 'package:security_wanyu/model/customer.dart';
 import 'package:security_wanyu/model/individual_notification.dart';
 import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
+import 'package:security_wanyu/model/patrol_record.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:security_wanyu/model/signable_document.dart';
 import 'package:security_wanyu/model/submit_form_record.dart';
 import 'package:security_wanyu/model/submit_onboard_document_record.dart';
-import 'package:security_wanyu/service/local_database.dart';
 
 class EtunAPI {
   EtunAPI._constructor();
@@ -21,21 +21,17 @@ class EtunAPI {
 
   final String _baseUrl = 'https://service.etun.com.tw/app_api/runner.php';
 
-  Future<int> getUpcomingPatrolCustomer({required int memberId}) async {
-    try {
-      Uri url = Uri.parse(
-          '$_baseUrl?op=getUpcomingPatrolCustomer&patrol_member_id=$memberId');
-      http.Response response = await http.get(url);
-      final body = json.decode(response.body);
-      final data = body['data'];
-      if (data != null) {
-        return data['customerId'];
-      } else {
-        final error = body['error'];
-        throw APIException(code: error['code'], message: error['message']);
-      }
-    } catch (e) {
-      rethrow;
+  Future<List<Customer>> getCustomers() async {
+    Uri url = Uri.parse('$_baseUrl?op=getCustomers');
+    http.Response response = await http.get(url);
+    final body = json.decode(response.body);
+    final error = body['error'];
+    if (error != null) {
+      throw APIException(code: error['code'], message: error['message']);
+    } else {
+      return (body['data'] as List)
+          .map((data) => Customer.fromMap(data))
+          .toList();
     }
   }
 
@@ -87,44 +83,50 @@ class EtunAPI {
     }
   }
 
-  //打卡。
-  Future<void> punchCard({
-    required PunchCards type,
-    required Member member,
-    DateTime? dateTime,
-    PunchCards? makeupType,
-    String? customerName,
-    double? lat,
-    double? lng,
-  }) async {
+  //上傳巡邏紀錄。
+  Future<void> uploadPatrolRecord({required PatrolRecord patrolRecord}) async {
     try {
-      Uri url = Uri.parse('$_baseUrl?op=punchCard');
-      PunchCardRecord punchCardRecord = PunchCardRecord(
-        memberId: member.memberId,
-        memberSN: member.memberSN,
-        memberName: member.memberName,
-        dateTime: dateTime,
-        punchCardType: type,
-        makeupType: makeupType,
-        customerName: customerName,
-        lat: lat,
-        lng: lng,
-      );
+      Uri url = Uri.parse('$_baseUrl?op=uploadPatrolRecord');
       http.Response response = await http.post(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({
-          'customerIds': makeupType == PunchCards.makeUp
-              ? null
-              : await LocalDatabase.instance.getCustomers2Patrol(),
-          'punchCardRecord': punchCardRecord.toMap()
-        }),
+        body: jsonEncode(patrolRecord.toMap()),
       );
-      final error = json.decode(response.body)['error'];
+      final body = json.decode(response.body);
+      final error = body['error'];
       if (error != null) {
-        throw APIException(code: error['code'], message: error['message']);
+        throw APIException(
+          code: error['code'],
+          message: error['message'],
+          debugMessage: error['debugMessage'],
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //打卡。
+  Future<void> punchCard({required PunchCardRecord punchCardRecord}) async {
+    try {
+      Uri url = Uri.parse('$_baseUrl?op=punchCard');
+      http.Response response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(punchCardRecord.toMap()),
+      );
+      final body = json.decode(response.body);
+      final error = body['error'];
+      if (error != null) {
+        throw APIException(
+          code: error['code'],
+          message: error['message'],
+          debugMessage: error['debugMessage'],
+        );
       }
     } catch (e) {
       rethrow;

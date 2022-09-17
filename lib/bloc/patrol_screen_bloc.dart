@@ -49,11 +49,11 @@ class PatrolScreenBloc {
             memberName: member.memberName,
             patrolPlaceSN: patrolPlaceSN,
             patrolPlaceTitle: onDutyUndonePlaces2Patrol[index].patrolPlaceTitle,
+            patrolDateTime: DateTime.now(),
             day: DateTime.now().day,
-            uploaded: false,
           );
           await LocalDatabase.instance
-              .insertPatrolRecord(patrolRecord: [patrolRecord]);
+              .insertPatrolRecord(patrolRecord: patrolRecord);
           await updatePatrolPlaces();
           return true;
         } else {

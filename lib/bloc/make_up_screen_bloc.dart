@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/make_up_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
-import 'package:security_wanyu/service/etun_api.dart';
+import 'package:security_wanyu/model/punch_card_record.dart';
+import 'package:security_wanyu/service/local_database.dart';
 
 class MakeUpScreenBloc {
   final Member member;
@@ -70,13 +71,16 @@ class MakeUpScreenBloc {
 
   Future<void> submit(BuildContext context) async {
     try {
-      await EtunAPI.instance.punchCard(
-        type: PunchCards.makeUp,
+      PunchCardRecord punchCardRecord = PunchCardRecord(
+        memberId: member.memberId,
+        memberSN: member.memberSN,
+        memberName: member.memberName,
+        punchCardType: PunchCards.makeUp,
         makeupType: _model.type,
-        member: member,
         dateTime: _model.dateTime,
         customerName: _model.place,
       );
+      await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {
       rethrow;
     }
