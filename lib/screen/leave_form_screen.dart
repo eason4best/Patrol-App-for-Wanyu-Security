@@ -4,6 +4,7 @@ import 'package:security_wanyu/bloc/leave_form_screen_bloc.dart';
 import 'package:security_wanyu/model/leave_form_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/other/utils.dart';
+import 'package:security_wanyu/screen/signing_screen.dart';
 import 'package:security_wanyu/widget/signature_widget.dart';
 
 class LeaveFormScreen extends StatelessWidget {
@@ -289,10 +290,18 @@ class LeaveFormScreen extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.only(top: 32),
                       child: GestureDetector(
-                        onTap: () => bloc.onSignaturePressed(context: context),
-                        child: SignatureWidget(
-                            signatureImage:
-                                snapshot.data!.leaveForm!.signatureImage),
+                        onTap: () {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SigningScreen(bloc: bloc),
+                          ));
+                        },
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: SignatureWidget(
+                              signatureImage:
+                                  snapshot.data!.leaveForm!.signatureImage),
+                        ),
                       ),
                     ),
                     Container(

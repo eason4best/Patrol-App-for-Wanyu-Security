@@ -8,7 +8,6 @@ import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/resign_form.dart';
 import 'package:security_wanyu/model/resign_form_screen_model.dart';
 import 'package:security_wanyu/model/submit_form_record.dart';
-import 'package:security_wanyu/screen/signing_screen.dart';
 import 'package:security_wanyu/service/etun_api.dart';
 import 'package:security_wanyu/other/utils.dart';
 import 'package:signature/signature.dart';
@@ -85,15 +84,7 @@ class ResignFormScreenBloc {
     }
   }
 
-  void onSignaturePressed({required BuildContext context}) {
-    FocusManager.instance.primaryFocus?.unfocus();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => SigningScreen(bloc: this),
-    ));
-  }
-
-  Future<void> completeSigning({required BuildContext context}) async {
-    NavigatorState navigator = Navigator.of(context);
+  Future<void> completeSigning() async {
     if (signatureController.isNotEmpty) {
       ui.Image? signatureImage = await signatureController.toImage();
       final ByteData? bytes =
@@ -104,7 +95,6 @@ class ResignFormScreenBloc {
         canSubmit: _canSubmit(),
       );
     }
-    navigator.pop();
   }
 
   void clearSigning() {

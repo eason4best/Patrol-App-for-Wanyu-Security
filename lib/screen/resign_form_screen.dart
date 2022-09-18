@@ -5,6 +5,7 @@ import 'package:security_wanyu/bloc/resign_form_screen_bloc.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/resign_form_screen_model.dart';
 import 'package:security_wanyu/other/uppercase_formatter.dart';
+import 'package:security_wanyu/screen/signing_screen.dart';
 import 'package:security_wanyu/widget/signature_widget.dart';
 
 class ResignFormScreen extends StatelessWidget {
@@ -223,10 +224,18 @@ class ResignFormScreen extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.only(top: 32),
                       child: GestureDetector(
-                        onTap: () => bloc.onSignaturePressed(context: context),
-                        child: SignatureWidget(
-                            signatureImage:
-                                snapshot.data!.resignForm!.signatureImage),
+                        onTap: () {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SigningScreen(bloc: bloc),
+                          ));
+                        },
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: SignatureWidget(
+                              signatureImage:
+                                  snapshot.data!.resignForm!.signatureImage),
+                        ),
                       ),
                     ),
                     Container(

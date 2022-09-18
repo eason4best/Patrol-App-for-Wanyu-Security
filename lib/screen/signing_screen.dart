@@ -57,8 +57,11 @@ class _SigningScreenState extends State<SigningScreen> {
             child: const Text('清除'),
           ),
           TextButton(
-            onPressed: () async =>
-                await widget.bloc.completeSigning(context: context),
+            onPressed: () async {
+              await widget.bloc.completeSigning();
+              if (!mounted) return;
+              Navigator.of(context).pop();
+            },
             child: const Text('完成'),
           )
         ],

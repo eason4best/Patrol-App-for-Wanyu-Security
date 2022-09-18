@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:security_wanyu/enum/sign_in_results.dart';
 import 'package:security_wanyu/model/api_exception.dart';
@@ -14,6 +15,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:security_wanyu/model/signable_document.dart';
 import 'package:security_wanyu/model/submit_form_record.dart';
 import 'package:security_wanyu/model/submit_onboard_document_record.dart';
+import 'package:security_wanyu/model/submit_signed_document_record.dart';
 
 class EtunAPI {
   EtunAPI._constructor();
@@ -231,6 +233,47 @@ class EtunAPI {
       return signableDocuments;
     } else {
       throw Exception('Something went wrong.');
+    }
+  }
+
+  //下載待簽署文件。
+  Future<Uint8List> downloadSignableDocument({required int documentId}) async {
+    Uri url =
+        Uri.parse('$_baseUrl?op=downloadSignableDocument&doc_id=$documentId');
+    Uint8List documentBytes = await http.readBytes(url);
+    return documentBytes;
+  }
+
+  //上傳完成簽署的文件。
+  Future<void> submitSignedDocument({
+    required List<int> signedDocumentData,
+    required SubmitSignedDocumentRecord signedDocumentRecord,
+  }) async {
+    try {
+      Uri url = Uri.parse('$_baseUrl?op=submitSignedDocument');
+      http.MultipartRequest request = http.MultipartRequest('POST', url)
+        ..fields['signed_document_record'] = signedDocumentRecord.toJSON()
+        ..files.add(
+          http.MultipartFile.fromBytes(
+            'signed_document',
+            signedDocumentData,
+            filename: 'signedDocument.pdf',
+            contentType: MediaType.parse('application/pdf'),
+          ),
+        );
+      http.StreamedResponse streamedResponse = await request.send();
+      http.Response response = await http.Response.fromStream(streamedResponse);
+      final body = json.decode(response.body);
+      final error = body['error'];
+      if (error != null) {
+        throw APIException(
+          code: error['code'],
+          message: error['message'],
+          debugMessage: error['debugMessage'],
+        );
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 

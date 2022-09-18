@@ -49,8 +49,8 @@ class HomeScreenBloc {
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: PunchCards.work,
-        lat: 22.726364, //userLocation.lat,
-        lng: 120.291774, //userLocation.lng,
+        lat: userLocation.lat,
+        lng: userLocation.lng,
       );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {
@@ -66,8 +66,8 @@ class HomeScreenBloc {
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: PunchCards.getOff,
-        lat: 22.726364, //userLocation.lat,
-        lng: 120.291774, //userLocation.lng,
+        lat: userLocation.lat,
+        lng: userLocation.lng,
       );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {

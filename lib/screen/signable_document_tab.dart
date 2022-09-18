@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/bloc/announcement_screen_bloc.dart';
+import 'package:security_wanyu/screen/sign_document_screen.dart';
+import 'package:security_wanyu/service/etun_api.dart';
 import 'package:security_wanyu/widget/announcement_widget.dart';
 import 'package:security_wanyu/widget/pinned_announcement_widget.dart';
 
@@ -56,7 +59,19 @@ class _SignableDocumentTabState extends State<SignableDocumentTab>
                         .bloc.model.signableDocumentTab!.docs![index].title!,
                     announceDateTime: widget.bloc.model.signableDocumentTab!
                         .docs![index].publishDateTime!,
-                    onTap: () {},
+                    onTap: () async {
+                      Uint8List documentbytes = await EtunAPI.instance
+                          .downloadSignableDocument(
+                              documentId: widget.bloc.model.signableDocumentTab!
+                                  .docs![index].docId!);
+                      if (!mounted) return;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SignDocumentScreen.create(
+                              documentBytes: documentbytes),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
