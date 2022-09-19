@@ -52,13 +52,13 @@ class HomeScreenBloc {
       {required Member member, required UserLocation userLocation}) async {
     try {
       PunchCardRecord punchCardRecord = PunchCardRecord(
-          memberId: member.memberId,
-          memberSN: member.memberSN,
-          memberName: member.memberName,
-          punchCardType: PunchCards.work,
-          lat: 22.998020, //userLocation.lat,
-          lng: 120.208535 //userLocation.lng,
-          );
+        memberId: member.memberId,
+        memberSN: member.memberSN,
+        memberName: member.memberName,
+        punchCardType: PunchCards.work,
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+      );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {
       rethrow;
@@ -69,13 +69,13 @@ class HomeScreenBloc {
       {required Member member, required UserLocation userLocation}) async {
     try {
       PunchCardRecord punchCardRecord = PunchCardRecord(
-          memberId: member.memberId,
-          memberSN: member.memberSN,
-          memberName: member.memberName,
-          punchCardType: PunchCards.getOff,
-          lat: 22.998020, //userLocation.lat,
-          lng: 120.208535 //userLocation.lng,
-          );
+        memberId: member.memberId,
+        memberSN: member.memberSN,
+        memberName: member.memberName,
+        punchCardType: PunchCards.getOff,
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+      );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {
       rethrow;

@@ -5,7 +5,6 @@ import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/patrol_record.dart';
 import 'package:security_wanyu/model/patrol_screen_model.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
-import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/service/local_database.dart';
 
 class PatrolScreenBloc {
@@ -18,17 +17,12 @@ class PatrolScreenBloc {
     donePlaces2Patrol: [],
     undonePlaces2Patrol: [],
     torchOn: false,
-    offline: false,
   );
   PatrolScreenModel get model => _model;
   MobileScannerController scannerController = MobileScannerController();
 
   Future<void> initialize() async {
     await updatePatrolPlaces();
-    bool offline = !await Utils.hasInternetConnection();
-    updateWith(
-      offline: offline,
-    );
   }
 
   Future<bool> patrol(
@@ -91,13 +85,11 @@ class PatrolScreenBloc {
     List<Place2Patrol>? donePlaces2Patrol,
     List<Place2Patrol>? undonePlaces2Patrol,
     bool? torchOn,
-    bool? offline,
   }) {
     _model = _model.copyWith(
       donePlaces2Patrol: donePlaces2Patrol,
       undonePlaces2Patrol: undonePlaces2Patrol,
       torchOn: torchOn,
-      offline: offline,
     );
     _streamController.add(_model);
   }

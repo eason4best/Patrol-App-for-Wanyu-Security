@@ -19,134 +19,138 @@ class _CompanyAnnouncementTabState extends State<CompanyAnnouncementTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return !widget.bloc.model.companyAnnouncementTab!.isLoading!
-        ? SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: EdgeInsets.all(widget
-                            .bloc
-                            .model
-                            .companyAnnouncementTab!
-                            .pinnedAnnouncements
-                            .isNotEmpty
-                        ? 16
-                        : 0),
-                    child: Row(
-                      children: List.generate(
-                        widget.bloc.model.companyAnnouncementTab!
-                            .pinnedAnnouncements.length,
-                        (index) => Container(
-                          margin: EdgeInsets.only(left: index == 0 ? 0 : 16),
-                          child: PinnedAnnouncementWidget(
-                            title: widget.bloc.model.companyAnnouncementTab!
-                                .pinnedAnnouncements[index].title!,
-                            subtitle: widget.bloc.model.companyAnnouncementTab!
-                                .pinnedAnnouncements[index].content,
-                            onTap: () {
-                              widget.bloc.markCompanyAnnouncementAsSeen(
-                                  companyAnnouncement: widget
-                                      .bloc
-                                      .model
-                                      .companyAnnouncementTab!
-                                      .pinnedAnnouncements[index]);
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        title: Text(widget
-                                            .bloc
-                                            .model
-                                            .companyAnnouncementTab!
-                                            .pinnedAnnouncements[index]
-                                            .title!),
-                                        content: Text(widget
-                                            .bloc
-                                            .model
-                                            .companyAnnouncementTab!
-                                            .pinnedAnnouncements[index]
-                                            .content!),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: const Text(
-                                                '確認',
-                                                textAlign: TextAlign.end,
-                                              )),
-                                        ],
-                                      ));
-                            },
-                          ),
+    if (widget.bloc.model.hasInternetConnection!) {
+      if (widget.bloc.model.companyAnnouncementTab!.isLoading!) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: EdgeInsets.all(widget
+                          .bloc
+                          .model
+                          .companyAnnouncementTab!
+                          .pinnedAnnouncements
+                          .isNotEmpty
+                      ? 16
+                      : 0),
+                  child: Row(
+                    children: List.generate(
+                      widget.bloc.model.companyAnnouncementTab!
+                          .pinnedAnnouncements.length,
+                      (index) => Container(
+                        margin: EdgeInsets.only(left: index == 0 ? 0 : 16),
+                        child: PinnedAnnouncementWidget(
+                          title: widget.bloc.model.companyAnnouncementTab!
+                              .pinnedAnnouncements[index].title!,
+                          subtitle: widget.bloc.model.companyAnnouncementTab!
+                              .pinnedAnnouncements[index].content,
+                          onTap: () {
+                            widget.bloc.markCompanyAnnouncementAsSeen(
+                                companyAnnouncement: widget
+                                    .bloc
+                                    .model
+                                    .companyAnnouncementTab!
+                                    .pinnedAnnouncements[index]);
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      title: Text(widget
+                                          .bloc
+                                          .model
+                                          .companyAnnouncementTab!
+                                          .pinnedAnnouncements[index]
+                                          .title!),
+                                      content: Text(widget
+                                          .bloc
+                                          .model
+                                          .companyAnnouncementTab!
+                                          .pinnedAnnouncements[index]
+                                          .content!),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text(
+                                              '確認',
+                                              textAlign: TextAlign.end,
+                                            )),
+                                      ],
+                                    ));
+                          },
                         ),
                       ),
                     ),
                   ),
                 ),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: widget
-                      .bloc.model.companyAnnouncementTab!.announcements!.length,
-                  itemBuilder: (context, index) {
-                    return AnnouncementWidget(
-                      title: widget.bloc.model.companyAnnouncementTab!
-                          .announcements![index].title!,
-                      subtitle: widget.bloc.model.companyAnnouncementTab!
-                          .announcements![index].content,
-                      announceDateTime: widget
-                          .bloc
-                          .model
-                          .companyAnnouncementTab!
-                          .announcements![index]
-                          .announceDateTime!,
-                      seen: widget
-                          .bloc.model.companyAnnouncementTab!.seenAnnouncements!
-                          .any((sca) =>
-                              sca.announcementId ==
-                              widget.bloc.model.companyAnnouncementTab!
-                                  .announcements![index].announcementId),
-                      onTap: () {
-                        widget.bloc.markCompanyAnnouncementAsSeen(
-                            companyAnnouncement: widget.bloc.model
-                                .companyAnnouncementTab!.announcements![index]);
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  title: Text(widget
-                                      .bloc
-                                      .model
-                                      .companyAnnouncementTab!
-                                      .announcements![index]
-                                      .title!),
-                                  content: Text(widget
-                                      .bloc
-                                      .model
-                                      .companyAnnouncementTab!
-                                      .announcements![index]
-                                      .content!),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
-                                        child: const Text(
-                                          '確認',
-                                          textAlign: TextAlign.end,
-                                        )),
-                                  ],
-                                ));
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-          )
-        : const Center(
-            child: CircularProgressIndicator(),
-          );
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget
+                    .bloc.model.companyAnnouncementTab!.announcements!.length,
+                itemBuilder: (context, index) {
+                  return AnnouncementWidget(
+                    title: widget.bloc.model.companyAnnouncementTab!
+                        .announcements![index].title!,
+                    subtitle: widget.bloc.model.companyAnnouncementTab!
+                        .announcements![index].content,
+                    announceDateTime: widget.bloc.model.companyAnnouncementTab!
+                        .announcements![index].announceDateTime!,
+                    seen: widget
+                        .bloc.model.companyAnnouncementTab!.seenAnnouncements!
+                        .any((sca) =>
+                            sca.announcementId ==
+                            widget.bloc.model.companyAnnouncementTab!
+                                .announcements![index].announcementId),
+                    onTap: () {
+                      widget.bloc.markCompanyAnnouncementAsSeen(
+                          companyAnnouncement: widget.bloc.model
+                              .companyAnnouncementTab!.announcements![index]);
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Text(widget
+                                    .bloc
+                                    .model
+                                    .companyAnnouncementTab!
+                                    .announcements![index]
+                                    .title!),
+                                content: Text(widget
+                                    .bloc
+                                    .model
+                                    .companyAnnouncementTab!
+                                    .announcements![index]
+                                    .content!),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text(
+                                        '確認',
+                                        textAlign: TextAlign.end,
+                                      )),
+                                ],
+                              ));
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      return const Center(
+        child: Text('目前為離線狀態'),
+      );
+    }
   }
 
   @override

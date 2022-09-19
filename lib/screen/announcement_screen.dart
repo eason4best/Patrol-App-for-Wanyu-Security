@@ -35,52 +35,62 @@ class AnnouncementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      child: StreamBuilder<AnnouncementScreenModel>(
-          stream: bloc.stream,
-          initialData: bloc.model,
-          builder: (context, snapshot) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('公告'),
-                bottom: TabBar(
-                  tabs: Announcements.values
-                      .map(
-                        (a) => Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Tab(text: a.toString()),
-                            Positioned(
-                              top: 4,
-                              right: -8,
-                              child: NotificationDot(
-                                individualUnseenCount: a ==
-                                        Announcements.companyAnnouncement
-                                    ? snapshot.data!.companyAnnouncementTab!
-                                        .unseenAnnouncementsCount
-                                    : a == Announcements.individualNotification
-                                        ? snapshot
-                                            .data!
-                                            .individualNotificationTab!
-                                            .unseenNotificationsCount
-                                        : snapshot.data!.signableDocumentTab!
-                                            .unsignedDocsCount,
+      child: FutureBuilder<void>(
+          future: bloc.initialize(),
+          builder: (context, _) {
+            return StreamBuilder<AnnouncementScreenModel>(
+                stream: bloc.stream,
+                initialData: bloc.model,
+                builder: (context, snapshot) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('公告'),
+                      bottom: TabBar(
+                        tabs: Announcements.values
+                            .map(
+                              (a) => Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Tab(text: a.toString()),
+                                  Positioned(
+                                    top: 4,
+                                    right: -8,
+                                    child: NotificationDot(
+                                      individualUnseenCount: a ==
+                                              Announcements.companyAnnouncement
+                                          ? snapshot
+                                              .data!
+                                              .companyAnnouncementTab!
+                                              .unseenAnnouncementsCount
+                                          : a ==
+                                                  Announcements
+                                                      .individualNotification
+                                              ? snapshot
+                                                  .data!
+                                                  .individualNotificationTab!
+                                                  .unseenNotificationsCount
+                                              : snapshot
+                                                  .data!
+                                                  .signableDocumentTab!
+                                                  .unsignedDocsCount,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                  labelColor: Colors.black87,
-                  unselectedLabelColor: Colors.black54,
-                  indicatorColor: Colors.black87,
-                ),
-              ),
-              body: TabBarView(children: [
-                CompanyAnnouncementTab(bloc: bloc),
-                IndividualNotificationTab(bloc: bloc),
-                SignableDocumentTab(bloc: bloc),
-              ]),
-            );
+                            )
+                            .toList(),
+                        labelColor: Colors.black87,
+                        unselectedLabelColor: Colors.black54,
+                        indicatorColor: Colors.black87,
+                      ),
+                    ),
+                    body: TabBarView(children: [
+                      CompanyAnnouncementTab(bloc: bloc),
+                      IndividualNotificationTab(bloc: bloc),
+                      SignableDocumentTab(bloc: bloc),
+                    ]),
+                  );
+                });
           }),
     );
   }
