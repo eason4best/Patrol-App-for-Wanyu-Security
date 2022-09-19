@@ -21,7 +21,7 @@ class AnnouncementScreenBloc {
     required this.totalUnseenAnnouncement,
   }) {
     _getCompanyAnnouncements();
-    _getIndividualNotifications(memberId: member.memberId!);
+    _getIndividualNotifications();
     _getSignableDocuments();
   }
   final StreamController<AnnouncementScreenModel> _streamController =
@@ -74,12 +74,12 @@ class AnnouncementScreenBloc {
     }
   }
 
-  Future<void> _getIndividualNotifications({required int memberId}) async {
+  Future<void> _getIndividualNotifications() async {
     try {
       if (await Utils.hasInternetConnection()) {
         List<IndividualNotification> individualNotifications = await EtunAPI
             .instance
-            .getIndividualNotifications(memberId: memberId);
+            .getIndividualNotifications(memberId: member.memberId!);
         updateWith(
           individualNotificationTab: _model.individualNotificationTab!.copyWith(
             notifications: individualNotifications,
@@ -101,14 +101,20 @@ class AnnouncementScreenBloc {
       if (await Utils.hasInternetConnection()) {
         List<SignableDocument> signDocs =
             await EtunAPI.instance.getSignableDocuments();
+        List<int> recentSignedSignableDocumentIds = await EtunAPI.instance
+            .getRecentSignedSignableDocumentIds(memberId: member.memberId!);
         updateWith(
           signableDocumentTab: _model.signableDocumentTab!.copyWith(
             docs: signDocs,
+            signedDocs: signDocs
+                .where(
+                    (sd) => recentSignedSignableDocumentIds.contains(sd.docId))
+                .toList(),
             isLoading: false,
           ),
         );
         totalUnseenAnnouncement
-            .increase(_model.signableDocumentTab!.docs!.length);
+            .increase(_model.signableDocumentTab!.unsignedDocsCount);
       }
     } catch (e) {
       emitError(error: e);
@@ -169,11 +175,10 @@ class AnnouncementScreenBloc {
             .copyWith(signedDocs: signedSignableDocuments),
       );
       totalUnseenAnnouncement.decrease(1);
-      /*
-      EtunAPI.instance.markCompanyAnnouncementAsSeen(
-        announcementId: companyAnnouncement.announcementId!,
+      EtunAPI.instance.markSignableDocumentAsSigned(
+        docId: signableDocument.docId!,
         memberId: member.memberId!,
-      );*/
+      );
     }
   }
 

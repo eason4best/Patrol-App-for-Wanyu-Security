@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  bool _canGetLocation() {
+  bool _canGetLocation({required UserLocation userLocation}) {
     UserLocation userLocation =
         Provider.of<UserLocation>(context, listen: false);
     if (!userLocation.hasLocationPermission!) {
@@ -168,119 +168,125 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        PunchCardWidget(
-                          title: '上班',
-                          onPressed: () {
-                            if (_canGetLocation()) {
-                              widget.bloc
-                                  .workPunch(
-                                    member: member,
-                                    userLocation: Provider.of<UserLocation>(
-                                      context,
-                                      listen: false,
-                                    ),
-                                  )
-                                  .then(
-                                    (_) => showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('打卡成功'),
-                                        content: const Text('上班打卡成功！'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text(
-                                              '確認',
-                                              textAlign: TextAlign.end,
-                                            ),
-                                          ),
-                                        ],
+                        Consumer<UserLocation>(
+                          builder: (context, userLocation, _) =>
+                              PunchCardWidget(
+                            title: '上班',
+                            onPressed: () {
+                              if (_canGetLocation(userLocation: userLocation)) {
+                                widget.bloc
+                                    .workPunch(
+                                      member: member,
+                                      userLocation: Provider.of<UserLocation>(
+                                        context,
+                                        listen: false,
                                       ),
-                                    ),
-                                  )
-                                  .catchError(
-                                    (e) => showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('打卡失敗'),
-                                        content: Text(
-                                          e is APIException
-                                              ? e.message
-                                              : '上班打卡失敗',
+                                    )
+                                    .then(
+                                      (_) => showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('打卡成功'),
+                                          content: const Text('上班打卡成功！'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Text(
+                                                '確認',
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text(
-                                              '確認',
-                                              textAlign: TextAlign.end,
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                    ),
-                                  );
-                            }
-                          },
+                                    )
+                                    .catchError(
+                                      (e) => showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('打卡失敗'),
+                                          content: Text(
+                                            e is APIException
+                                                ? e.message
+                                                : '上班打卡失敗',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Text(
+                                                '確認',
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                              }
+                            },
+                          ),
                         ),
-                        PunchCardWidget(
-                          title: '下班',
-                          onPressed: () {
-                            if (_canGetLocation()) {
-                              widget.bloc
-                                  .getOffPunch(
-                                    member: member,
-                                    userLocation: Provider.of<UserLocation>(
-                                      context,
-                                      listen: false,
-                                    ),
-                                  )
-                                  .then(
-                                    (_) => showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('打卡成功'),
-                                        content: const Text('下班打卡成功！'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text(
-                                              '確認',
-                                              textAlign: TextAlign.end,
-                                            ),
-                                          ),
-                                        ],
+                        Consumer<UserLocation>(
+                          builder: (context, userLocation, _) =>
+                              PunchCardWidget(
+                            title: '下班',
+                            onPressed: () {
+                              if (_canGetLocation(userLocation: userLocation)) {
+                                widget.bloc
+                                    .getOffPunch(
+                                      member: member,
+                                      userLocation: Provider.of<UserLocation>(
+                                        context,
+                                        listen: false,
                                       ),
-                                    ),
-                                  )
-                                  .catchError(
-                                    (e) => showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('打卡失敗'),
-                                        content: Text(
-                                          e is APIException
-                                              ? e.message
-                                              : '下班打卡失敗',
+                                    )
+                                    .then(
+                                      (_) => showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('打卡成功'),
+                                          content: const Text('下班打卡成功！'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Text(
+                                                '確認',
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text(
-                                              '確認',
-                                              textAlign: TextAlign.end,
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                    ),
-                                  );
-                            }
-                          },
+                                    )
+                                    .catchError(
+                                      (e) => showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('打卡失敗'),
+                                          content: Text(
+                                            e is APIException
+                                                ? e.message
+                                                : '下班打卡失敗',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Text(
+                                                '確認',
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                              }
+                            },
+                          ),
                         ),
                         PunchCardWidget(
                           title: '補卡',
@@ -310,54 +316,58 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        MainFunctionWidget(
-                          title: '巡邏',
-                          icon: const Icon(
-                            Icons.qr_code_scanner,
-                            size: 48,
-                            color: Colors.black87,
-                          ),
-                          onPressed: () {
-                            if (_canGetLocation()) {
-                              widget.bloc
-                                  .getUpcomingPatrolCustomer(
-                                      memberId: member.memberId!)
-                                  .then(
-                                    (customerId) => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            PatrolScreen.create(
-                                          member: member,
-                                          customerId: customerId,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .catchError(
-                                    (e) => showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('無法開始巡邏'),
-                                        content: Text(
-                                          e is APIException
-                                              ? e.message
-                                              : '發生錯誤',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text(
-                                              '確認',
-                                              textAlign: TextAlign.end,
-                                            ),
+                        Consumer<UserLocation>(
+                          builder: (context, userLocation, _) =>
+                              MainFunctionWidget(
+                            title: '巡邏',
+                            icon: const Icon(
+                              Icons.qr_code_scanner,
+                              size: 48,
+                              color: Colors.black87,
+                            ),
+                            onPressed: () {
+                              if (_canGetLocation(userLocation: userLocation)) {
+                                widget.bloc
+                                    .getUpcomingPatrolCustomer(
+                                        memberId: member.memberId!)
+                                    .then(
+                                      (customerId) =>
+                                          Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              PatrolScreen.create(
+                                            member: member,
+                                            customerId: customerId,
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                            }
-                          },
+                                    )
+                                    .catchError(
+                                      (e) => showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('無法開始巡邏'),
+                                          content: Text(
+                                            e is APIException
+                                                ? e.message
+                                                : '發生錯誤',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Text(
+                                                '確認',
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                              }
+                            },
+                          ),
                         ),
                         MainFunctionWidget(
                           title: '班表',

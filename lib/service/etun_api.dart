@@ -335,6 +335,58 @@ class EtunAPI {
     }
   }
 
+  //標示待簽署文件為已簽。
+  Future<void> markSignableDocumentAsSigned({
+    required int docId,
+    required int memberId,
+  }) async {
+    try {
+      Uri url = Uri.parse('$_baseUrl?op=markSignableDocumentAsSigned');
+      http.Response response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'doc_id': docId.toString(),
+          'patrol_member_id': memberId.toString(),
+        },
+      );
+      final body = json.decode(response.body);
+      final error = body['error'];
+      if (error != null) {
+        throw APIException(
+          code: error['code'],
+          message: error['message'],
+          debugMessage: error['debugMessage'],
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //獲得最近50筆已簽的待簽署文件id。
+  Future<List<int>> getRecentSignedSignableDocumentIds(
+      {required int memberId}) async {
+    Uri url = Uri.parse(
+        '$_baseUrl?op=getRecentSignedSignableDocumentIds&patrol_member_id=$memberId');
+    http.Response response = await http.get(url);
+    final body = json.decode(response.body);
+    final error = body['error'];
+    if (error != null) {
+      throw APIException(
+        code: error['code'],
+        message: error['message'],
+        debugMessage: error['debugMessage'],
+      );
+    }
+    final data = body['data'];
+    return (data['recentSignedSignableDocumentIds'] as List)
+        .map((id) => id as int)
+        .toList();
+  }
+
   //提交辦理入職的文件。
   Future<bool> submitOnboardDocument({
     required List<List<int>> documentImage,

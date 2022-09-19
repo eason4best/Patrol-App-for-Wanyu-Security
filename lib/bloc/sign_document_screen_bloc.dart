@@ -26,9 +26,9 @@ class SignDocumentScreenBloc {
       Uint8List? signatureBytes = byteData?.buffer.asUint8List();
       PdfDocument signedDocument =
           PdfDocument(inputBytes: _model.documentBytes);
-      PdfTextBoxField textBoxField =
-          signedDocument.form.fields[1] as PdfTextBoxField;
-      PdfPage signedPage = signedDocument.pages[2];
+      PdfTextBoxField textBoxField = signedDocument
+          .form.fields[signedDocument.form.fields.count - 1] as PdfTextBoxField;
+      PdfPage signedPage = signedDocument.pages[signedDocument.pages.count - 1];
       PdfSignatureField signatureField = PdfSignatureField(
         signedPage,
         'signature',
