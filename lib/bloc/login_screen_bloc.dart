@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:security_wanyu/enum/sign_in_results.dart';
+import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/login_screen_model.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/screen/base_screen.dart';
 import 'package:security_wanyu/service/etun_api.dart';
 import 'package:security_wanyu/other/utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:security_wanyu/service/local_database.dart';
 
 class LoginScreenBloc {
   final StreamController<LoginScreenModel> _streamController =
@@ -17,17 +18,28 @@ class LoginScreenBloc {
   LoginScreenModel get model => _model;
   TextEditingController accountController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  late SharedPreferences prefs;
+
+  Member? localMember;
 
   Future<void> initialize() async {
-    prefs = await SharedPreferences.getInstance();
-    accountController.text = prefs.getString('account') ?? '';
-    passwordController.text = prefs.getString('password') ?? '';
-    updateWith(
-      account: accountController.text,
-      password: passwordController.text,
-      canSubmit: _canSubmit(),
-    );
+    try {
+      localMember = await LocalDatabase.instance.getMember();
+      accountController.text = localMember?.memberAccount ?? '';
+      passwordController.text = localMember?.memberPassword ?? '';
+      updateWith(
+        account: accountController.text,
+        password: passwordController.text,
+        canSubmit: _canSubmit(),
+      );
+    } on APIException catch (e) {
+      if (e.code == 'no-local-member') {
+        updateWith(
+          account: '',
+          password: '',
+          canSubmit: _canSubmit(),
+        );
+      }
+    }
   }
 
   void onInputAccount(String account) {
@@ -57,18 +69,14 @@ class LoginScreenBloc {
       SignInResults signInResults = result['signInResult'];
       switch (signInResults) {
         case SignInResults.success:
-          if (_model.rememberMe!) {
-            prefs.setString('account', _model.account!);
-            prefs.setString('password', _model.password!);
-          }
-          if (navigator.mounted) {
-            Member member = result['member'];
-            navigator.pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => BaseScreen.create(member: member),
-              ),
-            );
-          }
+          if (!navigator.mounted) return;
+          Member member = result['member'];
+          await LocalDatabase.instance.insertMember(member: member);
+          navigator.pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => BaseScreen.create(member: member),
+            ),
+          );
           break;
         case SignInResults.wrongPassword:
           showDialog(
@@ -102,15 +110,14 @@ class LoginScreenBloc {
           break;
       }
     } else {
-      if (_model.account == prefs.getString('account') &&
-          _model.password == prefs.getString('password')) {
-        if (navigator.mounted) {
-          navigator.pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const BaseScreen(),
-            ),
-          );
-        }
+      if (_model.account == localMember?.memberAccount &&
+          _model.password == localMember?.memberPassword) {
+        if (!navigator.mounted) return;
+        navigator.pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => BaseScreen.create(member: localMember!),
+          ),
+        );
       } else {
         showDialog(
           context: context,

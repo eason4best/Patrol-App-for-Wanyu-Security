@@ -1,6 +1,9 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/home_screen_bloc.dart';
+import 'package:security_wanyu/bloc/user_location_bloc.dart';
 import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/user_location.dart';
@@ -14,7 +17,6 @@ import 'package:security_wanyu/screen/patrol_screen.dart';
 import 'package:security_wanyu/screen/shift_screen.dart';
 import 'package:security_wanyu/screen/sos_screen.dart';
 import 'package:security_wanyu/widget/announcement_marquee_widget.dart';
-import 'package:security_wanyu/widget/location_request_banner.dart';
 import 'package:security_wanyu/widget/main_function_widget.dart';
 import 'package:security_wanyu/widget/punch_card_widget.dart';
 
@@ -36,29 +38,77 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late Member member;
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     member = Provider.of<Member>(context, listen: false);
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      Provider.of<UserLocationBloc>(context, listen: false)
+          .handleLocationPermission();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   bool _canGetLocation() {
     UserLocation userLocation =
         Provider.of<UserLocation>(context, listen: false);
     if (!userLocation.hasLocationPermission!) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('請開啟定位權限'),
-        behavior: SnackBarBehavior.floating,
-      ));
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('無法定位'),
+          content: const Text('請開啟手機定位權限以正常使用APP。'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await Geolocator.openAppSettings();
+                if (!mounted) return;
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '開啟',
+                textAlign: TextAlign.end,
+              ),
+            ),
+          ],
+        ),
+      );
       return false;
     } else if (!userLocation.locationServiceEnabled!) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('請開啟手機定位功能'),
-        behavior: SnackBarBehavior.floating,
-      ));
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('無法定位'),
+          content: const Text('請開啟手機定位功能以正常使用APP'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                AppSettings.openLocationSettings(asAnotherTask: true);
+                if (!mounted) return;
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '開啟',
+                textAlign: TextAlign.end,
+              ),
+            ),
+          ],
+        ),
+      );
       return false;
     } else {
       return true;
@@ -90,7 +140,6 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, snapshot) {
               return Column(
                 children: [
-                  const LocationRequestBanner(),
                   AnnouncementMarqueeWidget(bloc: widget.bloc),
                   Container(
                     margin: const EdgeInsets.only(top: 36),

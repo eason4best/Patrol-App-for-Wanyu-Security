@@ -10,6 +10,7 @@ import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/signable_document.dart';
 import 'package:security_wanyu/model/signable_document_tab_model.dart';
 import 'package:security_wanyu/model/total_unseen_announcement.dart';
+import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/service/etun_api.dart';
 
 class AnnouncementScreenBloc {
@@ -49,22 +50,24 @@ class AnnouncementScreenBloc {
 
   Future<void> _getCompanyAnnouncements() async {
     try {
-      List<CompanyAnnouncement> companyAnnouncements =
-          await EtunAPI.instance.getCompanyAnnouncements();
-      List<int> recentSeenCompanyAnnouncementIds = await EtunAPI.instance
-          .getRecentSeenCompanyAnnouncementIds(memberId: member.memberId!);
-      updateWith(
-        companyAnnouncementTab: _model.companyAnnouncementTab!.copyWith(
-          announcements: companyAnnouncements,
-          seenAnnouncements: companyAnnouncements
-              .where((ca) =>
-                  recentSeenCompanyAnnouncementIds.contains(ca.announcementId))
-              .toList(),
-          isLoading: false,
-        ),
-      );
-      totalUnseenAnnouncement
-          .increase(_model.companyAnnouncementTab!.unseenAnnouncementsCount);
+      if (await Utils.hasInternetConnection()) {
+        List<CompanyAnnouncement> companyAnnouncements =
+            await EtunAPI.instance.getCompanyAnnouncements();
+        List<int> recentSeenCompanyAnnouncementIds = await EtunAPI.instance
+            .getRecentSeenCompanyAnnouncementIds(memberId: member.memberId!);
+        updateWith(
+          companyAnnouncementTab: _model.companyAnnouncementTab!.copyWith(
+            announcements: companyAnnouncements,
+            seenAnnouncements: companyAnnouncements
+                .where((ca) => recentSeenCompanyAnnouncementIds
+                    .contains(ca.announcementId))
+                .toList(),
+            isLoading: false,
+          ),
+        );
+        totalUnseenAnnouncement
+            .increase(_model.companyAnnouncementTab!.unseenAnnouncementsCount);
+      }
     } catch (e) {
       emitError(error: e);
     }
@@ -72,18 +75,21 @@ class AnnouncementScreenBloc {
 
   Future<void> _getIndividualNotifications({required int memberId}) async {
     try {
-      List<IndividualNotification> individualNotifications =
-          await EtunAPI.instance.getIndividualNotifications(memberId: memberId);
-      updateWith(
-        individualNotificationTab: _model.individualNotificationTab!.copyWith(
-          notifications: individualNotifications,
-          seenNotifications:
-              individualNotifications.where((ino) => ino.seen!).toList(),
-          isLoading: false,
-        ),
-      );
-      totalUnseenAnnouncement
-          .increase(_model.individualNotificationTab!.unseenNotificationsCount);
+      if (await Utils.hasInternetConnection()) {
+        List<IndividualNotification> individualNotifications = await EtunAPI
+            .instance
+            .getIndividualNotifications(memberId: memberId);
+        updateWith(
+          individualNotificationTab: _model.individualNotificationTab!.copyWith(
+            notifications: individualNotifications,
+            seenNotifications:
+                individualNotifications.where((ino) => ino.seen!).toList(),
+            isLoading: false,
+          ),
+        );
+        totalUnseenAnnouncement.increase(
+            _model.individualNotificationTab!.unseenNotificationsCount);
+      }
     } catch (e) {
       emitError(error: e);
     }
@@ -91,16 +97,18 @@ class AnnouncementScreenBloc {
 
   Future<void> _getSignableDocuments() async {
     try {
-      List<SignableDocument> signDocs =
-          await EtunAPI.instance.getSignableDocuments();
-      updateWith(
-        signableDocumentTab: _model.signableDocumentTab!.copyWith(
-          docs: signDocs,
-          isLoading: false,
-        ),
-      );
-      totalUnseenAnnouncement
-          .increase(_model.signableDocumentTab!.docs!.length);
+      if (await Utils.hasInternetConnection()) {
+        List<SignableDocument> signDocs =
+            await EtunAPI.instance.getSignableDocuments();
+        updateWith(
+          signableDocumentTab: _model.signableDocumentTab!.copyWith(
+            docs: signDocs,
+            isLoading: false,
+          ),
+        );
+        totalUnseenAnnouncement
+            .increase(_model.signableDocumentTab!.docs!.length);
+      }
     } catch (e) {
       emitError(error: e);
     }

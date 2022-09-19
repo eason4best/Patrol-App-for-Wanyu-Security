@@ -65,7 +65,7 @@ class EtunAPI {
       if (success) {
         return {
           'signInResult': SignInResults.success,
-          'member': Member.fromData(json.decode(response.body)['member']),
+          'member': Member.fromMap(json.decode(response.body)['member']),
         };
       } else {
         String code = json.decode(response.body)['code'];

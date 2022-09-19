@@ -12,7 +12,15 @@ class Member {
     this.memberSN,
   });
 
-  factory Member.fromData(data) {
+  Map<String, dynamic> toMap() => {
+        'patrol_member_id': memberId,
+        'member_account': memberAccount,
+        'member_password': memberPassword,
+        'member_name': memberName,
+        'member_sn': memberSN,
+      };
+
+  factory Member.fromMap(data) {
     if (data == null) {
       return Member();
     }

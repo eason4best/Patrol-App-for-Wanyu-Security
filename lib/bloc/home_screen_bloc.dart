@@ -10,6 +10,7 @@ import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
 import 'package:security_wanyu/model/user_location.dart';
+import 'package:security_wanyu/other/utils.dart';
 import 'package:security_wanyu/service/etun_api.dart';
 import 'package:security_wanyu/service/local_database.dart';
 
@@ -22,12 +23,14 @@ class HomeScreenBloc {
       {required Member member, required BuildContext context}) async {
     await Provider.of<UserLocationBloc>(context, listen: false)
         .handleLocationPermission();
-    List<Place2Patrol> places2Patrol = await EtunAPI.instance
-        .getMemberPlaces2Patrol(memberName: member.memberName!);
-    await LocalDatabase.instance
-        .replacePlaces2Patrol(places2Patrol: places2Patrol);
-    List<Customer> customers = await EtunAPI.instance.getCustomers();
-    await LocalDatabase.instance.replaceCustomers(customers: customers);
+    if (await Utils.hasInternetConnection()) {
+      List<Place2Patrol> places2Patrol = await EtunAPI.instance
+          .getMemberPlaces2Patrol(memberName: member.memberName!);
+      await LocalDatabase.instance
+          .replacePlaces2Patrol(places2Patrol: places2Patrol);
+      List<Customer> customers = await EtunAPI.instance.getCustomers();
+      await LocalDatabase.instance.replaceCustomers(customers: customers);
+    }
     uploadPatrolRecordTimer =
         Timer.periodic(const Duration(seconds: 10), (_) async {
       await LocalDatabase.instance.uploadLocalPunchCardRecords();
@@ -36,9 +39,13 @@ class HomeScreenBloc {
   }
 
   Future<String> getMarqueeContent() async {
-    MarqueeAnnouncement marqueeAnnouncement =
-        await EtunAPI.instance.getMarqueeAnnouncement();
-    return marqueeAnnouncement.content!;
+    if (await Utils.hasInternetConnection()) {
+      MarqueeAnnouncement marqueeAnnouncement =
+          await EtunAPI.instance.getMarqueeAnnouncement();
+      return marqueeAnnouncement.content!;
+    } else {
+      return '目前為離線狀態';
+    }
   }
 
   Future<void> workPunch(

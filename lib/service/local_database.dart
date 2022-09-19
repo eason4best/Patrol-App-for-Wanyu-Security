@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/api_exception.dart';
 import 'package:security_wanyu/model/customer.dart';
+import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/patrol_record.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
 import 'package:security_wanyu/model/punch_card_record.dart';
@@ -20,6 +21,15 @@ class LocalDatabase {
         join(await getDatabasesPath(), 'etun.db'),
         version: 1,
         onCreate: (db, version) async {
+          await db.execute('''
+            CREATE TABLE Member (
+              patrol_member_id INTEGER NOT NULL PRIMARY KEY,
+              member_account TEXT NOT NULL,
+              member_password TEXT NOT NULL,
+              member_name TEXT NOT NULL,
+              member_sn TEXT NOT NULL
+            )
+            ''');
           await db.execute('''
             CREATE TABLE Customer (
               customer_id INTEGER NOT NULL,
@@ -75,9 +85,20 @@ class LocalDatabase {
         },
       );
 
-  Future<void> replaceCustomers({required List<Customer> customers}) async {
-    await deleteCustomers();
-    await insertCustomers(customers: customers);
+  Future<void> insertMember({required Member member}) async {
+    Database db = await _db;
+    await db.insert('Member', member.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.ignore);
+  }
+
+  Future<Member> getMember() async {
+    Database db = await _db;
+    List<Map<String, Object?>> maps = await db.query('Member', limit: 1);
+    if (maps.isNotEmpty) {
+      return Member.fromMap(maps.first);
+    } else {
+      throw APIException(code: 'no-local-member', message: '沒有本地的會員資料');
+    }
   }
 
   Future<void> insertCustomers({required List<Customer> customers}) async {
@@ -116,6 +137,11 @@ class LocalDatabase {
   Future<void> deleteCustomers() async {
     Database db = await _db;
     await db.delete('Customer');
+  }
+
+  Future<void> replaceCustomers({required List<Customer> customers}) async {
+    await deleteCustomers();
+    await insertCustomers(customers: customers);
   }
 
   Future<void> punchCard({required PunchCardRecord punchCardRecord}) async {
