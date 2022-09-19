@@ -114,8 +114,8 @@ class AnnouncementScreenBloc {
 
   Future<void> _getSignableDocuments() async {
     try {
-      List<SignableDocument> signDocs =
-          await EtunAPI.instance.getSignableDocuments();
+      List<SignableDocument> signDocs = await EtunAPI.instance
+          .getSignableDocuments(memberId: member.memberId!);
       List<int> recentSignedSignableDocumentIds = await EtunAPI.instance
           .getRecentSignedSignableDocumentIds(memberId: member.memberId!);
       updateWith(
@@ -188,10 +188,6 @@ class AnnouncementScreenBloc {
             .copyWith(signedDocs: signedSignableDocuments),
       );
       totalUnseenAnnouncement.decrease(1);
-      EtunAPI.instance.markSignableDocumentAsSigned(
-        docId: signableDocument.docId!,
-        memberId: member.memberId!,
-      );
     }
   }
 

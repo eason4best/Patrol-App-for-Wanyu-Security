@@ -16,13 +16,13 @@ class SignableDocument {
     if (data == null) {
       return SignableDocument();
     }
-    final int? docId = int.tryParse(data['doc_id']);
+    final int? docId = data['doc_id'];
     final String? title = data['title'];
     final DateTime? publishDateTime =
         DateTime.tryParse(data['publish_date_time']);
     final bool? pinned = data['pinned'] == null
         ? null
-        : data['pinned'] == '1'
+        : data['pinned'] == 1
             ? true
             : false;
     final String? docFilePath = data['docFilePath'];

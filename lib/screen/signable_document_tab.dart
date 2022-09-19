@@ -59,7 +59,11 @@ class _SignableDocumentTabState extends State<SignableDocumentTab>
                             bool? signed = await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => SignDocumentScreen.create(
-                                    documentBytes: documentbytes),
+                                  member: widget.bloc.member,
+                                  signableDocument: widget.bloc.model
+                                      .signableDocumentTab!.docs![index],
+                                  documentBytes: documentbytes,
+                                ),
                               ),
                             );
                             if (signed != null) {
@@ -94,7 +98,11 @@ class _SignableDocumentTabState extends State<SignableDocumentTab>
                     bool? signed = await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => SignDocumentScreen.create(
-                            documentBytes: documentbytes),
+                          member: widget.bloc.member,
+                          signableDocument: widget
+                              .bloc.model.signableDocumentTab!.docs![index],
+                          documentBytes: documentbytes,
+                        ),
                       ),
                     );
                     if (signed != null) {

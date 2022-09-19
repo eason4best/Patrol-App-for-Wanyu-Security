@@ -63,12 +63,14 @@ class SignDocumentScreenBloc {
     return signatureController.isNotEmpty;
   }
 
-  Future<void> submit() async {
+  Future<void> submit({required int memberId, required int documentId}) async {
     try {
       await EtunAPI.instance.submitSignedDocument(
         signedDocumentData: _model.signedDocumentBytes!.toList(),
-        signedDocumentRecord:
-            SubmitSignedDocumentRecord(memberId: 9, documentId: 2),
+        signedDocumentRecord: SubmitSignedDocumentRecord(
+          memberId: memberId,
+          documentId: documentId,
+        ),
       );
     } catch (e) {
       rethrow;

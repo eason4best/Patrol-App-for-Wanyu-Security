@@ -220,19 +220,28 @@ class EtunAPI {
   }
 
   //獲得待簽署文件。
-  Future<List<SignableDocument>> getSignableDocuments() async {
-    Uri url = Uri.parse('$_baseUrl?op=getSignableDocuments');
-    http.Response response = await http.get(url);
-    var body = json.decode(response.body);
-    bool success = body['success'];
-    if (success) {
-      List<SignableDocument> signableDocuments =
-          (json.decode(body['signableDocuments']) as List)
-              .map((data) => SignableDocument.fromData(data))
-              .toList();
-      return signableDocuments;
-    } else {
-      throw Exception('Something went wrong.');
+  Future<List<SignableDocument>> getSignableDocuments(
+      {required int memberId}) async {
+    try {
+      Uri url = Uri.parse(
+          '$_baseUrl?op=getSignableDocuments&patrol_member_id=$memberId');
+      http.Response response = await http.get(url);
+      final body = json.decode(response.body);
+      final error = body['error'];
+      if (error != null) {
+        throw APIException(
+          code: error['code'],
+          message: error['message'],
+          debugMessage: error['debugMessage'],
+        );
+      } else {
+        final data = body['data'];
+        return (data['signableDocuments'] as List)
+            .map((sd) => SignableDocument.fromData(sd))
+            .toList();
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -332,37 +341,6 @@ class EtunAPI {
       return recentSeenCompanyAnnouncementIds;
     } else {
       throw Exception('Something went wrong.');
-    }
-  }
-
-  //標示待簽署文件為已簽。
-  Future<void> markSignableDocumentAsSigned({
-    required int docId,
-    required int memberId,
-  }) async {
-    try {
-      Uri url = Uri.parse('$_baseUrl?op=markSignableDocumentAsSigned');
-      http.Response response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: {
-          'doc_id': docId.toString(),
-          'patrol_member_id': memberId.toString(),
-        },
-      );
-      final body = json.decode(response.body);
-      final error = body['error'];
-      if (error != null) {
-        throw APIException(
-          code: error['code'],
-          message: error['message'],
-          debugMessage: error['debugMessage'],
-        );
-      }
-    } catch (e) {
-      rethrow;
     }
   }
 
