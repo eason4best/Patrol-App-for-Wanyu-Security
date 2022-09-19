@@ -41,6 +41,7 @@ class AnnouncementScreenBloc {
     ),
     signableDocumentTab: SignableDocumentTabModel(
       docs: [],
+      signedDocs: [],
       isLoading: true,
     ),
   );
@@ -153,6 +154,26 @@ class AnnouncementScreenBloc {
       totalUnseenAnnouncement.decrease(1);
       EtunAPI.instance.markIndividualNotificationAsSeen(
           notificationId: individualNotification.notificationId!);
+    }
+  }
+
+  Future<void> markSignableDocumentAsSigned(
+      {required SignableDocument signableDocument}) async {
+    List<SignableDocument>? signedSignableDocuments =
+        _model.signableDocumentTab!.signedDocs;
+    if (!signedSignableDocuments!
+        .any((ssd) => ssd.docId == signableDocument.docId)) {
+      signedSignableDocuments.add(signableDocument);
+      updateWith(
+        signableDocumentTab: _model.signableDocumentTab!
+            .copyWith(signedDocs: signedSignableDocuments),
+      );
+      totalUnseenAnnouncement.decrease(1);
+      /*
+      EtunAPI.instance.markCompanyAnnouncementAsSeen(
+        announcementId: companyAnnouncement.announcementId!,
+        memberId: member.memberId!,
+      );*/
     }
   }
 

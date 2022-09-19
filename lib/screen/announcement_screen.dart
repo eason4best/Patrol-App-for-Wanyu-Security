@@ -63,7 +63,7 @@ class AnnouncementScreen extends StatelessWidget {
                                             .individualNotificationTab!
                                             .unseenNotificationsCount
                                         : snapshot.data!.signableDocumentTab!
-                                            .docs!.length,
+                                            .unsignedDocsCount,
                               ),
                             ),
                           ],

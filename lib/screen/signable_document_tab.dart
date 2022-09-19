@@ -65,12 +65,19 @@ class _SignableDocumentTabState extends State<SignableDocumentTab>
                               documentId: widget.bloc.model.signableDocumentTab!
                                   .docs![index].docId!);
                       if (!mounted) return;
-                      Navigator.of(context).push(
+                      bool? signed = await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => SignDocumentScreen.create(
                               documentBytes: documentbytes),
                         ),
                       );
+                      if (signed != null) {
+                        if (signed) {
+                          widget.bloc.markSignableDocumentAsSigned(
+                              signableDocument: widget.bloc.model
+                                  .signableDocumentTab!.docs![index]);
+                        }
+                      }
                     },
                   ),
                 ),

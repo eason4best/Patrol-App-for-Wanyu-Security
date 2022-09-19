@@ -54,7 +54,7 @@ class _SignDocumentScreenState extends State<SignDocumentScreen> {
                       ? () async {
                           await widget.bloc.submit();
                           if (!mounted) return;
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(true);
                         }
                       : null,
                   child: const Text('完成'),
