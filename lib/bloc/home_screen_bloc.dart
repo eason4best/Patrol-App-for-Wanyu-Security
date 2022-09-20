@@ -1,10 +1,8 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:security_wanyu/bloc/user_location_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:security_wanyu/enum/punch_cards.dart';
 import 'package:security_wanyu/model/customer.dart';
+import 'package:security_wanyu/model/home_screen_model.dart';
 import 'package:security_wanyu/model/marquee_announcement.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/place2patrol.dart';
@@ -15,14 +13,79 @@ import 'package:security_wanyu/service/etun_api.dart';
 import 'package:security_wanyu/service/local_database.dart';
 
 class HomeScreenBloc {
-  HomeScreenBloc();
+  final StreamController<HomeScreenModel> _streamController =
+      StreamController();
+  Stream<HomeScreenModel> get stream => _streamController.stream;
+  HomeScreenModel _model = HomeScreenModel(userLocation: UserLocation());
+
+  StreamSubscription<Position>? _positionStreamSubscription;
+  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
+
+  Stream<Position> _positionStream() {
+    LocationSettings locationSettings =
+        const LocationSettings(distanceFilter: 0);
+    return Geolocator.getPositionStream(locationSettings: locationSettings);
+  }
+
+  Stream<ServiceStatus> _serviceStatusStream() {
+    return Geolocator.getServiceStatusStream();
+  }
+
+  void _onPositionUpdated(Position position) {
+    updateWith(
+      userLocation: _model.userLocation
+          ?.copyWith(lat: position.latitude, lng: position.longitude),
+    );
+  }
+
+  void _onServiceStatusUpdated(ServiceStatus serviceStatus) {
+    updateWith(
+        userLocation: _model.userLocation?.copyWith(
+            locationServiceEnabled: serviceStatus == ServiceStatus.enabled));
+  }
+
+  Future<void> handleLocation() async {
+    LocationPermission locationPermission = await Geolocator.checkPermission();
+    if (locationPermission != LocationPermission.always &&
+        locationPermission != LocationPermission.whileInUse) {
+      locationPermission = await Geolocator.requestPermission();
+      if (locationPermission != LocationPermission.always &&
+          locationPermission != LocationPermission.whileInUse) {
+        updateWith(
+            userLocation:
+                _model.userLocation?.copyWith(hasLocationPermission: false));
+      } else {
+        updateWith(
+            userLocation:
+                _model.userLocation?.copyWith(hasLocationPermission: false));
+      }
+    } else {
+      _serviceStatusStreamSubscription?.cancel();
+      _serviceStatusStreamSubscription =
+          _serviceStatusStream().listen(_onServiceStatusUpdated);
+      if (await Geolocator.isLocationServiceEnabled()) {
+        _positionStreamSubscription?.cancel();
+        _positionStreamSubscription =
+            _positionStream().listen(_onPositionUpdated, onError: (_) {});
+        updateWith(
+            userLocation: _model.userLocation?.copyWith(
+          hasLocationPermission: true,
+          locationServiceEnabled: true,
+        ));
+      } else {
+        updateWith(
+            userLocation: _model.userLocation?.copyWith(
+          hasLocationPermission: true,
+          locationServiceEnabled: false,
+        ));
+      }
+    }
+  }
 
   late Timer uploadPatrolRecordTimer;
 
-  Future<void> initialize(
-      {required Member member, required BuildContext context}) async {
-    await Provider.of<UserLocationBloc>(context, listen: false)
-        .handleLocationPermission();
+  Future<void> initialize({required Member member}) async {
+    await handleLocation();
     if (await Utils.hasInternetConnection()) {
       List<Place2Patrol> places2Patrol = await EtunAPI.instance
           .getMemberPlaces2Patrol(memberName: member.memberName!);
@@ -48,33 +111,31 @@ class HomeScreenBloc {
     }
   }
 
-  Future<void> workPunch(
-      {required Member member, required UserLocation userLocation}) async {
+  Future<void> workPunch({required Member member}) async {
     try {
       PunchCardRecord punchCardRecord = PunchCardRecord(
         memberId: member.memberId,
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: PunchCards.work,
-        lat: userLocation.lat,
-        lng: userLocation.lng,
+        lat: _model.userLocation?.lat,
+        lng: _model.userLocation?.lng,
       );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
-    } catch (_) {
+    } catch (e) {
       rethrow;
     }
   }
 
-  Future<void> getOffPunch(
-      {required Member member, required UserLocation userLocation}) async {
+  Future<void> getOffPunch({required Member member}) async {
     try {
       PunchCardRecord punchCardRecord = PunchCardRecord(
         memberId: member.memberId,
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: PunchCards.getOff,
-        lat: userLocation.lat,
-        lng: userLocation.lng,
+        lat: _model.userLocation?.lat,
+        lng: _model.userLocation?.lng,
       );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {
@@ -91,7 +152,15 @@ class HomeScreenBloc {
     }
   }
 
+  void updateWith({UserLocation? userLocation}) {
+    _model = _model.copyWith(userLocation: userLocation);
+    _streamController.add(_model);
+  }
+
   void dispose() {
     uploadPatrolRecordTimer.cancel();
+    _positionStreamSubscription?.cancel();
+    _serviceStatusStreamSubscription?.cancel();
+    _streamController.close();
   }
 }
