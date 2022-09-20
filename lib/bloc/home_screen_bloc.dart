@@ -52,12 +52,14 @@ class HomeScreenBloc {
       if (locationPermission != LocationPermission.always &&
           locationPermission != LocationPermission.whileInUse) {
         updateWith(
-            userLocation:
-                _model.userLocation?.copyWith(hasLocationPermission: false));
+          userLocation:
+              _model.userLocation?.copyWith(hasLocationPermission: false),
+        );
       } else {
         updateWith(
-            userLocation:
-                _model.userLocation?.copyWith(hasLocationPermission: false));
+          userLocation:
+              _model.userLocation?.copyWith(hasLocationPermission: false),
+        );
       }
     } else {
       _serviceStatusStreamSubscription?.cancel();
@@ -74,10 +76,11 @@ class HomeScreenBloc {
         ));
       } else {
         updateWith(
-            userLocation: _model.userLocation?.copyWith(
-          hasLocationPermission: true,
-          locationServiceEnabled: false,
-        ));
+          userLocation: _model.userLocation?.copyWith(
+            hasLocationPermission: true,
+            locationServiceEnabled: false,
+          ),
+        );
       }
     }
   }

@@ -7,7 +7,10 @@ class HomeScreenModel {
       userLocation!.locationServiceEnabled!;
   HomeScreenModel({this.userLocation});
 
-  HomeScreenModel copyWith({UserLocation? userLocation}) {
+  HomeScreenModel copyWith({
+    UserLocation? userLocation,
+    bool? showLocationDialog,
+  }) {
     return HomeScreenModel(userLocation: userLocation ?? this.userLocation);
   }
 }
