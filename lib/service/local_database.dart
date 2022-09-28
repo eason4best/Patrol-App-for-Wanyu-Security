@@ -238,7 +238,8 @@ class LocalDatabase {
     return maps.map((map) => Place2Patrol.fromMap(map)).toList();
   }
 
-  Future<List<Place2Patrol>> getDonePlaces2Patrol() async {
+  Future<List<Place2Patrol>> getDonePlaces2Patrol(
+      {required int customerId}) async {
     Database db = await _db;
     List<Map<String, dynamic>> maps = await db.rawQuery(
       '''
@@ -246,14 +247,15 @@ class LocalDatabase {
       INNER JOIN PatrolRecord pr 
       ON pp.patrolPlaceSN = pr.patrolPlaceSN 
       AND pp.day = pr.day
-      WHERE pp.day = ?
+      WHERE pp.day = ? AND pp.customerId = ?
       ''',
-      [DateTime.now().day],
+      [DateTime.now().day, customerId],
     );
     return maps.map((map) => Place2Patrol.fromMap(map)).toList();
   }
 
-  Future<List<Place2Patrol>> getUndonePlaces2Patrol() async {
+  Future<List<Place2Patrol>> getUndonePlaces2Patrol(
+      {required int customerId}) async {
     Database db = await _db;
     List<Map<String, dynamic>> maps = await db.rawQuery(
       '''
@@ -261,9 +263,9 @@ class LocalDatabase {
       LEFT JOIN PatrolRecord pr 
       ON pp.patrolPlaceSN == pr.patrolPlaceSN 
       AND pp.day == pr.day
-      WHERE pp.day = ? AND pr.patrolPlaceSN IS NULL AND pr.day IS NULL
+      WHERE pp.day = ? AND pp.customerId = ? AND pr.patrolPlaceSN IS NULL AND pr.day IS NULL
       ''',
-      [DateTime.now().day],
+      [DateTime.now().day, customerId],
     );
     return maps.map((map) => Place2Patrol.fromMap(map)).toList();
   }

@@ -31,7 +31,7 @@ class ContactUsScreen extends StatelessWidget {
             } else {
               final Uri emailLaunchUri = Uri(
                 scheme: 'mailto',
-                path: 'etungroup@gmail.com',
+                path: 'etun.group@etun.com.tw',
               );
               launchUrl(emailLaunchUri);
             }

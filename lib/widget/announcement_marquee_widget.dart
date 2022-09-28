@@ -10,7 +10,7 @@ class AnnouncementMarqueeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 54,
+      height: 56,
       alignment: Alignment.centerLeft,
       color: Colors.white,
       child: Container(
@@ -24,7 +24,7 @@ class AnnouncementMarqueeWidget extends StatelessWidget {
                   blankSpace: 100,
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2!
+                      .subtitle1!
                       .copyWith(color: Theme.of(context).primaryColor),
                 )
               : Container(),

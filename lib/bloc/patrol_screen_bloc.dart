@@ -21,8 +21,8 @@ class PatrolScreenBloc {
   PatrolScreenModel get model => _model;
   MobileScannerController scannerController = MobileScannerController();
 
-  Future<void> initialize() async {
-    await updatePatrolPlaces();
+  Future<void> initialize({required int customerId}) async {
+    await updatePatrolPlaces(customerId: customerId);
   }
 
   Future<bool> patrol(
@@ -48,7 +48,7 @@ class PatrolScreenBloc {
           );
           await LocalDatabase.instance
               .insertPatrolRecord(patrolRecord: patrolRecord);
-          await updatePatrolPlaces();
+          await updatePatrolPlaces(customerId: customerId);
           return true;
         } else {
           return false;
@@ -70,15 +70,19 @@ class PatrolScreenBloc {
     }
   }
 
-  Future<void> updatePatrolPlaces() async {
-    List<Place2Patrol> donePlaces2Patrol =
-        await LocalDatabase.instance.getDonePlaces2Patrol();
-    List<Place2Patrol> undonePlaces2Patrol =
-        await LocalDatabase.instance.getUndonePlaces2Patrol();
+  Future<void> updatePatrolPlaces({required int customerId}) async {
+    List<Place2Patrol> donePlaces2Patrol = await LocalDatabase.instance
+        .getDonePlaces2Patrol(customerId: customerId);
+    List<Place2Patrol> undonePlaces2Patrol = await LocalDatabase.instance
+        .getUndonePlaces2Patrol(customerId: customerId);
     updateWith(
       donePlaces2Patrol: donePlaces2Patrol,
       undonePlaces2Patrol: undonePlaces2Patrol,
     );
+  }
+
+  bool completeAllPatrolPlaces() {
+    return _model.undonePlaces2Patrol!.isEmpty;
   }
 
   void updateWith({

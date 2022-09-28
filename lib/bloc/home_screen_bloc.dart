@@ -58,7 +58,7 @@ class HomeScreenBloc {
       } else {
         updateWith(
           userLocation:
-              _model.userLocation?.copyWith(hasLocationPermission: false),
+              _model.userLocation?.copyWith(hasLocationPermission: true),
         );
       }
     } else {
@@ -121,8 +121,8 @@ class HomeScreenBloc {
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: PunchCards.work,
-        lat: _model.userLocation?.lat,
-        lng: _model.userLocation?.lng,
+        lat: 22.998020, //_model.userLocation?.lat,
+        lng: 120.208535, // _model.userLocation?.lng,
       );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (e) {
@@ -137,8 +137,8 @@ class HomeScreenBloc {
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: PunchCards.getOff,
-        lat: _model.userLocation?.lat,
-        lng: _model.userLocation?.lng,
+        lat: 22.998020, //_model.userLocation?.lat,
+        lng: 120.208535, // _model.userLocation?.lng,
       );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {

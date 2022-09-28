@@ -4,12 +4,10 @@ import 'package:security_wanyu/model/place2patrol.dart';
 class PatrolRecordWidget extends StatelessWidget {
   final List<Place2Patrol> donePlaces2Patrol;
   final List<Place2Patrol> undonePlaces2Patrol;
-  final bool enabled;
   const PatrolRecordWidget({
     super.key,
     required this.donePlaces2Patrol,
     required this.undonePlaces2Patrol,
-    this.enabled = true,
   });
 
   @override
@@ -22,22 +20,16 @@ class PatrolRecordWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
             title: Text(
               undonePlaces2Patrol.isNotEmpty
-                  ? '${undonePlaces2Patrol[0].customerName!}${enabled ? '・執勤中' : ''}'
-                  : '${donePlaces2Patrol[0].customerName!}${enabled ? '・執勤中' : ''}',
-              style: enabled
-                  ? Theme.of(context).textTheme.subtitle2
-                  : Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(color: Colors.black38),
+                  ? '${undonePlaces2Patrol[0].customerName!}${'・執勤中'}'
+                  : '${donePlaces2Patrol[0].customerName!}${'・執勤中'}',
+              style: Theme.of(context).textTheme.subtitle2,
             ),
-            tileColor: enabled
-                ? Theme.of(context).scaffoldBackgroundColor
-                : Colors.black12,
+            tileColor: Theme.of(context).scaffoldBackgroundColor,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10.0),
@@ -50,17 +42,11 @@ class PatrolRecordWidget extends StatelessWidget {
             (index) => ListTile(
               title: Text(
                 undonePlaces2Patrol[index].patrolPlaceTitle!,
-                style:
-                    TextStyle(color: enabled ? Colors.black87 : Colors.black38),
+                style: const TextStyle(color: Colors.black87),
               ),
               trailing: Text(
                 '待巡邏',
-                style: enabled
-                    ? Theme.of(context).textTheme.caption
-                    : Theme.of(context)
-                        .textTheme
-                        .caption!
-                        .copyWith(color: Colors.black38),
+                style: Theme.of(context).textTheme.caption,
               ),
             ),
           ),
@@ -69,15 +55,12 @@ class PatrolRecordWidget extends StatelessWidget {
             (index) => ListTile(
               title: Text(
                 donePlaces2Patrol[index].patrolPlaceTitle!,
-                style:
-                    TextStyle(color: enabled ? Colors.black : Colors.black38),
+                style: const TextStyle(color: Colors.black),
               ),
               trailing: Text(
                 '已完成',
                 style: Theme.of(context).textTheme.caption!.copyWith(
-                      color: enabled
-                          ? Theme.of(context).primaryColor
-                          : Colors.black38,
+                      color: Theme.of(context).primaryColor,
                     ),
               ),
             ),

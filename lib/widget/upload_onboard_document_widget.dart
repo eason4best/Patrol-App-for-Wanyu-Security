@@ -1,18 +1,20 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:security_wanyu/enum/onboard_documents.dart';
 
 class UploadOnboardDocumentWidget extends StatelessWidget {
   final String content;
-  final double aspectRatio;
+  final OnboardDocuments documentType;
   final VoidCallback onTap;
   final Uint8List? image;
   const UploadOnboardDocumentWidget({
     Key? key,
     required this.content,
-    required this.aspectRatio,
+    required this.documentType,
     required this.onTap,
     this.image,
+    required,
   }) : super(key: key);
 
   @override
@@ -20,7 +22,7 @@ class UploadOnboardDocumentWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AspectRatio(
-        aspectRatio: aspectRatio,
+        aspectRatio: documentType.aspectRatio() ?? 1,
         child: Card(
           clipBehavior: Clip.hardEdge,
           elevation: 2.0,
@@ -37,9 +39,12 @@ class UploadOnboardDocumentWidget extends StatelessWidget {
                       ),
                     ),
                   )
-                : Text(
-                    content,
-                    style: Theme.of(context).textTheme.subtitle1,
+                : Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Text(
+                      content,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
                   ),
           ),
         ),

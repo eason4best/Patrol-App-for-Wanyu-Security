@@ -13,28 +13,6 @@ class PatrolRecordScreen extends StatelessWidget {
     required this.customerId,
   }) : super(key: key);
 
-  List<Map<String, List<Place2Patrol>>> get _places2PatrolGroupByCustomer {
-    List<int> customerIds = Set<int>.from(
-        List<Place2Patrol>.from([...donePlaces2Patrol, ...undonePlaces2Patrol])
-            .map((pp) => pp.customerId)).toList();
-    if (customerIds.remove(customerId)) {
-      customerIds.insert(0, customerId);
-      List<Map<String, List<Place2Patrol>>> result = [];
-      for (var id in customerIds) {
-        Map<String, List<Place2Patrol>> place2patrol = {
-          'donePlaces2Patrol':
-              donePlaces2Patrol.where((dpp) => dpp.customerId == id).toList(),
-          'undonePlaces2Patrol':
-              undonePlaces2Patrol.where((upp) => upp.customerId == id).toList(),
-        };
-        result.add(place2patrol);
-      }
-      return result;
-    } else {
-      return [];
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,30 +20,16 @@ class PatrolRecordScreen extends StatelessWidget {
         title: const Text('今日巡邏紀錄'),
       ),
       backgroundColor: Colors.white,
-      body: ListView.builder(
-        itemCount: _places2PatrolGroupByCustomer.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) => Container(
-          margin: EdgeInsets.only(
-            top: index == 0 ? 8 : 24,
-            left: 16,
-            right: 16,
-            bottom: index == _places2PatrolGroupByCustomer.length - 1 ? 24 : 0,
-          ),
-          child: index == 0
-              ? PatrolRecordWidget(
-                  donePlaces2Patrol: _places2PatrolGroupByCustomer[index]
-                      ['donePlaces2Patrol']!,
-                  undonePlaces2Patrol: _places2PatrolGroupByCustomer[index]
-                      ['undonePlaces2Patrol']!,
-                )
-              : PatrolRecordWidget(
-                  donePlaces2Patrol: _places2PatrolGroupByCustomer[index]
-                      ['donePlaces2Patrol']!,
-                  undonePlaces2Patrol: _places2PatrolGroupByCustomer[index]
-                      ['undonePlaces2Patrol']!,
-                  enabled: false,
-                ),
+      body: Container(
+        margin: const EdgeInsets.only(
+          top: 8,
+          left: 16,
+          right: 16,
+          bottom: 24,
+        ),
+        child: PatrolRecordWidget(
+          donePlaces2Patrol: donePlaces2Patrol,
+          undonePlaces2Patrol: undonePlaces2Patrol,
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/upload_other_document_screen_bloc.dart';
+import 'package:security_wanyu/enum/onboard_documents.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/upload_document_screen_model.dart';
 import 'package:security_wanyu/screen/take_document_image_screen.dart';
@@ -41,11 +42,12 @@ class UploadOtherDocumentScreen extends StatelessWidget {
                   children: [
                     UploadOnboardDocumentWidget(
                       content: '拍攝其他文件',
-                      aspectRatio: 1,
+                      documentType: OnboardDocuments.otherDocument,
                       image: snapshot.data!.image1,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => TakeDocumentImageScreen(
+                            documentType: OnboardDocuments.otherDocument,
                             cameraLensDirection: CameraLensDirection.back,
                             onShutterPressed: bloc.takeImage,
                           ),

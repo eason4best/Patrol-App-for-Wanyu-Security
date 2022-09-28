@@ -1,17 +1,18 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:security_wanyu/enum/onboard_documents.dart';
 import 'package:security_wanyu/widget/take_document_image_frame.dart';
 
 class TakeDocumentImageScreen extends StatefulWidget {
   final CameraLensDirection cameraLensDirection;
   final Future<void> Function({required CameraController cameraController})
       onShutterPressed;
-  final double? documentAspectRatio;
+  final OnboardDocuments documentType;
   const TakeDocumentImageScreen({
     Key? key,
     required this.cameraLensDirection,
     required this.onShutterPressed,
-    this.documentAspectRatio,
+    required this.documentType,
   }) : super(key: key);
 
   @override
@@ -62,9 +63,10 @@ class _TakeDocumentImageScreenState extends State<TakeDocumentImageScreen> {
                   alignment: Alignment.center,
                   children: [
                     CameraPreview(_cameraController!),
-                    widget.documentAspectRatio != null
+                    widget.documentType != OnboardDocuments.otherDocument
                         ? TakeDocumentImageFrame(
-                            documentAspectRatio: widget.documentAspectRatio!)
+                            documentType: widget.documentType,
+                          )
                         : Container(),
                   ],
                 ),

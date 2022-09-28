@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:security_wanyu/bloc/upload_bankbook_screen_bloc.dart';
+import 'package:security_wanyu/enum/onboard_documents.dart';
 import 'package:security_wanyu/model/member.dart';
 import 'package:security_wanyu/model/upload_document_screen_model.dart';
 import 'package:security_wanyu/screen/take_document_image_screen.dart';
@@ -40,13 +41,13 @@ class UploadBankbookScreen extends StatelessWidget {
                 return Column(
                   children: [
                     UploadOnboardDocumentWidget(
-                      content: '拍攝存摺正面',
-                      aspectRatio: 16 / 9,
+                      content: '請拍攝內含存摺帳號、銀行及分行之資訊頁面。',
+                      documentType: OnboardDocuments.bankbook,
                       image: snapshot.data!.image1,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => TakeDocumentImageScreen(
-                            documentAspectRatio: 16 / 9,
+                            documentType: OnboardDocuments.bankbook,
                             cameraLensDirection: CameraLensDirection.back,
                             onShutterPressed: bloc.takeImage,
                           ),
