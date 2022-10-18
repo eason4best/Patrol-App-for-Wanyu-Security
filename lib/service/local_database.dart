@@ -63,7 +63,8 @@ class LocalDatabase {
                   patrolPlaceTitle TEXT NOT NULL,
                   customerId INTEGER NOT NULL,
                   customerName TEXT NOT NULL,
-                  day INTEGER NOT NULL
+                  day INTEGER NOT NULL,
+                  shiftTime TEXT NOT NULL
                   )
             ''',
           );
@@ -77,6 +78,7 @@ class LocalDatabase {
                   patrolPlaceSN TEXT NOT NULL,
                   patrolPlaceTitle TEXT NOT NULL,
                   patrolDateTime TEXT NOT NULL,
+                  patrolDateTimeInMS INTEGER NOT NULL,
                   day INTEGER NOT NULL,
                   uploaded INTEGER DEFAULT 0
                 )
@@ -247,9 +249,15 @@ class LocalDatabase {
       INNER JOIN PatrolRecord pr 
       ON pp.patrolPlaceSN = pr.patrolPlaceSN 
       AND pp.day = pr.day
-      WHERE pp.day = ? AND pp.customerId = ?
+      WHERE pp.day = ? AND pp.customerId = ? AND pr.patrolDateTimeInMS > ?
       ''',
-      [DateTime.now().day, customerId],
+      [
+        DateTime.now().day,
+        customerId,
+        DateTime.now()
+            .subtract(const Duration(minutes: 10))
+            .millisecondsSinceEpoch
+      ],
     );
     return maps.map((map) => Place2Patrol.fromMap(map)).toList();
   }
@@ -261,11 +269,18 @@ class LocalDatabase {
       '''
       SELECT pp.* FROM Place2Patrol pp 
       LEFT JOIN PatrolRecord pr 
-      ON pp.patrolPlaceSN == pr.patrolPlaceSN 
-      AND pp.day == pr.day
-      WHERE pp.day = ? AND pp.customerId = ? AND pr.patrolPlaceSN IS NULL AND pr.day IS NULL
+      ON pp.patrolPlaceSN = pr.patrolPlaceSN 
+      AND pp.day = pr.day
+      WHERE (pp.day = ? AND pp.customerId = ?) 
+      AND ((pr.patrolPlaceSN IS NULL AND pr.day IS NULL) OR pr.patrolDateTimeInMS < ?)
       ''',
-      [DateTime.now().day, customerId],
+      [
+        DateTime.now().day,
+        customerId,
+        DateTime.now()
+            .subtract(const Duration(minutes: 10))
+            .millisecondsSinceEpoch
+      ],
     );
     return maps.map((map) => Place2Patrol.fromMap(map)).toList();
   }

@@ -4,6 +4,7 @@ class Place2Patrol {
   final int? customerId;
   final String? customerName;
   final int? day;
+  final String? shiftTime;
 
   Place2Patrol({
     this.patrolPlaceSN,
@@ -11,6 +12,7 @@ class Place2Patrol {
     this.customerId,
     this.customerName,
     this.day,
+    this.shiftTime,
   });
 
   factory Place2Patrol.fromData(data) {
@@ -22,12 +24,14 @@ class Place2Patrol {
     final int? customerId = data['customer_id'];
     final String? customerName = data['customer_name'];
     final int? day = data['day'];
+    final String? shiftTime = data['shiftTime'];
     return Place2Patrol(
       patrolPlaceSN: patrolPlaceSN,
       patrolPlaceTitle: patrolPlaceTitle,
       customerId: customerId,
       customerName: customerName,
       day: day,
+      shiftTime: shiftTime,
     );
   }
 
@@ -37,6 +41,7 @@ class Place2Patrol {
         'customerId': customerId,
         'customerName': customerName,
         'day': day,
+        'shiftTime': shiftTime,
       };
 
   factory Place2Patrol.fromMap(Map<String, dynamic>? data) {
@@ -48,12 +53,14 @@ class Place2Patrol {
     final int? customerId = data['customerId'];
     final String? customerName = data['customerName'];
     final int? day = data['day'];
+    final String? shiftTime = data['shiftTime'];
     return Place2Patrol(
       patrolPlaceSN: patrolPlaceSN,
       patrolPlaceTitle: patrolPlaceTitle,
       customerId: customerId,
       customerName: customerName,
       day: day,
+      shiftTime: shiftTime,
     );
   }
 }

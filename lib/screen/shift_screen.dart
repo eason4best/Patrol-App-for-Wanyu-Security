@@ -36,33 +36,39 @@ class ShiftScreen extends StatelessWidget {
                 stream: bloc.stream,
                 initialData: bloc.model,
                 builder: (context, snapshot) {
-                  return Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 24),
-                        child: Text(
-                          Utils.datetimeString(snapshot.data!.selectedDate!,
-                              onlyDate: true, showWeekday: true),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5!
-                              .copyWith(height: 1),
-                        ),
-                      ),
-                      ShiftCustomerWidget(
-                        dayShiftCustomers: Set<String>.from(snapshot
-                            .data!.places2Patrol!
-                            .where((pp) =>
-                                pp.day == snapshot.data!.selectedDate!.day)
-                            .map((pp) => pp.customerName!)).toList(),
-                      ),
-                      ShiftCalendarWidget(
-                        bloc: bloc,
-                        selectedDate: snapshot.data!.selectedDate!,
-                        places2Patrol: snapshot.data!.places2Patrol!,
-                      ),
-                    ],
-                  );
+                  return snapshot.data!.places2Patrol!.isNotEmpty
+                      ? Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 24),
+                              child: Text(
+                                Utils.datetimeString(
+                                    snapshot.data!.selectedDate!,
+                                    onlyDate: true,
+                                    showWeekday: true),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(height: 1),
+                              ),
+                            ),
+                            ShiftCustomerWidget(
+                              places2Patrol: snapshot.data!.places2Patrol!
+                                  .where((pp) =>
+                                      pp.day ==
+                                      snapshot.data!.selectedDate!.day)
+                                  .toList(),
+                            ),
+                            ShiftCalendarWidget(
+                              bloc: bloc,
+                              selectedDate: snapshot.data!.selectedDate!,
+                              places2Patrol: snapshot.data!.places2Patrol!,
+                            ),
+                          ],
+                        )
+                      : const Center(
+                          child: Text('本月班表尚未出爐'),
+                        );
                 });
           }),
     );

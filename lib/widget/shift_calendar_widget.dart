@@ -37,7 +37,6 @@ class _ShiftCalendarWidgetState extends State<ShiftCalendarWidget> {
           view: CalendarView.month,
           initialSelectedDate: DateTime.now(),
           headerHeight: 0,
-          viewHeaderHeight: 0,
           viewNavigationMode: ViewNavigationMode.none,
           onSelectionChanged: widget.bloc.onSelectDate,
           monthCellBuilder: (context, details) => Container(
@@ -60,7 +59,7 @@ class _ShiftCalendarWidgetState extends State<ShiftCalendarWidget> {
                   margin: const EdgeInsets.only(top: 4),
                   child: Text(
                     details.date.day.toString(),
-                    style: Theme.of(context).textTheme.caption!.copyWith(
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
                           color: widget.selectedDate.month == details.date.month
                               ? Colors.black87
                               : Colors.black38,

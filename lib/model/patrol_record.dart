@@ -23,6 +23,7 @@ class PatrolRecord {
         'patrolPlaceSN': patrolPlaceSN,
         'patrolPlaceTitle': patrolPlaceTitle,
         'patrolDateTime': patrolDateTime!.toString(),
+        'patrolDateTimeInMS': patrolDateTime!.millisecondsSinceEpoch,
         'day': day,
       };
 

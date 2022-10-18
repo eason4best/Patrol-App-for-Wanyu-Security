@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:security_wanyu/model/place2patrol.dart';
 
 class ShiftCustomerWidget extends StatelessWidget {
-  final List<String> dayShiftCustomers;
+  final List<Place2Patrol> places2Patrol;
 
   const ShiftCustomerWidget({
     super.key,
-    required this.dayShiftCustomers,
+    required this.places2Patrol,
   });
+
+  List<Map<String, String>> _getCustomersAndShiftTimes() {
+    List<int> customerIds =
+        Set<int>.from(places2Patrol.map((pp) => pp.customerId)).toList();
+    List<Map<String, String>> results = [];
+    for (var id in customerIds) {
+      Place2Patrol pp = places2Patrol.firstWhere((pp) => pp.customerId == id);
+      results.add({
+        'customerName': pp.customerName!,
+        'shiftTime': pp.shiftTime!,
+      });
+    }
+    return results;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +30,21 @@ class ShiftCustomerWidget extends StatelessWidget {
       elevation: 4.0,
       color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: dayShiftCustomers.isNotEmpty
+      child: places2Patrol.isNotEmpty
           ? ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => ListTile(
-                title: Text(dayShiftCustomers[index]),
+                title:
+                    Text(_getCustomersAndShiftTimes()[index]['customerName']!),
+                trailing:
+                    Text(_getCustomersAndShiftTimes()[index]['shiftTime']!),
               ),
               separatorBuilder: (context, index) => const Divider(
                 height: 0,
                 thickness: 1,
               ),
-              itemCount: dayShiftCustomers.length,
+              itemCount: _getCustomersAndShiftTimes().length,
             )
           : SizedBox(
               height: 48,

@@ -26,7 +26,7 @@ class TakeDocumentImageFrame extends StatelessWidget {
               : '請確認${documentType.toString()}於藍框內再拍照',
           style: Theme.of(context)
               .textTheme
-              .subtitle1!
+              .headline6!
               .copyWith(color: Colors.white.withOpacity(0.8)),
         ),
       ),
