@@ -34,6 +34,7 @@ class ShiftCustomerWidget extends StatelessWidget {
           ? ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(0.0),
               itemBuilder: (context, index) => ListTile(
                 title:
                     Text(_getCustomersAndShiftTimes()[index]['customerName']!),

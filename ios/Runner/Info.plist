@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Security Wanyu</string>
+	<string>萬宇保全</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,7 +45,9 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-    <key>NSCameraUsageDescription</key>
-    <string>需要相機權限</string>
+	<key>NSCameraUsageDescription</key>
+	<string>需要相機權限以使用巡邏功能</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>需要位置權限以使用打卡功能</string>
 </dict>
 </plist>
