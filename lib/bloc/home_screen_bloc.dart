@@ -137,8 +137,8 @@ class HomeScreenBloc {
         memberSN: member.memberSN,
         memberName: member.memberName,
         punchCardType: PunchCards.getOff,
-        lat: 22.998020, //_model.userLocation?.lat,
-        lng: 120.208535, // _model.userLocation?.lng,
+        lat: _model.userLocation?.lat,
+        lng: _model.userLocation?.lng,
       );
       await LocalDatabase.instance.punchCard(punchCardRecord: punchCardRecord);
     } catch (_) {
